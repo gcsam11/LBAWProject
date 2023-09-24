@@ -80,8 +80,8 @@ You can also document commands to lint the code or run tests. These steps help t
 
 ## Authors and acknowledgment
 
-Gonçalo Martins - up202108707
-Diogo Viana - up202108803
+- Gonçalo Martins - up202108707
+- Diogo Viana - up202108803
 
 ## License
 For open source projects, say how it is licensed.
