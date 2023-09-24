@@ -82,6 +82,8 @@ You can also document commands to lint the code or run tests. These steps help t
 
 - Gonçalo Martins - up202108707
 - Diogo Viana - up202108803
+- André Santos - up202108658
+- Luís Contreiras - up202108742
 
 ## License
 For open source projects, say how it is licensed.
