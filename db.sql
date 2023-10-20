@@ -1,95 +1,94 @@
-CREATE TABLE accounts (
-	user_id serial PRIMARY KEY,
-	username VARCHAR ( 50 ) UNIQUE NOT NULL,
-	password VARCHAR ( 50 ) NOT NULL,
-	email VARCHAR ( 255 ) UNIQUE NOT NULL,
-	created_on TIMESTAMP NOT NULL,
-        last_login TIMESTAMP 
-);
-
-
 CREATE TABLE users (
-    id serial PRIMARY KEY,
-    
+    id PRIMARY KEY,
     name text NOT NULL,
-    username VARCHAR ( 50 ),
+    username TEXT,
     birthday DATE,
-    country VARCHAR (50),
-    city VARCHAR (50),
-    gender VARCHAR (50),
-    type VARCHAR (50),
-    url VARCHAR (50),
-    email VARCHAR (50) UNIQUE,
-    password VARCHAR (50),
+    country TEXT,
+    city TEXT,
+    gender TEXT,
+    type TEXT,
+    url TEXT,
+    email TEXT UNIQUE,
+    password TEXT,
     reputation INTEGER
 );
 
 CREATE TABLE admin(
-    name VARCHAR (50) NOT NULL,
-    username VARCHAR (50) PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    username TEXT ,
     birthday DATE,
-    country VARCHAR (50),
-    city VARCHAR (50),
-    gender VARCHAR (50),
-    type VARCHAR (50),
-    url VARCHAR (50),
-    email VARCHAR (50) UNIQUE,
-    password VARCHAR (50),
-    reputation INTEGER
+    country TEXT,
+    city TEXT,
+    gender TEXT,
+    type TEXT,
+    url TEXT,
+    email TEXT UNIQUE,
+    password TEXT,
+    reputation INTEGER,
+    user_id INTEGER references users(id)
 );
 
 CREATE TABLE post(
-    post_id INTEGER,
-    title VARCHAR (50),
-    caption VARCHAR (50),
+    id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    caption TEXT NOT NULL,
     postdate DATE,
     upvotes INTEGER,
     downvotes INTEGER,
-);
-CREATE TABLE (
-
-);
-
-CREATE TABLE (
-
+    user_id INTEGER references users(id),
+    topic_id INTEGER references topic(id),
+    CONSTRAINT upvotes_check CHECK ((upvotes>= 0)),
+    CONSTRAINT downvotes_check CHECK ((downvotes>= 0))
 );
 
-CREATE TABLE (
-
+CREATE TABLE comment(
+    id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    caption TEXT NOT NULL,
+    commentdate DATE,
+    upvotes INTEGER,
+    downvotes INTEGER,    
+    post_id INTEGER references post(id),
+    user_id INTEGER references users(id),
+    CONSTRAINT upvotes_check CHECK ((upvotes>= 0)),
+    CONSTRAINT downvotes_check CHECK ((downvotes>= 0))
 );
 
-CREATE TABLE (
-
+CREATE TABLE notification(
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER references users(id)
+    title TEXT NOT NULL,
+    caption TEXT,
+    type TEXT,
 );
 
-CREATE TABLE (
-
+CREATE TABLE topic(
+    id INTEGER PRIMARY KEY,
+    title TEXT not null,
+    caption TEXT,
+    followers INTEGER,
+    CONSTRAINT followers_check CHECK ((followers >= 0)) 
 );
 
-CREATE TABLE (
-
+CREATE TABLE topic_proposal(
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER references users(id),
+    admin_id INTEGER references admin(id),
+    title TEXT,
+    caption TEXT NOT NULL
 );
 
-CREATE TABLE (
-
+CREATE TABLE image(
+    id PRIMARY KEY,
+    post_id INTEGER references post(id),
+    comment_id INTEGER references comment(id),
+    path TEXT,
 );
 
-CREATE TABLE (
-
-);
-
-CREATE TABLE (
-
-);
-
-CREATE TABLE (
-
-);
-
-CREATE TABLE (
-
-);
-
-CREATE TABLE (
-
+CREATE TABLE video(
+    video_id PRIMARY KEY,
+    post_id INTEGER references post(id),
+    comment_id INTEGER references comment(id),
+    path TEXT,
 );
