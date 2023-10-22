@@ -119,4 +119,8 @@ CREATE TABLE video (
 --Indexes
 ----------------------------------------------
 
-CRETE INDEX .. ON post using 
+CREATE INDEX post_user ON post USING hash (user_id);
+
+CREATE INDEX comment_post ON comment USING hash (post_id);
+
+CREATE INDEX notification_user ON notificatin USING hash (user_id);
