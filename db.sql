@@ -1,21 +1,15 @@
-----------------------------------------------
---Drop Old Schema
-----------------------------------------------
+-- Drop Old Schema
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS admins CASCADE;
+DROP TABLE IF EXISTS post CASCADE;
+DROP TABLE IF EXISTS comment CASCADE;
+DROP TABLE IF EXISTS topic CASCADE;
+DROP TABLE IF EXISTS notification CASCADE;
+DROP TABLE IF EXISTS topic_proposal CASCADE;
+DROP TABLE IF EXISTS image CASCADE;
+DROP TABLE IF EXISTS video CASCADE;
 
-DROP TABLE IF users EXISTS CASCADE;
-DROP TABLE IF admins EXISTS CASCADE;
-DROP TABLE IF post EXISTS CASCADE;
-DROP TABLE IF comment EXISTS CASCADE;
-DROP TABLE IF topic EXISTS CASCADE;
-DROP TABLE IF  notification EXISTS CASCADE;
-DROP TABLE IF topic_proposal CASCADE;
-DROP TABLE IF image CASCADE;
-DROP TABLE IF video CASCADE;
-
-----------------------------------------------
---Tables
-----------------------------------------------
-
+-- Create Tables
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
@@ -31,12 +25,10 @@ CREATE TABLE users (
     reputation INTEGER
 );
 
-
-CREATE TABLE admins(
+CREATE TABLE admins (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id)
 );
-
 
 CREATE TABLE post (
     id SERIAL PRIMARY KEY,
@@ -55,11 +47,10 @@ CREATE TABLE comment (
     caption TEXT NOT NULL,
     commentdate DATE,
     upvotes INTEGER CHECK (upvotes >= 0),
-    downvotes INTEGER CHECK (downvotes >= 0),    
+    downvotes INTEGER CHECK (downvotes >= 0),
     post_id INTEGER REFERENCES post(id),
     user_id INTEGER REFERENCES users(id)
 );
-
 
 CREATE TABLE notification (
     id SERIAL PRIMARY KEY,
@@ -69,7 +60,6 @@ CREATE TABLE notification (
     type TEXT
 );
 
-
 CREATE TABLE topic (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
@@ -77,17 +67,14 @@ CREATE TABLE topic (
     followers INTEGER CHECK (followers >= 0)
 );
 
-
 CREATE TABLE topic_proposal (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER,
+    user_id INTEGER REFERENCES users(id),
     admin_id INTEGER,
     title TEXT,
     caption TEXT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (admin_id) REFERENCES admin(id)
+    FOREIGN KEY (admin_id) REFERENCES admins(id)
 );
-
 
 CREATE TABLE image (
     id SERIAL PRIMARY KEY,
@@ -96,7 +83,6 @@ CREATE TABLE image (
     path TEXT
 );
 
-
 CREATE TABLE video (
     video_id SERIAL PRIMARY KEY,
     post_id INTEGER REFERENCES post(id),
@@ -104,136 +90,110 @@ CREATE TABLE video (
     path TEXT
 );
 
-----------------------------------------------
---Indexes
-----------------------------------------------
-
+-- Create Indexes
 CREATE INDEX post_user ON post USING btree (user_id);
-CLUSTER post WITH post_user;
+CLUSTER post USING post_user;
 
 CREATE INDEX comment_post ON comment USING btree (post_id);
 CLUSTER comment USING comment_post;
 
-CREATE INDEX notification_user ON notificatin USING hash (user_id);
+CREATE INDEX notification_user ON notification USING btree (user_id);
 
--- FTS INDEXES
+-- Full Text Search Indexes
+-- (Assuming you have a tsvector column tsvectors in post and users tables)
 
---FTS Post Search
-CREATE FUNCTION post_search_update() RETURNS TRIGGER AS $$
+-- Create function for updating post search index
+CREATE OR REPLACE FUNCTION post_search_update()
+RETURNS TRIGGER AS $$
 BEGIN
- IF TG_OP = 'INSERT' THEN
-        NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.title), 'A') ||
-         setweight(to_tsvector('english', NEW.caption), 'B')
-        );
- END IF;
- IF TG_OP = 'UPDATE' THEN
-         IF (NEW.title <> OLD.title OR NEW.caption <> OLD.caption) THEN
-           NEW.tsvectors = (
-             setweight(to_tsvector('english', NEW.title), 'A') ||
-             setweight(to_tsvector('english', NEW.caption), 'B')
-           );
-         END IF;
+ IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+     NEW.tsvectors := (
+         setweight(to_tsvector('english', COALESCE(NEW.title, '')), 'A') ||
+         setweight(to_tsvector('english', COALESCE(NEW.caption, '')), 'B')
+     );
  END IF;
  RETURN NEW;
-END $$
-LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER post_search_update
- BEFORE INSERT OR UPDATE ON post
- FOR EACH ROW
- EXECUTE PROCEDURE post_search_update();
+-- Trigger for updating post search index
+CREATE TRIGGER post_search_update_trigger
+BEFORE INSERT OR UPDATE ON post
+FOR EACH ROW
+EXECUTE FUNCTION post_search_update();
 
+-- Create the GIN index for post full-text search
 CREATE INDEX search_post_idx ON post USING GIN (tsvectors);
 
---FTS User Search
-
-CREATE FUNCTION user_search_update() RETURNS TRIGGER AS $$
+-- Create function for updating user search index
+CREATE OR REPLACE FUNCTION user_search_update()
+RETURNS TRIGGER AS $$
 BEGIN
- IF TG_OP = 'INSERT' THEN
-        NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.name), 'A') ||
-         setweight(to_tsvector('english', NEW.username), 'B')
-        );
- END IF;
- IF TG_OP = 'UPDATE' THEN
-         IF (NEW.name <> OLD.name OR NEW.username <> OLD.username) THEN
-           NEW.tsvectors = (
-             setweight(to_tsvector('english', NEW.name), 'A') ||
-             setweight(to_tsvector('english', NEW.username), 'B')
-           );
-         END IF;
+ IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+     NEW.tsvectors := (
+         setweight(to_tsvector('english', COALESCE(NEW.name, '')), 'A') ||
+         setweight(to_tsvector('english', COALESCE(NEW.username, '')), 'B')
+     );
  END IF;
  RETURN NEW;
-END $$
-LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER user_search_update
- BEFORE INSERT OR UPDATE ON user
- FOR EACH ROW
- EXECUTE PROCEDURE user_search_update();
+-- Trigger for updating user search index
+CREATE TRIGGER user_search_update_trigger
+BEFORE INSERT OR UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION user_search_update();
 
-CREATE INDEX search_user_idx ON user USING GIN (tsvectors);
-
-----------------------------------------------
---Triggers
-----------------------------------------------
+-- Create the GIN index for user full-text search
+CREATE INDEX search_user_idx ON users USING GIN (tsvectors);
 
 -- Trigger for creating notification when a user comments on a post
-CREATE FUNCTION new_comment_notification() RETURN TRIGGER AS 
-$BODY$
+CREATE OR REPLACE FUNCTION new_comment_notification()
+RETURNS TRIGGER AS $$
 BEGIN
-    SELECT user_id INTO post_user_id FROM post WHERE id = NEW.post_id;
-
     INSERT INTO notification (user_id, title, type)
-    VALUES (post_user_id,'New comment on your post','New comment')
+    VALUES ((SELECT user_id FROM post WHERE id = NEW.post_id), 'New comment on your post', 'New comment');
     RETURN NEW;
-END
-$BODY$
-LANGUAGE plpgsql;
-    
-    
-CREATE TRIGGER new_comment_trigger
-AFTER INSERT ON comment
-FOR EACH ROW
-EXECUTE FUNCTION new_comment_notification();
+END;
+$$ LANGUAGE plpgsql;
 
--- Trigger for preventing on comenting on own post
-
-CREATE FUNCTION prevent_comment_on_own_post()
-RETURNS TRIGGER AS
-$BODY$
+-- Trigger for preventing commenting on own post
+CREATE OR REPLACE FUNCTION prevent_comment_on_own_post()
+RETURNS TRIGGER AS $$
 BEGIN
   IF NEW.user_id = (SELECT user_id FROM post WHERE id = NEW.post_id) THEN
     RAISE EXCEPTION 'You cannot comment on your own post';
   END IF;
   RETURN NEW;
 END;
-$BODY$
-LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER prevent_comment_on_own_post_trigger
-BEFORE INSERT ON comment
-FOR EACH ROW
-EXECUTE FUNCTION prevent_comment_on_own_post();
-
--- Trigger for preventing comments older than post itself
-
-CREATE FUNCTION enforce_comment_date_constraint()
-RETURNS TRIGGER AS
-$BODY$
+-- Trigger for enforcing comment date constraint
+CREATE OR REPLACE FUNCTION enforce_comment_date_constraint()
+RETURNS TRIGGER AS $$
 BEGIN
   DECLARE news_published_date DATE;
-  SELECT publish_date INTO news_published_date FROM news WHERE id = NEW.news_id;
+  SELECT post.postdate INTO news_published_date FROM post WHERE post.id = NEW.post_id;
 
-  IF NEW.comment_date < news_published_date THEN
+  IF NEW.commentdate < news_published_date THEN
     RAISE EXCEPTION 'Comment date must be greater than or equal to the news publication date';
   END IF;
 
   RETURN NEW;
 END;
-$BODY$
-LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
+
+-- Attach triggers to the comment table
+CREATE TRIGGER new_comment_trigger
+AFTER INSERT ON comment
+FOR EACH ROW
+EXECUTE FUNCTION new_comment_notification();
+
+CREATE TRIGGER prevent_comment_on_own_post_trigger
+BEFORE INSERT ON comment
+FOR EACH ROW
+EXECUTE FUNCTION prevent_comment_on_own_post();
 
 CREATE TRIGGER enforce_comment_date_constraint_trigger
 BEFORE INSERT ON comment
