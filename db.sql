@@ -119,14 +119,17 @@ CREATE TABLE video (
 --Indexes
 ----------------------------------------------
 
-CREATE INDEX post_user ON post USING hash (user_id);
+CREATE INDEX post_user ON post USING btree (user_id);
+CLUSTER post WITH post_user;
 
-CREATE INDEX comment_post ON comment USING hash (post_id);
+CREATE INDEX comment_post ON comment USING btree (post_id);
+CLUSTER comment USING comment_post;
 
 CREATE INDEX notification_user ON notificatin USING hash (user_id);
 
 -- FTS INDEXES
 
+--FTS Post Search
 CREATE FUNCTION post_search_update() RETURNS TRIGGER AS $$
 BEGIN
  IF TG_OP = 'INSERT' THEN
@@ -152,4 +155,33 @@ CREATE TRIGGER post_search_update
  FOR EACH ROW
  EXECUTE PROCEDURE post_search_update();
 
-CREATE INDEX search_post_id ON post USING GIN (tsvectors);
+CREATE INDEX search_post_idx ON post USING GIN (tsvectors);
+
+--FTS User Search
+
+CREATE FUNCTION user_search_update() RETURNS TRIGGER AS $$
+BEGIN
+ IF TG_OP = 'INSERT' THEN
+        NEW.tsvectors = (
+         setweight(to_tsvector('english', NEW.name), 'A') ||
+         setweight(to_tsvector('english', NEW.username), 'B')
+        );
+ END IF;
+ IF TG_OP = 'UPDATE' THEN
+         IF (NEW.name <> OLD.name OR NEW.username <> OLD.username) THEN
+           NEW.tsvectors = (
+             setweight(to_tsvector('english', NEW.name), 'A') ||
+             setweight(to_tsvector('english', NEW.username), 'B')
+           );
+         END IF;
+ END IF;
+ RETURN NEW;
+END $$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER user_search_update
+ BEFORE INSERT OR UPDATE ON user
+ FOR EACH ROW
+ EXECUTE PROCEDURE user_search_update();
+
+CREATE INDEX search_user_idx ON user USING GIN (tsvectors);
