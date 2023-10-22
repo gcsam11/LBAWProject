@@ -1,3 +1,21 @@
+----------------------------------------------
+--Drop Old Schema
+----------------------------------------------
+
+DROP TABLE IF users EXISTS CASCADE;
+DROP TABLE IF admins EXISTS CASCADE;
+DROP TABLE IF post EXISTS CASCADE;
+DROP TABLE IF comment EXISTS CASCADE;
+DROP TABLE IF topic EXISTS CASCADE;
+DROP TABLE IF  notification EXISTS CASCADE;
+DROP TABLE IF topic_proposal CASCADE;
+DROP TABLE IF image CASCADE;
+DROP TABLE IF video CASCADE;
+
+----------------------------------------------
+--Tables
+----------------------------------------------
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
@@ -14,7 +32,7 @@ CREATE TABLE users (
 );
 
 
-CREATE TABLE admin (
+CREATE TABLE admins(
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     username TEXT,
@@ -96,3 +114,9 @@ CREATE TABLE video (
     comment_id INTEGER REFERENCES comment(id),
     path TEXT
 );
+
+----------------------------------------------
+--Indexes
+----------------------------------------------
+
+CRETE INDEX .. ON post using 
