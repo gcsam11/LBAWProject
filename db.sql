@@ -34,17 +34,6 @@ CREATE TABLE users (
 
 CREATE TABLE admins(
     id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    username TEXT,
-    birthday DATE,
-    country TEXT,
-    city TEXT,
-    gender TEXT,
-    type TEXT,
-    url TEXT,
-    email TEXT UNIQUE,
-    password TEXT,
-    reputation INTEGER,
     user_id INTEGER REFERENCES users(id)
 );
 
