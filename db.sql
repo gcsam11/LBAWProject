@@ -174,3 +174,68 @@ CREATE TRIGGER user_search_update
  EXECUTE PROCEDURE user_search_update();
 
 CREATE INDEX search_user_idx ON user USING GIN (tsvectors);
+
+----------------------------------------------
+--Triggers
+----------------------------------------------
+
+-- Trigger for creating notification when a user comments on a post
+CREATE FUNCTION new_comment_notification() RETURN TRIGGER AS 
+$BODY$
+BEGIN
+    SELECT user_id INTO post_user_id FROM post WHERE id = NEW.post_id;
+
+    INSERT INTO notification (user_id, title, type)
+    VALUES (post_user_id,'New comment on your post','New comment')
+    RETURN NEW;
+END
+$BODY$
+LANGUAGE plpgsql;
+    
+    
+CREATE TRIGGER new_comment_trigger
+AFTER INSERT ON comment
+FOR EACH ROW
+EXECUTE FUNCTION new_comment_notification();
+
+-- Trigger for preventing on comenting on own post
+
+CREATE FUNCTION prevent_comment_on_own_post()
+RETURNS TRIGGER AS
+$BODY$
+BEGIN
+  IF NEW.user_id = (SELECT user_id FROM post WHERE id = NEW.post_id) THEN
+    RAISE EXCEPTION 'You cannot comment on your own post';
+  END IF;
+  RETURN NEW;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER prevent_comment_on_own_post_trigger
+BEFORE INSERT ON comment
+FOR EACH ROW
+EXECUTE FUNCTION prevent_comment_on_own_post();
+
+-- Trigger for preventing comments older than post itself
+
+CREATE FUNCTION enforce_comment_date_constraint()
+RETURNS TRIGGER AS
+$BODY$
+BEGIN
+  DECLARE news_published_date DATE;
+  SELECT publish_date INTO news_published_date FROM news WHERE id = NEW.news_id;
+
+  IF NEW.comment_date < news_published_date THEN
+    RAISE EXCEPTION 'Comment date must be greater than or equal to the news publication date';
+  END IF;
+
+  RETURN NEW;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER enforce_comment_date_constraint_trigger
+BEFORE INSERT ON comment
+FOR EACH ROW
+EXECUTE FUNCTION enforce_comment_date_constraint();
