@@ -124,3 +124,32 @@ CREATE INDEX post_user ON post USING hash (user_id);
 CREATE INDEX comment_post ON comment USING hash (post_id);
 
 CREATE INDEX notification_user ON notificatin USING hash (user_id);
+
+-- FTS INDEXES
+
+CREATE FUNCTION post_search_update() RETURNS TRIGGER AS $$
+BEGIN
+ IF TG_OP = 'INSERT' THEN
+        NEW.tsvectors = (
+         setweight(to_tsvector('english', NEW.title), 'A') ||
+         setweight(to_tsvector('english', NEW.caption), 'B')
+        );
+ END IF;
+ IF TG_OP = 'UPDATE' THEN
+         IF (NEW.title <> OLD.title OR NEW.caption <> OLD.caption) THEN
+           NEW.tsvectors = (
+             setweight(to_tsvector('english', NEW.title), 'A') ||
+             setweight(to_tsvector('english', NEW.caption), 'B')
+           );
+         END IF;
+ END IF;
+ RETURN NEW;
+END $$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER post_search_update
+ BEFORE INSERT OR UPDATE ON post
+ FOR EACH ROW
+ EXECUTE PROCEDURE post_search_update();
+
+CREATE INDEX search_post_id ON post USING GIN (tsvectors);
