@@ -1,93 +1,162 @@
 -- Drop Old Schema
-DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS admins CASCADE;
-DROP TABLE IF EXISTS post CASCADE;
-DROP TABLE IF EXISTS comment CASCADE;
-DROP TABLE IF EXISTS topic CASCADE;
-DROP TABLE IF EXISTS notification CASCADE;
-DROP TABLE IF EXISTS topic_proposal CASCADE;
-DROP TABLE IF EXISTS image CASCADE;
-DROP TABLE IF EXISTS video CASCADE;
+DROP TABLE IF EXISTS USER CASCADE;
+DROP TABLE IF EXISTS ADMIN CASCADE;
+DROP TABLE IF EXISTS POST CASCADE;
+DROP TABLE IF EXISTS COMMENT CASCADE;
+DROP TABLE IF EXISTS UPVOTE_POST CASCADE;
+DROP TABLE IF EXISTS DOWNVOTE_POST CASCADE;
+DROP TABLE IF EXISTS UPVOTE_COMMENT CASCADE;
+DROP TABLE IF EXISTS DOWNVOTE_COMMENT CASCADE;
+DROP TABLE IF EXISTS TOPIC CASCADE;
+DROP TABLE IF EXISTS USER_TOPIC CASCADE;
+DROP TABLE IF EXISTS NOTIFICATION CASCADE;
+DROP TABLE IF EXISTS TOPIC_PROPOSAL CASCADE;
+DROP TABLE IF EXISTS IMAGE CASCADE;
+DROP TABLE IF EXISTS VIDEO CASCADE;
+DROP TABLE IF EXISTS IMAGE_POST CASCADE;
+DROP TABLE IF EXISTS IMAGE_COMMENT CASCADE;
 
 -- Create Tables
-CREATE TABLE users (
+CREATE TABLE USER (
     id SERIAL PRIMARY KEY,
+    username TEXT UNIQUE,
     name TEXT NOT NULL,
-    username TEXT,
     birthday DATE,
     country TEXT,
-    city TEXT,
     gender TEXT,
     type TEXT,
     url TEXT,
     email TEXT UNIQUE,
     password TEXT,
-    reputation INTEGER
+    reputation INTEGER,
+    image_id INTEGER,
+    CONSTRAINT fk_userimage FOREIGN KEY(image_id) REFERENCES IMAGE(id) ON UPDATE ON DELETE CASCADE
 );
 
-CREATE TABLE admins (
+CREATE TABLE ADMIN (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id)
+    user_id INTEGER NOT NULL,
+    CONSTRAINT fk_admin FOREIGN KEY(user_id) REFERENCES USER(id) ON UPDATE ON DELETE CASCADE
 );
 
-CREATE TABLE post (
+CREATE TABLE POST (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     caption TEXT NOT NULL,
     postdate DATE,
     upvotes INTEGER CHECK (upvotes >= 0),
     downvotes INTEGER CHECK (downvotes >= 0),
-    user_id INTEGER REFERENCES users(id),
-    topic_id INTEGER REFERENCES topic(id)
+    user_id INTEGER NOT NULL,
+    topic_id INTEGER,
+    video_id INTEGER,
+    CONSTRAINT fk_userpost FOREIGN KEY(user_id) REFERENCES USER(id) ON UPDATE ON DELETE CASCADE,
+    CONSTRAINT fk_posttopic FOREIGN KEY(topic_id) REFERENCES TOPIC(id) ON UPDATE ON DELETE CASCADE,
+    CONSTRAINT fk_postvideo FOREIGN KEY(video_id) REFERENCES VIDEO(id) ON UPDATE ON DELETE CASCADE
 );
 
-CREATE TABLE comment (
+CREATE TABLE COMMENT (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     caption TEXT NOT NULL,
     commentdate DATE,
     upvotes INTEGER CHECK (upvotes >= 0),
     downvotes INTEGER CHECK (downvotes >= 0),
-    post_id INTEGER REFERENCES post(id),
-    user_id INTEGER REFERENCES users(id)
+    post_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    CONSTRAINT fk_commentuser REFERENCES USER(id) ON UPDATE ON DELETE CASCADE,
+    CONSTRAINT fk_postcomment REFERENCES POST(id) ON UPDATE ON DELETE CASCADE
 );
 
-CREATE TABLE notification (
+CREATE TABLE UPVOTE_POST(
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id),
-    title TEXT NOT NULL,
-    caption TEXT,
-    type TEXT
+    post_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    CONSTRAINT fk_postupvote FOREIGN KEY(post_id) REFERENCES POST(id) ON UPDATE ON DELETE CASCADE,
+    CONSTRAINT fk_userupvote FOREIGN KEY(user_id) REFERENCES USER(id) ON UPDATE ON DELETE CASCADE
 );
 
-CREATE TABLE topic (
+CREATE TABLE DOWNVOTE_POST(
+    id SERIAL PRIMARY KEY,
+    post_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    CONSTRAINT fk_postdownvote FOREIGN KEY(post_id) REFERENCES POST(id) ON UPDATE ON DELETE CASCADE,
+    CONSTRAINT fk_userdownvote FOREIGN KEY(user_id) REFERENCES USER(id) ON UPDATE ON DELETE CASCADE
+);
+
+CREATE TABLE UPVOTE_COMMENT(
+    id SERIAL PRIMARY KEY,
+    comment_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    CONSTRAINT fk_commentupvote FOREIGN KEY(comment_id) REFERENCES COMMENT(id) ON UPDATE ON DELETE CASCADE,
+    CONSTRAINT fk_usercommentupvote FOREIGN KEY(user_id) REFERENCES USER(id) ON UPDATE ON DELETE CASCADE
+);
+
+CREATE TABLE DOWNVOTE_COMMENT(
+    id SERIAL PRIMARY KEY,
+    comment_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    CONSTRAINT fk_commentdownvote FOREIGN KEY(comment_id) REFERENCES COMMENT(id) ON UPDATE ON DELETE CASCADE,
+    CONSTRAINT fk_usercommentdownvote FOREIGN KEY(user_id) REFERENCES USER(id) ON UPDATE ON DELETE CASCADE
+);
+
+CREATE TABLE NOTIFICATION (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    caption TEXT NOT NULL,
+    type TEXT NOT NULL,
+    CONSTRAINT fk_notificationuser FOREIGN KEY(user_id) REFERENCES USER(id) ON UPDATE ON DELETE CASCADE
+);
+
+CREATE TABLE TOPIC (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
-    caption TEXT,
+    caption TEXT NOT NULL,
     followers INTEGER CHECK (followers >= 0)
 );
 
-CREATE TABLE topic_proposal (
+CREATE TABLE USER_TOPIC(
+    user_id INTEGER,
+    topic_id INTEGER,
+    PRIMARY KEY(user_id, topic_id),
+    CONSTRAINT fk_usertopic FOREIGN KEY(user_id) REFERENCES USER(id) ON UPDATE ON DELETE CASCADE,
+    CONSTRAINT fk_topic FOREIGN KEY(topic_id) REFERENCES TOPIC(id) ON UPDATE ON DELETE CASCADE
+);
+
+CREATE TABLE TOPIC_PROPOSAL (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id),
-    admin_id INTEGER,
-    title TEXT,
+    user_id INTEGER NOT NULL,
+    admin_id INTEGER --DEFAULT?,
+    title TEXT NOT NULL,
     caption TEXT NOT NULL,
-    FOREIGN KEY (admin_id) REFERENCES admins(id)
+    CONSTRAINT fk_topicproposaluser FOREIGN KEY(user_id) REFERENCES USER(id) ON UPDATE ON DELETE CASCADE,
+    CONSTRAINT fk_topicproposaladmin FOREIGN KEY (admin_id) REFERENCES ADMIN(id) ON UPDATE ON DELETE CASCADE
 );
 
-CREATE TABLE image (
+CREATE TABLE IMAGE (
     id SERIAL PRIMARY KEY,
-    post_id INTEGER REFERENCES post(id),
-    comment_id INTEGER REFERENCES comment(id),
-    path TEXT
+    path TEXT NOT NULL
 );
 
-CREATE TABLE video (
-    video_id SERIAL PRIMARY KEY,
-    post_id INTEGER REFERENCES post(id),
-    comment_id INTEGER REFERENCES comment(id),
-    path TEXT
+CREATE TABLE VIDEO (
+    id SERIAL PRIMARY KEY,
+    path TEXT NOT NULL
+);
+
+CREATE TABLE IMAGE_POST(
+    image_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    CONSTRAINT fk_image_post FOREIGN KEY(image_id) REFERENCES IMAGE(id) ON UPDATE ON DELETE CASCADE,
+    CONSTRAINT fk_post FOREIGN KEY(post_id) REFERENCES POST(id) ON UPDATE ON DELETE CASCADE,
+    PRIMARY KEY(image_id, post_id)
+);
+
+CREATE TABLE IMAGE_COMMENT(
+    image_id INTEGER NOT NULL,
+    comment_id INTEGER NOT NULL,
+    CONSTRAINT fk_image_comment FOREIGN KEY(image_id) REFERENCES IMAGE(id) ON UPDATE ON DELETE CASCADE,
+    CONSTRAINT fk_comment FOREIGN KEY(comment_id) REFERENCES COMMENT(id) ON UPDATE ON DELETE CASCADE,
+    PRIMARY KEY(image_id, comment_id)
 );
 
 -- Create Indexes
@@ -158,17 +227,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger for preventing commenting on own post
-CREATE OR REPLACE FUNCTION prevent_comment_on_own_post()
-RETURNS TRIGGER AS $$
-BEGIN
-  IF NEW.user_id = (SELECT user_id FROM post WHERE id = NEW.post_id) THEN
-    RAISE EXCEPTION 'You cannot comment on your own post';
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
 -- Trigger for enforcing comment date constraint
 CREATE OR REPLACE FUNCTION enforce_comment_date_constraint()
 RETURNS TRIGGER AS $$
@@ -200,6 +258,10 @@ BEFORE INSERT ON comment
 FOR EACH ROW
 EXECUTE FUNCTION enforce_comment_date_constraint();
 
+--Create Trigger for POST UPVOTE/DOWNVOTE counter
+
+--Create Trigger for COMMENT UPVOTE/DOWNVOTE counter
+
 --  Insert new post
 BEGIN;
 SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
@@ -227,6 +289,4 @@ JOIN LatestComments ON comment.user_id = LatestComments.user_id
 WHERE comment.commentdate = LatestComments.latest_comment_date
 ORDER BY users.id, comment.id;
 COMMIT;
-
-
 
