@@ -199,3 +199,34 @@ CREATE TRIGGER enforce_comment_date_constraint_trigger
 BEFORE INSERT ON comment
 FOR EACH ROW
 EXECUTE FUNCTION enforce_comment_date_constraint();
+
+--  Insert new post
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+INSERT INTO post (title, caption, postdate, upvotes, downvotes, user_id, topic_id);
+VALUES (%title,%caption,%postdate, 0, 0, %user_id, %topic_id);
+INSERT INTO image (post_id, path);
+VALUES (currval('post_id_seq'), %path);
+COMMIT;
+
+-- Retrieve latest comments from active users
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ ONLY;
+WITH LatestComments AS (
+    SELECT user_id, MAX(commentdate) AS latest_comment_date
+    FROM comment
+    GROUP BY user_id
+    HAVING MAX(commentdate) >= CURRENT_DATE - INTERVAL '3 months'
+)
+SELECT users.id AS user_id, users.name AS user_name, 
+       comment.id AS comment_id, comment.title AS comment_title, 
+       comment.caption AS comment_caption, comment.commentdate
+FROM users
+JOIN comment ON users.id = comment.user_id
+JOIN LatestComments ON comment.user_id = LatestComments.user_id
+WHERE comment.commentdate = LatestComments.latest_comment_date
+ORDER BY users.id, comment.id;
+COMMIT;
+
+
+
