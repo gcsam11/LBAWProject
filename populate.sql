@@ -1,5 +1,5 @@
 -- Create users table and populate data
-INSERT INTO users (name, username, birthday, country, city, gender, type, url, email, password, reputation)
+INSERT INTO USER (name, username, birthday, country, city, gender, type, url, email, password, reputation)
 VALUES ('John Doe', 'johndoe', '1990-05-15', 'USA', 'New York', 'Male', 'Regular', 'http://example.com', 'johndoe@example.com', 'password123', 100),
        ('Alice Johnson', 'alicej', '1988-03-10', 'Canada', 'Toronto', 'Female', 'Regular', 'http://example.com/alice', 'alice@example.com', 'pass123', 120),
        ('Bob Anderson', 'bob123', '1995-11-28', 'USA', 'Chicago', 'Male', 'Regular', 'http://example.com/bob', 'bob@example.com', 'securepass', 90),
@@ -15,13 +15,13 @@ VALUES ('John Doe', 'johndoe', '1990-05-15', 'USA', 'New York', 'Male', 'Regular
        ('Noah Evans', 'noah.e', '1995-12-05', 'Australia', 'Sydney', 'Male', 'Regular', 'http://example.com/noah', 'noah@example.com', 'noahpass', 85);
 
 -- Create admins table and populate data
-INSERT INTO admins (user_id)
+INSERT INTO ADMIN (user_id)
 VALUES (1),
        (3),
        (6); 
 
 -- Create topic table and populate data
-INSERT INTO topic (title, caption, followers)
+INSERT INTO TOPIC (title, caption, followers)
 VALUES ('Technology', 'Discussions about the latest tech trends', 500),
        ('Travel', 'Explore the world and share your experiences', 300),
        ('Science', 'Discussion about scientific discoveries', 200),
@@ -35,7 +35,7 @@ VALUES ('Technology', 'Discussions about the latest tech trends', 500),
        ('Health', 'Wellness, fitness, and healthy living', 200);
 
 -- Create post table and populate data
-INSERT INTO post (title, caption, postdate, upvotes, downvotes, user_id, topic_id)
+INSERT INTO POST (title, caption, postdate, upvotes, downvotes, user_id, topic_id)
 VALUES ('Introduction to AI', 'A beginners guide to Artificial Intelligence', '2023-10-20', 50, 5, 1, 1),
        ('Best Travel Destinations', 'Must-visit places around the globe', '2023-10-21', 30, 2, 2, 2),
        ('The Future of Space Exploration', 'Exciting developments in space science', '2023-10-22', 70, 3, 1, 1),
@@ -52,7 +52,7 @@ VALUES ('Introduction to AI', 'A beginners guide to Artificial Intelligence', '2
 
 
 -- Create comment table and populate data
-INSERT INTO comment (title, caption, commentdate, upvotes, downvotes, post_id, user_id)
+INSERT INTO COMMENT (title, caption, commentdate, upvotes, downvotes, post_id, user_id)
 VALUES ('Great article!', 'Very informative, thanks for sharing.', '2023-10-20', 20, 0, 1, 2),
        ('I completely agree', 'These destinations are amazing!', '2023-10-21', 15, 1, 2, 1),
        ('Amazing!', 'Im fascinated by space exploration.', '2023-10-22', 25, 1, 1, 3),
@@ -69,7 +69,7 @@ VALUES ('Great article!', 'Very informative, thanks for sharing.', '2023-10-20',
 
 
 -- Create notification table and populate data
-INSERT INTO notification (user_id, title, caption, type)
+INSERT INTO NOTIFICATION (user_id, title, caption, type)
 VALUES (1, 'New Follower', 'User xyz started following you.', 'follower'),
        (2, 'New Comment', 'Your post received a new comment.', 'comment'),
        (3, 'New Follower', 'User xyz started following you.', 'follower'),
@@ -81,7 +81,7 @@ VALUES (1, 'New Follower', 'User xyz started following you.', 'follower'),
 
 
 -- Create topic_proposal table and populate data
-INSERT INTO topic_proposal (user_id, admin_id, title, caption)
+INSERT INTO TOPIC_PROPOSAL (user_id, admin_id, title, caption)
 VALUES (2, 1, 'Foodie Adventures', 'Exploring different cuisines and food cultures'),
        (1, 2, 'Wildlife Photography', 'Capturing the beauty of nature through photography'),
        (4, 3, 'Healthy Cooking', 'Delicious and nutritious recipes for a healthy lifestyle'),
