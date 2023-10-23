@@ -1,24 +1,25 @@
 -- Create users table and populate data
-INSERT INTO USER (name, username, birthday, country, city, gender, type, url, email, password, reputation)
-VALUES ('John Doe', 'johndoe', '1990-05-15', 'USA', 'New York', 'Male', 'Regular', 'http://example.com', 'johndoe@example.com', 'password123', 100),
-       ('Alice Johnson', 'alicej', '1988-03-10', 'Canada', 'Toronto', 'Female', 'Regular', 'http://example.com/alice', 'alice@example.com', 'pass123', 120),
-       ('Bob Anderson', 'bob123', '1995-11-28', 'USA', 'Chicago', 'Male', 'Regular', 'http://example.com/bob', 'bob@example.com', 'securepass', 90),
-       ('Eva Brown', 'evab', '1982-07-15', 'UK', 'London', 'Female', 'Regular', 'http://example.com/eva', 'eva@example.com', 'eva123', 80),
-       ('Jane Smith', 'janesmith', '1985-08-20', 'USA', 'Los Angeles', 'Female', 'Regular', 'http://example.com/jane', 'janesmith@example.com', 'securepass', 150),
-       ('Michael Adams', 'mike123', '1980-09-05', 'USA', 'Los Angeles', 'Male', 'Regular', 'http://example.com/mike', 'mike@example.com', 'mikepass', 110),
-       ('Sophie Martinez', 'sophie89', '1992-02-18', 'Spain', 'Barcelona', 'Female', 'Regular', 'http://example.com/sophie', 'sophie@example.com', 'sophie123', 95),
-       ('David Lee', 'davidl', '1986-07-30', 'Canada', 'Vancouver', 'Male', 'Regular', 'http://example.com/david', 'david@example.com', 'davidpass', 85),
-       ('Emma White', 'emmaw', '1998-12-12', 'Australia', 'Sydney', 'Female', 'Regular', 'http://example.com/emma', 'emma@example.com', 'emma456', 75),
-       ('Olivia Taylor', 'olivia88', '1984-06-14', 'USA', 'New York', 'Female', 'Regular', 'http://example.com/olivia', 'olivia@example.com', 'olivia567', 130),
-       ('Liam Brown', 'liamb', '1991-09-22', 'UK', 'London', 'Male', 'Regular', 'http://example.com/liam', 'liam@example.com', 'liampass', 105),
-       ('Ava Clark', 'ava.c', '1989-03-30', 'Canada', 'Toronto', 'Female', 'Regular', 'http://example.com/ava', 'ava@example.com', 'ava321', 95),
-       ('Noah Evans', 'noah.e', '1995-12-05', 'Australia', 'Sydney', 'Male', 'Regular', 'http://example.com/noah', 'noah@example.com', 'noahpass', 85);
+INSERT INTO USERS (id, name, username, birthday, country, gender, type, url, email, password, reputation)
+VALUES (1, 'John Doe', 'johndoe', '1990-05-15', 'USA', 'Male', 'Regular', 'http://example.com', 'johndoe@example.com', 'password123', 100),
+       (2, 'Alice Johnson', 'alicej', '1988-03-10', 'Toronto', 'Female', 'Regular', 'http://example.com/alice', 'alice@example.com', 'pass123', 120),
+       (3, 'Bob Anderson', 'bob123', '1995-11-28', 'USA', 'Male', 'Regular', 'http://example.com/bob', 'bob@example.com', 'securepass', 90),
+       (4, 'Eva Brown', 'evab', '1982-07-15', 'UK', 'Female', 'Regular', 'http://example.com/eva', 'eva@example.com', 'eva123', 80),
+       (5, 'Jane Smith', 'janesmith', '1985-08-20', 'USA', 'Female', 'Regular', 'http://example.com/jane', 'janesmith@example.com', 'securepass', 150),
+       (6, 'Michael Adams', 'mike123', '1980-09-05', 'USA', 'Male', 'Regular', 'http://example.com/mike', 'mike@example.com', 'mikepass', 110),
+       (7, 'Sophie Martinez', 'sophie89', '1992-02-18', 'Spain', 'Female', 'Regular', 'http://example.com/sophie', 'sophie@example.com', 'sophie123', 95),
+       (8, 'David Lee', 'davidl', '1986-07-30', 'Canada', 'Male', 'Regular', 'http://example.com/david', 'david@example.com', 'davidpass', 85),
+       (9, 'Emma White', 'emmaw', '1998-12-12', 'Australia', 'Female', 'Regular', 'http://example.com/emma', 'emma@example.com', 'emma456', 75),
+       (10, 'Olivia Taylor', 'olivia88', '1984-06-14', 'USA', 'Female', 'Regular', 'http://example.com/olivia', 'olivia@example.com', 'olivia567', 130),
+       (11, 'Liam Brown', 'liamb', '1991-09-22', 'UK', 'Male', 'Regular', 'http://example.com/liam', 'liam@example.com', 'liampass', 105),
+       (12, 'Ava Clark', 'ava.c', '1989-03-30', 'Canada', 'Female', 'Regular', 'http://example.com/ava', 'ava@example.com', 'ava321', 95),
+       (13, 'Noah Evans', 'noah.e', '1995-12-05', 'Australia', 'Male', 'Regular', 'http://example.com/noah', 'noah@example.com', 'noahpass', 85);
 
 -- Create admins table and populate data
-INSERT INTO ADMIN (user_id)
+INSERT INTO ADMINS (user_id)
 VALUES (1),
        (3),
-       (6); 
+       (6),
+       (11);
 
 -- Create topic table and populate data
 INSERT INTO TOPIC (title, caption, followers)
@@ -61,7 +62,7 @@ VALUES ('Great article!', 'Very informative, thanks for sharing.', '2023-10-20',
        ('Inspiring!', 'Abstract art always sparks creativity.', '2023-10-25', 18, 1, 1, 2),
        ('Great tips!', 'I tried these workouts, and they work wonders!', '2023-10-26', 22, 0, 2, 3),
        ('Love these classics!', 'Pride and Prejudice is my favorite.', '2023-10-27', 25, 1, 3, 1),
-       ('Amazing photos!', 'The wildlife in Australia is truly unique.', '2023-10-28', 20, 0, 4, 2);
+       ('Amazing photos!', 'The wildlife in Australia is truly unique.', '2023-10-28', 20, 0, 4, 2),
        ('Love these outfits!', 'Fashion inspiration at its best.', '2023-10-29', 30, 1, 1, 3),
        ('Great list!', 'Ive played most of these games, they are fantastic.', '2023-10-30', 40, 0, 2, 4),
        ('Important tips!', 'Healthy eating is crucial for a good life.', '2023-10-31', 35, 2, 3, 2),
