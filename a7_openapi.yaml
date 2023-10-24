@@ -20,3 +20,42 @@ tags:
  - name: 'M03: Users'
  - name: 'M04: Feed and Search'
  - name: 'M05: Notifications'
+
+paths:
+  /login:
+    get:
+      operationId: R101
+      summary:'R101: Login Form'
+      description: 'Provide login form. Access: PUB'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      responses:
+        '200':
+          descriptors: 'Ok. show Log-in UI'
+    post:
+      operationId: R102
+      summary: 'R102: Login Action'
+      description: 'Processes the login form submission. Access: PUB'
+      tags:
+        - 'M01: Authentication and Individual Profile'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:          # <!--- form field name
+                  type: string
+                password:    # <!--- form field name
+                  type: string
+              required:
+                -email
+                -password
+      responses:
+        '302':
+          description: 'Redirect after login credentials are processed.'
+          
+        
+
+
