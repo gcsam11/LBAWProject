@@ -10,10 +10,6 @@ servers:
 - url: http://lbaw.fe.up.pt
  description: Production server
 
-externalDocs:
- description: Find more info here.
- url: https://web.fe.up.pt/~ssn/wiki/teach/lbaw/medialib/a07
-
 tags:
  - name: 'M01: Authentication and Individual Profile'
  - name: 'M02: Posts and Comments'
