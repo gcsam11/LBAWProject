@@ -3,7 +3,7 @@ DROP SCHEMA IF EXISTS lbaw2374 CASCADE;
 CREATE SCHEMA IF NOT EXISTS lbaw2374;
 SET search_path TO lbaw2374;
 
-DROP TABLE IF EXISTS "USER" CASCADE;
+DROP TABLE IF EXISTS "user" CASCADE;
 DROP TABLE IF EXISTS ADMIN CASCADE;
 DROP TABLE IF EXISTS POST CASCADE;
 DROP TABLE IF EXISTS COMMENT CASCADE;
@@ -42,7 +42,7 @@ CREATE TABLE VIDEO (
     path TEXT NOT NULL
 );
 
-CREATE TABLE "USER" (
+CREATE TABLE "user" (
     id SERIAL PRIMARY KEY,
     username TEXT UNIQUE,
     name TEXT NOT NULL,
@@ -61,20 +61,20 @@ CREATE TABLE "USER" (
 CREATE TABLE ADMIN (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    CONSTRAINT fk_admin FOREIGN KEY(user_id) REFERENCES "USER"(id) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT fk_admin FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE POST (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     caption TEXT NOT NULL,
-    postdate DATE,
-    upvotes INTEGER CHECK (upvotes >= 0),
-    downvotes INTEGER CHECK (downvotes >= 0),
+    postdate timestamptz,
+    upvotes INTEGER DEFAULT 0 CHECK (upvotes >= 0),
+    downvotes INTEGER DEFAULT 0 CHECK (downvotes >= 0),
     user_id INTEGER NOT NULL,
     topic_id INTEGER,
     video_id INTEGER,
-    CONSTRAINT fk_userpost FOREIGN KEY(user_id) REFERENCES "USER"(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_userpost FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_posttopic FOREIGN KEY(topic_id) REFERENCES TOPIC(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_postvideo FOREIGN KEY(video_id) REFERENCES VIDEO(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -83,12 +83,12 @@ CREATE TABLE COMMENT (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     caption TEXT NOT NULL,
-    commentdate DATE,
-    upvotes INTEGER CHECK (upvotes >= 0),
-    downvotes INTEGER CHECK (downvotes >= 0),
+    commentdate timestamptz,
+    upvotes INTEGER DEFAULT 0 CHECK (upvotes >= 0),
+    downvotes INTEGER DEFAULT 0 CHECK (downvotes >= 0),
     post_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
-    CONSTRAINT fk_commentuser FOREIGN KEY(user_id) REFERENCES "USER"(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_commentuser FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_postcomment FOREIGN KEY(post_id) REFERENCES POST(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -97,7 +97,7 @@ CREATE TABLE UPVOTE_POST(
     post_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     CONSTRAINT fk_postupvote FOREIGN KEY(post_id) REFERENCES POST(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_userupvote FOREIGN KEY(user_id) REFERENCES "USER"(id) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT fk_userupvote FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE DOWNVOTE_POST(
@@ -105,7 +105,7 @@ CREATE TABLE DOWNVOTE_POST(
     post_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     CONSTRAINT fk_postdownvote FOREIGN KEY(post_id) REFERENCES POST(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_userdownvote FOREIGN KEY(user_id) REFERENCES "USER"(id) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT fk_userdownvote FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE UPVOTE_COMMENT(
@@ -113,7 +113,7 @@ CREATE TABLE UPVOTE_COMMENT(
     comment_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     CONSTRAINT fk_commentupvote FOREIGN KEY(comment_id) REFERENCES COMMENT(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_usercommentupvote FOREIGN KEY(user_id) REFERENCES "USER"(id) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT fk_usercommentupvote FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE DOWNVOTE_COMMENT(
@@ -121,7 +121,7 @@ CREATE TABLE DOWNVOTE_COMMENT(
     comment_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     CONSTRAINT fk_commentdownvote FOREIGN KEY(comment_id) REFERENCES COMMENT(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_usercommentdownvote FOREIGN KEY(user_id) REFERENCES "USER"(id) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT fk_usercommentdownvote FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE NOTIFICATION (
@@ -130,14 +130,14 @@ CREATE TABLE NOTIFICATION (
     title TEXT NOT NULL,
     caption TEXT,
     type TEXT NOT NULL,
-    CONSTRAINT fk_notificationuser FOREIGN KEY(user_id) REFERENCES "USER"(id) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT fk_notificationuser FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE USER_TOPIC(
     user_id INTEGER,
     topic_id INTEGER,
     PRIMARY KEY(user_id, topic_id),
-    CONSTRAINT fk_usertopic FOREIGN KEY(user_id) REFERENCES "USER"(id) ON UPDATE CASCADE 
+    CONSTRAINT fk_usertopic FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE 
     ON DELETE CASCADE,
     CONSTRAINT fk_topic FOREIGN KEY(topic_id) REFERENCES TOPIC(id) ON UPDATE CASCADE 
     ON DELETE CASCADE
@@ -149,7 +149,7 @@ CREATE TABLE TOPIC_PROPOSAL (
     admin_id INTEGER,
     title TEXT NOT NULL,
     caption TEXT NOT NULL,
-    CONSTRAINT fk_topicproposaluser FOREIGN KEY(user_id) REFERENCES "USER"(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_topicproposaluser FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_topicproposaladmin FOREIGN KEY (admin_id) REFERENCES ADMIN(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -179,7 +179,7 @@ CLUSTER COMMENT USING comment_post;
 CREATE INDEX notification_user ON notification USING btree (user_id);
 
 -- Full Text Search Indexes
--- (Assuming you have a tsvector column tsvectors in POST and "USER" tables)
+-- (Assuming you have a tsvector column tsvectors in POST and "user" tables)
 
 ALTER TABLE POST
 ADD COLUMN tsvectors TSVECTOR;
@@ -213,10 +213,10 @@ FOR EACH ROW
 EXECUTE FUNCTION post_search_update();
 
 -- Create the GIN index for POST full-text search
-ALTER TABLE "USER"
+ALTER TABLE "user"
 ADD COLUMN tsvectors TSVECTOR;
 
--- Create function for updating "USER" search index
+-- Create function for updating "user" search index
 CREATE OR REPLACE FUNCTION user_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -238,13 +238,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger for updating "USER" search index
+-- Trigger for updating "user" search index
 CREATE TRIGGER user_search_update_trigger
-BEFORE INSERT OR UPDATE ON "USER"
+BEFORE INSERT OR UPDATE ON "user"
 FOR EACH ROW
 EXECUTE FUNCTION user_search_update();
 
--- Trigger for creating notification when a "USER" comments on a POST
+-- Trigger for creating notification when a "user" comments on a POST
 CREATE OR REPLACE FUNCTION new_comment_notification()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -293,7 +293,7 @@ INSERT INTO image (post_id, path)
 VALUES (currval('post_id_seq'), %path);
 COMMIT;
 
--- Retrieve latest comments from active "USER"
+-- Retrieve latest comments from active "user"
 BEGIN;
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ ONLY;
 WITH LatestComments AS (
@@ -302,18 +302,18 @@ WITH LatestComments AS (
     GROUP BY user_id
     HAVING MAX(commentdate) >= CURRENT_DATE - INTERVAL '3 months'
 )
-SELECT "USER".id AS user_id, "USER".name AS user_name, 
+SELECT "user".id AS user_id, "user".name AS user_name, 
        COMMENT.id AS comment_id, COMMENT.title AS comment_title, 
        COMMENT.caption AS comment_caption, COMMENT.commentdate
-FROM "USER"
-JOIN COMMENT ON "USER".id = COMMENT.user_id
+FROM "user"
+JOIN COMMENT ON "user".id = COMMENT.user_id
 JOIN LatestComments ON COMMENT.user_id = LatestComments.user_id
 WHERE COMMENT.commentdate = LatestComments.latest_comment_date
-ORDER BY "USER".id, COMMENT.id;
+ORDER BY "user".id, COMMENT.id;
 COMMIT;
 
--- Create "USER" table and populate data
-INSERT INTO "USER" (id, name, username, birthday, country, gender, type, url, email, password, reputation)
+-- Create "user" table and populate data
+INSERT INTO "user" (id, name, username, birthday, country, gender, type, url, email, password, reputation)
 VALUES (1, 'John Doe', 'johndoe', '1990-05-15', 'USA', 'Male', 'Regular', 'http://example.com', 'johndoe@example.com', 'password123', 100),
        (2, 'Alice Johnson', 'alicej', '1988-03-10', 'Toronto', 'Female', 'Regular', 'http://example.com/alice', 'alice@example.com', 'pass123', 120),
        (3, 'Bob Anderson', 'bob123', '1995-11-28', 'USA', 'Male', 'Regular', 'http://example.com/bob', 'bob@example.com', 'securepass', 90),

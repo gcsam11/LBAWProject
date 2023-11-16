@@ -2,22 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 // Added to define Eloquent relationships.
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Card extends Model
+class Comment extends Model
 {
     use HasFactory;
 
     // Don't add create and update timestamps in database.
     public $timestamps  = false;
 
+    protected $table = "comment";
+
     /**
-     * Get the user that owns the card.
+     * Get the user that owns the post.
      */
     public function user(): BelongsTo
     {
@@ -25,10 +26,13 @@ class Card extends Model
     }
 
     /**
-     * Get the items for the card.
+     * Get the post that owns the comment.
      */
-    public function items(): HasMany
+
+    public function post(): BelongsTo
     {
-        return $this->hasMany(Item::class);
+        return $this->belongsTo(Post::class);
     }
+
 }
+?>
