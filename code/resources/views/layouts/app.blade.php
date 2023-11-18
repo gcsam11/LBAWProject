@@ -8,7 +8,7 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>@yield('title')</title>
 
         <!-- Styles -->
         <link href="{{ url('css/milligram.min.css') }}" rel="stylesheet">
@@ -21,17 +21,27 @@
         </script>
     </head>
     <body>
+        <header>
+            <h3>SWC News</h3>
+            <hr>
+        </header>
         <main>
-            <header>
-                <h1>@yield('header')</h1>
-                <!-- <h1><a href="{{ url('/cards') }}">{{ $header ?? 'Authentication' }}</a></h1> -->
-                @if (Auth::check())
-                    <a class="button" href="{{ url('/logout') }}"> Logout </a> <span>{{ Auth::user()->name }}</span>
-                @endif
-            </header>
-            <section id="content">
+            <h1>@yield('header')</h1>
+            <nav>
+                <a href="{{ route('welcome') }}">News Feed</a>
+                <br>
+                <a href="{{ route('user_news') }}">User News</a>
+                <br>
+                <a href="{{ route('profile') }}">Profile</a>
+            </nav>
+            <br>
+            <div id="content">
                 @yield('content')
-            </section>
+            </div>
         </main>
+        <footer>
+            <hr/>
+            © SWC News
+        </footer>
     </body>
 </html>

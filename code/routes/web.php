@@ -21,8 +21,18 @@ use App\Http\Controllers\Auth\RegisterController;
 
 // Home
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('pages.welcome');
+})->name('welcome');
+
+Route::get('/user_news', function () {
+    return view('pages.user_news');
+})->name('user_news');
+
+Route::get('/profile', function () {
+    return view('pages.profile');
+})->name('profile');
+
+
 
 
 // Cards
@@ -61,11 +71,6 @@ Route::controller(LoginController::class)->group(function () {
 Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
-});
-
-Route::controller(UserController::class)->group(function () {
-    Route::get('/user/{id}/settings', 'UserController@show')->name('users');
-    Route::post('/user/{id}/settings', 'User');
 });
 
 ?>

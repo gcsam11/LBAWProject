@@ -1,13 +1,11 @@
 @extends('layouts.app')
 
-<!-- USER HAS TO BE LOGGED IN -->
-
 @section('title')
-    {{ "My News" }}
+    {{ "News Feed" }}
 @endsection
 
 @section('header')
-    {{ "My News" }}
+    {{ "News Feed" }}
 @endsection
 
 @section('content')
@@ -27,9 +25,5 @@
             <!-- Fetch news on the database -->
 
             <!-- if user clicks on upvote or downvote redirect to login page -->
-        </div>
-        <br>
-        <div class="create_post">
-            <button id="create_post">+</button>
         </div>
 @endsection
