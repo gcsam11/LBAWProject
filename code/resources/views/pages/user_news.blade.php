@@ -32,4 +32,5 @@
         <div class="create_post">
             <button id="create_post">+</button>
         </div>
+        <script src="{{ asset('js/create_post.js') }}"></script>
 @endsection
