@@ -32,7 +32,10 @@ Route::get('/profile', function () {
     return view('pages.profile');
 })->name('profile');
 
-
+// Create Post
+Route::get('/create_post', function () {
+    return view('pages.create_post');
+})->name('create_post');
 
 
 // Cards
