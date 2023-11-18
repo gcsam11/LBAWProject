@@ -3,27 +3,6 @@ DROP SCHEMA IF EXISTS lbaw2374 CASCADE;
 CREATE SCHEMA IF NOT EXISTS lbaw2374;
 SET search_path TO lbaw2374;
 
-DROP TABLE IF EXISTS "user" CASCADE;
-DROP TABLE IF EXISTS ADMIN CASCADE;
-DROP TABLE IF EXISTS POST CASCADE;
-DROP TABLE IF EXISTS COMMENT CASCADE;
-DROP TABLE IF EXISTS UPVOTE_POST CASCADE;
-DROP TABLE IF EXISTS DOWNVOTE_POST CASCADE;
-DROP TABLE IF EXISTS UPVOTE_COMMENT CASCADE;
-DROP TABLE IF EXISTS DOWNVOTE_COMMENT CASCADE;
-DROP TABLE IF EXISTS TOPIC CASCADE;
-DROP TABLE IF EXISTS USER_TOPIC CASCADE;
-DROP TABLE IF EXISTS NOTIFICATION CASCADE;
-DROP TABLE IF EXISTS TOPIC_PROPOSAL CASCADE;
-DROP TABLE IF EXISTS IMAGE CASCADE;
-DROP TABLE IF EXISTS VIDEO CASCADE;
-DROP TABLE IF EXISTS IMAGE_POST CASCADE;
-DROP TABLE IF EXISTS IMAGE_COMMENT CASCADE;
-DROP INDEX IF EXISTS post_user;
-DROP INDEX IF EXISTS comment_post;
-DROP INDEX IF EXISTS notification_user;
-
-
 -- Create Tables
 CREATE TABLE IMAGE (
     id SERIAL PRIMARY KEY,
@@ -237,6 +216,78 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Trigger for updating post upvotes count
+CREATE OR REPLACE FUNCTION update_post_votes_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE post
+        SET upvotes = upvotes + 1
+        WHERE id = NEW.post_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_post_trigger
+AFTER INSERT ON upvote_post
+FOR EACH ROW
+EXECUTE FUNCTION update_post_votes_count();
+
+-- Trigger for updating post upvotes and downvotes count
+CREATE OR REPLACE FUNCTION downvote_post_votes_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE post
+        SET downvotes = downvotes + 1
+        WHERE id = NEW.post_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER downvote_post_trigger
+AFTER INSERT ON downvote_post
+FOR EACH ROW
+EXECUTE FUNCTION downvote_post_votes_count();
+
+-- Trigger for updating comment upvotes count
+CREATE OR REPLACE FUNCTION update_comment_votes_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE comment
+        SET upvotes = upvotes + 1
+        WHERE id = NEW.comment_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_comment_trigger
+AFTER INSERT ON upvote_comment
+FOR EACH ROW
+EXECUTE FUNCTION update_comment_votes_count();
+
+-- Trigger for updating comment downvotes count
+CREATE OR REPLACE FUNCTION downvote_comment_votes_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE comment
+        SET downvotes = downvotes + 1
+        WHERE id = NEW.comment_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER downvote_comment_trigger
+AFTER INSERT ON downvote_comment
+FOR EACH ROW
+EXECUTE FUNCTION downvote_comment_votes_count();
+
 -- Trigger for updating "user" search index
 CREATE TRIGGER user_search_update_trigger
 BEFORE INSERT OR UPDATE ON "user"
@@ -272,8 +323,6 @@ AFTER INSERT ON COMMENT
 FOR EACH ROW
 EXECUTE FUNCTION new_comment_notification();
 
--- Missing one trigger
-
 CREATE TRIGGER enforce_comment_date_constraint_trigger
 BEFORE INSERT ON COMMENT
 FOR EACH ROW
@@ -284,7 +333,7 @@ EXECUTE FUNCTION enforce_comment_date_constraint();
 --Create Trigger for COMMENT UPVOTE/DOWNVOTE counter
 
 --  Insert new POST
-BEGIN;
+/*BEGIN;
 SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 INSERT INTO POST (title, caption, postdate, upvotes, downvotes, user_id, topic_id)
 VALUES (%title,%caption,%postdate, 0, 0, %user_id, %topic_id);
@@ -309,23 +358,23 @@ JOIN COMMENT ON "user".id = COMMENT.user_id
 JOIN LatestComments ON COMMENT.user_id = LatestComments.user_id
 WHERE COMMENT.commentdate = LatestComments.latest_comment_date
 ORDER BY "user".id, COMMENT.id;
-COMMIT;
+COMMIT;*/
 
 -- Create "user" table and populate data
-INSERT INTO "user" (id, name, username, birthday, country, gender, type, url, email, password, reputation)
-VALUES (1, 'John Doe', 'johndoe', '1990-05-15', 'USA', 'Male', 'Regular', 'http://example.com', 'johndoe@example.com', 'password123', 100),
-       (2, 'Alice Johnson', 'alicej', '1988-03-10', 'Toronto', 'Female', 'Regular', 'http://example.com/alice', 'alice@example.com', 'pass123', 120),
-       (3, 'Bob Anderson', 'bob123', '1995-11-28', 'USA', 'Male', 'Regular', 'http://example.com/bob', 'bob@example.com', 'securepass', 90),
-       (4, 'Eva Brown', 'evab', '1982-07-15', 'UK', 'Female', 'Regular', 'http://example.com/eva', 'eva@example.com', 'eva123', 80),
-       (5, 'Jane Smith', 'janesmith', '1985-08-20', 'USA', 'Female', 'Regular', 'http://example.com/jane', 'janesmith@example.com', 'securepass', 150),
-       (6, 'Michael Adams', 'mike123', '1980-09-05', 'USA', 'Male', 'Regular', 'http://example.com/mike', 'mike@example.com', 'mikepass', 110),
-       (7, 'Sophie Martinez', 'sophie89', '1992-02-18', 'Spain', 'Female', 'Regular', 'http://example.com/sophie', 'sophie@example.com', 'sophie123', 95),
-       (8, 'David Lee', 'davidl', '1986-07-30', 'Canada', 'Male', 'Regular', 'http://example.com/david', 'david@example.com', 'davidpass', 85),
-       (9, 'Emma White', 'emmaw', '1998-12-12', 'Australia', 'Female', 'Regular', 'http://example.com/emma', 'emma@example.com', 'emma456', 75),
-       (10, 'Olivia Taylor', 'olivia88', '1984-06-14', 'USA', 'Female', 'Regular', 'http://example.com/olivia', 'olivia@example.com', 'olivia567', 130),
-       (11, 'Liam Brown', 'liamb', '1991-09-22', 'UK', 'Male', 'Regular', 'http://example.com/liam', 'liam@example.com', 'liampass', 105),
-       (12, 'Ava Clark', 'ava.c', '1989-03-30', 'Canada', 'Female', 'Regular', 'http://example.com/ava', 'ava@example.com', 'ava321', 95),
-       (13, 'Noah Evans', 'noah.e', '1995-12-05', 'Australia', 'Male', 'Regular', 'http://example.com/noah', 'noah@example.com', 'noahpass', 85);
+INSERT INTO "user" (id, name, username, birthday, country, gender, url, email, password, reputation)
+VALUES (1, 'John Doe', 'johndoe', '1990-05-15', 'USA', 'Male', 'http://example.com', 'johndoe@example.com', 'password123', 100),
+       (2, 'Alice Johnson', 'alicej', '1988-03-10', 'Toronto', 'Female',  'http://example.com/alice', 'alice@example.com', 'pass123', 120),
+       (3, 'Bob Anderson', 'bob123', '1995-11-28', 'USA', 'Male', 'http://example.com/bob', 'bob@example.com', 'securepass', 90),
+       (4, 'Eva Brown', 'evab', '1982-07-15', 'UK', 'Female', 'http://example.com/eva', 'eva@example.com', 'eva123', 80),
+       (5, 'Jane Smith', 'janesmith', '1985-08-20', 'USA', 'Female', 'http://example.com/jane', 'janesmith@example.com', 'securepass', 150),
+       (6, 'Michael Adams', 'mike123', '1980-09-05', 'USA', 'Male', 'http://example.com/mike', 'mike@example.com', 'mikepass', 110),
+       (7, 'Sophie Martinez', 'sophie89', '1992-02-18', 'Spain', 'Female', 'http://example.com/sophie', 'sophie@example.com', 'sophie123', 95),
+       (8, 'David Lee', 'davidl', '1986-07-30', 'Canada', 'Male',  'http://example.com/david', 'david@example.com', 'davidpass', 85),
+       (9, 'Emma White', 'emmaw', '1998-12-12', 'Australia', 'Female', 'http://example.com/emma', 'emma@example.com', 'emma456', 75),
+       (10, 'Olivia Taylor', 'olivia88', '1984-06-14', 'USA', 'Female', 'http://example.com/olivia', 'olivia@example.com', 'olivia567', 130),
+       (11, 'Liam Brown', 'liamb', '1991-09-22', 'UK', 'Male', 'http://example.com/liam', 'liam@example.com', 'liampass', 105),
+       (12, 'Ava Clark', 'ava.c', '1989-03-30', 'Canada', 'Female', 'http://example.com/ava', 'ava@example.com', 'ava321', 95),
+       (13, 'Noah Evans', 'noah.e', '1995-12-05', 'Australia', 'Male', 'http://example.com/noah', 'noah@example.com', 'noahpass', 85);
 
 -- Create ADMIN table and populate data
 INSERT INTO ADMIN (user_id)

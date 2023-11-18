@@ -38,8 +38,8 @@ class PostController extends Controller
      */
     public function list()
     {
-        // Get posts for user ordered by date.
-        $posts = Post::orderByDesc('postdate')->get();
+        // Get posts for user ordered by the difference between upvotes and downvotes.
+        $posts = Post::orderByRaw('(upvotes - downvotes) DESC')->get();
 
         // Check if the current user can list the posts.
         $this->authorize('list', Auth::user());
