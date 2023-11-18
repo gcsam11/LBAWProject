@@ -18,12 +18,21 @@ class Comment extends Model
     protected $table = "comment";
 
     /**
-     * Get the user that owns the post.
+     * Get the user that owns the comment.
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the admin that owns the comment.
+     */
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class);
+    }
+
 
     /**
      * Get the post that owns the comment.

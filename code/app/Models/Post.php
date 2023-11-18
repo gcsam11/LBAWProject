@@ -26,6 +26,14 @@ class Post extends Model
     }
 
     /**
+     * Get the admin that owns the post.
+     */
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class);
+    }
+
+    /**
      * Get the comments for the post.
      */
 

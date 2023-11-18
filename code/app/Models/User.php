@@ -11,6 +11,9 @@ use Laravel\Sanctum\HasApiTokens;
 // Added to define Eloquent relationships.
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use App\Models\Admin;
+
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -18,7 +21,7 @@ class User extends Authenticatable
     // Don't add create and update timestamps in database.
     public $timestamps  = false;
 
-    protected $table = "user";
+    protected $table = 'user';
 
     /**
      * The attributes that are mass assignable.
@@ -65,6 +68,24 @@ class User extends Authenticatable
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * Gets the admin associated with the user (if he his one).
+     */
+    public function admin()
+    {
+        return $this->hasOne(Admin::class);
+    }
+
+    /**
+    * Check if the user is an admin.
+    *
+    * @return bool
+    */
+    public function isAdmin(): bool
+    {
+        return Admin::where('user_id', $this->id)->exists();
     }
 }
 ?>
