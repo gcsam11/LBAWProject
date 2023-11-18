@@ -63,4 +63,9 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
+Route::controller(UserController::class)->group(function () {
+    Route::get('/user/{id}/settings', 'UserController@show')->name('users');
+    Route::post('/user/{id}/settings', 'User');
+});
+
 ?>

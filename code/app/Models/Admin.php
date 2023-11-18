@@ -2,25 +2,19 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
 
-// Added to define Eloquent relationships.
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-
-class User extends Authenticatable
+class Admin extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
-    // Don't add create and update timestamps in database.
-    public $timestamps  = false;
+    public $timestamps = false;
 
-    protected $table = 'user';
+    protected $table = "admin";
 
     /**
      * The attributes that are mass assignable.
@@ -49,9 +43,16 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get the user that is also an admin.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Get the posts for the user.
@@ -69,22 +70,4 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-    /**
-     * Gets the admin associated with the user (if he his one).
-     */
-    public function admin(): HasOne
-    {
-        return $this->hasOne(Admin::class);
-    }
-
-    /**
-    * Check if the user is an admin.
-    *
-    * @return bool
-    */
-    public function isAdmin(): bool
-    {
-        return Admin::where('user_id', $this->id)->exists();
-    }
 }
-?>
