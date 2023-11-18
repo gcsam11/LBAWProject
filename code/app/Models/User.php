@@ -10,8 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 // Added to define Eloquent relationships.
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
-use App\Models\Admin;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 
 class User extends Authenticatable
@@ -73,7 +72,7 @@ class User extends Authenticatable
     /**
      * Gets the admin associated with the user (if he his one).
      */
-    public function admin()
+    public function admin(): HasOne
     {
         return $this->hasOne(Admin::class);
     }

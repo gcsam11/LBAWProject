@@ -13,24 +13,25 @@ use Illuminate\View\View;
 class CommentController extends Controller
 {
     
-/**
- * Shows all comments for a post.
- */
-public function showForPost($postId)
-{
-    // Find the post.
-    $post = Post::findOrFail($postId);
+    /**
+     * Shows all comments for a post.
+     */
+    public function showForPost($postId)
+    {
+        // Find the post.
+        $post = Post::findOrFail($postId);
 
-    // Get all comments for the post ordered by date.
-    $comments = $post->comments()->orderByDesc('commentdate')->get();
+        // Get all comments for the post ordered by date.
+        $comments = $post->comments()->orderByDesc('commentdate')->get();
 
-    // Use the pages.comments template to display all comments.
-    return view('pages.post', [
-        'post' => $post,
-        'comments' => $comments
-    ]);
-}
-     /**
+        // Use the pages.comments template to display all comments.
+        return view('pages.post', [
+            'post' => $post,
+            'comments' => $comments
+        ]);
+    }
+
+    /**
      * Shows all posts.
      */
     public function list()

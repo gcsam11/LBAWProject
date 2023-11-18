@@ -9,7 +9,25 @@ use Illuminate\Auth\Access\Response;
 class PostPolicy
 {
     /**
-     * Determine whether the user can create models.
+     * Determine whether a user can see a post.
+     */
+    public function show(User $user): bool
+    {
+        // Every user can see all posts
+        return true;
+    }
+
+    /**
+     * Determine whether the user can list posts.
+     */
+    public function list(User $user): bool
+    {
+        // Every user can see all posts
+        return true;
+    }
+
+    /**
+     * Determine whether the user can create posts.
      */
     public function create(User $user): bool
     {
@@ -34,21 +52,5 @@ class PostPolicy
         // Only the user who created the post or an admin can delete it
         return $user->id === $post->user_id || $user->isAdmin();
         
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Post $post): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Post $post): bool
-    {
-        //
     }
 }

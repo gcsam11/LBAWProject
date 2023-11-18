@@ -49,7 +49,6 @@ CREATE TABLE "user" (
     birthday DATE,
     country TEXT,
     gender TEXT,
-    type TEXT,
     url TEXT,
     email TEXT UNIQUE,
     password TEXT,
