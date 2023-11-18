@@ -1,4 +1,5 @@
 <x-welcome_layout>
+    <!-- USER HAS TO BE LOGGED IN -->
     <x-slot name="title">SWC News</x-slot>
         <div class="main">
             <h1>News Feed</h1>
@@ -26,6 +27,10 @@
                 <!-- Fetch news on the database -->
 
                 <!-- if user clicks on upvote or downvote redirect to login page -->
+            </div>
+            <br>
+            <div class="create_post">
+                <button id="create_post">+</button>
             </div>
         </div>
 </x-welcome_layout>

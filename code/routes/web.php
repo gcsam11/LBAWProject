@@ -23,7 +23,7 @@ use App\Http\Controllers\Auth\RegisterController;
 Route::get('/', function () {
     return view('welcome');
 });
-//Route::redirect('/', '/welcome');
+
 
 // Cards
 Route::controller(CardController::class)->group(function () {
