@@ -363,18 +363,18 @@ COMMIT;*/
 -- Create "user" table and populate data
 INSERT INTO "user" (name, username, birthday, country, gender, url, email, password, reputation)
 VALUES ('John Doe', 'johndoe', '1990-05-15', 'USA', 'Male', 'http://example.com', 'johndoe@gmail.com', '$2a$12$2A22tlePtkuEwdB8fsMdguQID3jcZJTobnW2tGXAhHBfF/Bi7fjgy', 100),
-       ('Alice Johnson', 'alicej', '1988-03-10', 'Toronto', 'Female',  'http://example.com/alice', 'alice@example.com', 'pass123', 120),
-       ('Bob Anderson', 'bob123', '1995-11-28', 'USA', 'Male', 'http://example.com/bob', 'bob@example.com', 'securepass', 90),
-       ('Eva Brown', 'evab', '1982-07-15', 'UK', 'Female', 'http://example.com/eva', 'eva@example.com', 'eva123', 80),
+       ('Alice Johnson', 'alicej', '1988-03-10', 'Toronto', 'Female',  'http://example.com/alice', 'alice@gmail.com', 'pass123', 120),
+       ('Bob Anderson', 'bob123', '1995-11-28', 'USA', 'Male', 'http://example.com/bob', 'bob@gmail.com', 'securepass', 90),
+       ('Eva Brown', 'evab', '1982-07-15', 'UK', 'Female', 'http://example.com/eva', 'eva@gmail.com', 'eva123', 80),
        ('Jane Smith', 'janesmith', '1985-08-20', 'USA', 'Female', 'http://example.com/jane', 'janesmith@gmail.com', '$2a$12$vm6oJRAm5CQQNN1Wth3ZweIRNr784B6oaOIlI/XSdzcmPXsyvqrsa', 150),
-       ('Michael Adams', 'mike123', '1980-09-05', 'USA', 'Male', 'http://example.com/mike', 'mike@example.com', 'mikepass', 110),
-       ('Sophie Martinez', 'sophie89', '1992-02-18', 'Spain', 'Female', 'http://example.com/sophie', 'sophie@example.com', 'sophie123', 95),
-       ('David Lee', 'davidl', '1986-07-30', 'Canada', 'Male',  'http://example.com/david', 'david@example.com', 'davidpass', 85),
-       ('Emma White', 'emmaw', '1998-12-12', 'Australia', 'Female', 'http://example.com/emma', 'emma@example.com', 'emma456', 75),
-       ('Olivia Taylor', 'olivia88', '1984-06-14', 'USA', 'Female', 'http://example.com/olivia', 'olivia@example.com', 'olivia567', 130),
-       ('Liam Brown', 'liamb', '1991-09-22', 'UK', 'Male', 'http://example.com/liam', 'liam@example.com', 'liampass', 105),
-       ('Ava Clark', 'ava.c', '1989-03-30', 'Canada', 'Female', 'http://example.com/ava', 'ava@example.com', 'ava321', 95),
-       ('Noah Evans', 'noah.e', '1995-12-05', 'Australia', 'Male', 'http://example.com/noah', 'noah@example.com', 'noahpass', 85);
+       ('Michael Adams', 'mike123', '1980-09-05', 'USA', 'Male', 'http://example.com/mike', 'mike@gmail.com', 'mikepass', 110),
+       ('Sophie Martinez', 'sophie89', '1992-02-18', 'Spain', 'Female', 'http://example.com/sophie', 'sophie@gmail.com', 'sophie123', 95),
+       ('David Lee', 'davidl', '1986-07-30', 'Canada', 'Male',  'http://example.com/david', 'david@gmail.com', 'davidpass', 85),
+       ('Emma White', 'emmaw', '1998-12-12', 'Australia', 'Female', 'http://example.com/emma', 'emma@gmail.com', 'emma456', 75),
+       ('Olivia Taylor', 'olivia88', '1984-06-14', 'USA', 'Female', 'http://example.com/olivia', 'olivia@gmail.com', 'olivia567', 130),
+       ('Liam Brown', 'liamb', '1991-09-22', 'UK', 'Male', 'http://example.com/liam', 'liam@gmail.com', 'liampass', 105),
+       ('Ava Clark', 'ava.c', '1989-03-30', 'Canada', 'Female', 'http://example.com/ava', 'ava@gmail.com', 'ava321', 95),
+       ('Noah Evans', 'noah.e', '1995-12-05', 'Australia', 'Male', 'http://example.com/noah', 'noah@gmail.com', 'noahpass', 85);
        
 -- Create ADMIN table and populate data
 INSERT INTO ADMIN (user_id)
