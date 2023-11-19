@@ -12,6 +12,17 @@
     <!-- Add content for profile page -->
     
     <div class="main_box"> 
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         <div class="box_header_ticket">
             <p class="box_header_title">Info</p>
         </div>

@@ -81,17 +81,17 @@ class UserController extends Controller
             ]);
     
             // Remove null values from the validated data.
-            $validatedData = array_filter($validatedData, function ($value) {
+            $filteredData = array_filter($validatedData, function ($value) {
                 return $value !== null;
             });
     
             // If a password is provided, hash it before storing.
-            if (isset($validatedData['password'])) {
-                $validatedData['password'] = Hash::make($validatedData['password']);
+            if (isset($filteredData['password'])) {
+                $filteredData['password'] = Hash::make($filteredData['password']);
             }
     
             // Update the user's profile information.
-            $user->update($validatedData);
+            $user->update($filteredData);
     
             // Save the changes to the database.
             $user->save();
@@ -105,7 +105,7 @@ class UserController extends Controller
             // Redirect back with an error message.
             return redirect()->route('profile')->with('error', 'Failed to update info');
         }
-    }
+    }    
 
     /**
      * Change user password.
