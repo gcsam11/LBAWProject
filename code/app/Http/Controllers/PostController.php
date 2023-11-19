@@ -34,18 +34,33 @@ class PostController extends Controller
     }
 
     /**
-     * Shows all posts on the welcome page.
+     * Shows all posts sorted by Upvotes/Downvote Difference
      */
-    public function list()
+    public function listTop()
     {
         // Get posts ordered by the difference between upvotes and downvotes.
         $posts = Post::orderByRaw('(upvotes - downvotes) DESC')->get();
 
-        // Use the pages.cards template to display all cards.
+        // Use the pages.post template to display all cards.
         return view('pages.posts', [
             'posts' => $posts
         ]);
     }
+
+    /**
+     * Shows all posts sorted by Upvotes/Downvote Difference
+     */
+    public function listRecent()
+    {
+        // Get posts ordered by postdate in descending order (most recent first).
+        $posts = Post::orderBy('postdate', 'DESC')->get();
+
+        // Use the pages.post template to display all cards.
+        return view('pages.posts', [
+            'posts' => $posts
+        ]);
+    }
+
     /**
      * Creates a new post.
      */

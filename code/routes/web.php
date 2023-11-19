@@ -49,7 +49,8 @@ Route::controller(CardController::class)->group(function () {
 
 // Posts
 Route::controller(PostController::class)->group(function () {
-    Route::get('/posts', 'list')->name('posts');
+    Route::get('/welcome/top', 'listTop')->name('posts');
+    Route::get('/welcome/recent', 'listRecent')->name('posts');
     Route::get('/posts/{id}', 'show');
 });
 
