@@ -5,6 +5,8 @@ namespace App\Policies;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
+use Illuminate\Support\Facades\Auth;
+
 class UserPolicy
 {
 
@@ -21,7 +23,7 @@ class UserPolicy
      */
     public function update(User $user): bool
     {
-        return Auth::user()->id() === $user->id();
+        return Auth::user()->id === $user->id;
     }
 
     /**
@@ -29,6 +31,6 @@ class UserPolicy
      */
     public function delete(User $user): bool
     {
-        return Auth::user()->id() === $user->id() || $user->isAdmin();
+        return Auth::user()->id === $user->id || $user->isAdmin;
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\View\View;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -63,54 +64,89 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // Check if the current user can update the profile.
-        $this->authorize('update', $user);
+        try {
+            // Check if the current user can update the profile.
+            $this->authorize('update', $user);
+    
+            // Validate the request data.
+            $validatedData = $request->validate([
+                'username' => 'nullable|string|max:255',
+                'name' => 'nullable|string|max:255',
+                'email' => 'nullable|email|max:255',
+                'birthday' => 'nullable|date',
+                'password' => 'nullable|string|min:8',
+                'gender' => 'nullable|string|max:255',
+                'country' => 'nullable|string|max:255',
+                'url' => 'nullable|url|max:255',
+            ]);
+    
+            // Remove null values from the validated data.
+            $validatedData = array_filter($validatedData, function ($value) {
+                return $value !== null;
+            });
+    
+            // If a password is provided, hash it before storing.
+            if (isset($validatedData['password'])) {
+                $validatedData['password'] = Hash::make($validatedData['password']);
+            }
+    
+            // Update the user's profile information.
+            $user->update($validatedData);
+    
+            // Save the changes to the database.
+            $user->save();
+    
+            // Redirect the user back to their profile page.
+            return redirect()->route('profile')->with('success', 'Info updated successfully');
+        } catch (\Exception $e) {
+            // Log the error message.
+            \Log::error('Failed to update user with ID: ' . $user->id . '. Error: ' . $e->getMessage());
+    
+            // Redirect back with an error message.
+            return redirect()->route('profile')->with('error', 'Failed to update info');
+        }
+    }
 
-        // Validate the request data.
-        $validatedData = $request->validate([
-            'username' => 'nullable|string|max:255',
-            'name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'birthday' => 'nullable|date',
-            'password' => 'nullable|string|min:8',
-            'gender' => 'nullable|string|max:255',
-            'country' => 'nullable|string|max:255',
-            'url' => 'nullable|url|max:255',
+    /**
+     * Change user password.
+     */
+    public function change_password(Request $request)
+    {
+        $request->validate([
+            'last_password' => ['required'],
+            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        // If a password is provided, hash it before storing.
-        if (isset($validatedData['password'])) {
-            $validatedData['password'] = Hash::make($validatedData['password']);
+        $user = Auth::user();
+
+        // Verify if the provided last password is correct
+        if (!password_verify($request->input('last_password'), $user->password)) {
+            throw ValidationException::withMessages([
+                'last_password' => ['The provided last password is incorrect.'],
+            ]);
         }
 
-        // Update the user's profile information.
-        $user->update($validatedData);
+        // Update the user's password with the new one
+        $user->update([
+            'password' => $request->input('new_password'),
+        ]);
 
-        // Save the changes to the database.
-        $user->save();
-
-        // Redirect the user back to their profile page.
-        return redirect()->route('user.show', ['id' => $user->id]);
+        return redirect()->route('profile')->with('success', 'Password changed successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function delete(User $user)
     {
-        /**
-         * Remove the specified resource from storage.
-         */
-        public function delete(User $user)
-        {
-            // Check if the current user can delete the user.
-            $this->authorize('delete', $user);
+        // Check if the current user can delete the user.
+        $this->authorize('delete', $user);
 
-            // Delete the user.
-            $user->delete();
+        // Delete the user.
+        $user->delete();
 
-            // Redirect the user to the user index page.
-            return redirect()->route('user.index');
-        }
+        // Redirect the user to the user index page.
+        return redirect()->route('user.index');
     }
 }
