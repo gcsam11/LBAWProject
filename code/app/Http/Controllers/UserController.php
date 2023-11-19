@@ -74,7 +74,6 @@ class UserController extends Controller
                 'name' => 'nullable|string|max:255',
                 'email' => 'nullable|email|max:255',
                 'birthday' => 'nullable|date',
-                'password' => 'nullable|string|min:8',
                 'gender' => 'nullable|string|max:255',
                 'country' => 'nullable|string|max:255',
                 'url' => 'nullable|url|max:255',
@@ -84,12 +83,7 @@ class UserController extends Controller
             $filteredData = array_filter($validatedData, function ($value) {
                 return $value !== null;
             });
-    
-            // If a password is provided, hash it before storing.
-            if (isset($filteredData['password'])) {
-                $filteredData['password'] = Hash::make($filteredData['password']);
-            }
-    
+            \Log::info('Dados antes da atualização: ' . json_encode($filteredData));
             // Update the user's profile information.
             $user->update($filteredData);
     

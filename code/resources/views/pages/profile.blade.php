@@ -12,7 +12,7 @@
     <!-- Add content for profile page -->
     
     <div class="main_box"> 
-        @if(session('success'))
+                @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
@@ -31,7 +31,7 @@
                 @method('PUT')
                 <div class="op_box">
                     <p>Username</p>
-                    <input id="username" type="text" name="username" value="{{ old('username') }}"><?= $user->username ?></input>
+                    <input id="username" type="text" name="username" value="{{ old('username') ?? $user->username }}"></input>
                     @if ($errors->has('username'))
                         <span class="error">
                             {{ $errors->first('username') }}
@@ -40,7 +40,7 @@
                 </div>
                 <div class="op_box">
                     <p>Name</p>
-                    <input id="name" type="text" name="name" value="{{ old('name') }}"><?= $user->name ?></input>
+                    <input id="name" type="text" name="name" value="{{ old('name') ?? $user->name }}"></input>
                     @if ($errors->has('name'))
                         <span class="error">
                             {{ $errors->first('name') }}
@@ -49,7 +49,7 @@
                 </div>
                 <div class="op_box">
                     <p>Birthday</p>
-                    <input id="birthday" type="text" name="birthday" value="{{ old('birthday') }}"><?= $user->birthday?></input>
+                    <input id="birthday" type="date" name="birthday" value="{{ old('birthday') ?? $user->birthday}}"></input>
                     @if ($errors->has('birthday'))
                         <span class="error">
                             {{ $errors->first('birthday') }}
@@ -58,7 +58,7 @@
                 </div>
                 <div class="op_box">
                     <p>Country</p>
-                    <input id="country" type="text" name="country" value="{{ old('country') }}"><?= $user->country ?></input>
+                    <input id="country" type="text" name="country" value="{{ old('country') ?? $user->country }}"></input>
                     @if ($errors->has('country'))
                         <span class="error">
                             {{ $errors->first('country') }}
@@ -67,7 +67,7 @@
                 </div>
                 <div class="op_box">
                     <p>Gender</p>
-                    <input id="gender" type="text" name="gender" value="{{ old('gender') }}"><?= $user->gender ?></input>
+                    <input id="gender" type="text" name="gender" value="{{ old('gender') ?? $user->gender }}"></input>
                     @if ($errors->has('gender'))
                         <span class="error">
                             {{ $errors->first('gender') }}
@@ -76,7 +76,7 @@
                 </div>
                 <div class="op_box">
                     <p>Image</p>
-                    <input id="url" type="text" name="url" value="{{ old('url') }}">"Insert a link"</input>
+                    <input id="url" type="text" name="url" value="{{ old('url') ?? $user->url }}"></input>
                     @if ($errors->has('url'))
                         <span class="error">
                             {{ $errors->first('url') }}
@@ -85,7 +85,7 @@
                 </div>
                 <div class="op_box">
                     <p>Email</p>
-                    <input id="email" type="email" name="email" value="{{ old('email') }}"><?= $user->email ?></input>
+                    <input id="email" type="email" name="email" value="{{ old('email') ?? $user->email }}"></input>
                     @if ($errors->has('email'))
                         <span class="error">
                             {{ $errors->first('email') }}
