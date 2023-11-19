@@ -79,6 +79,7 @@
                 </div>
                 <div class="op_box">
                     <p>Image</p>
+                    <img src="{{$user->url}}" alt="Perfil do Usuário">
                     <input id="url" type="text" name="url" value="{{ old('url') ?? $user->url }}"></input>
                     @if ($errors->has('url'))
                         <span class="error">
