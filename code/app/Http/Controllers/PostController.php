@@ -92,13 +92,9 @@ class PostController extends Controller
     /**
      * Update a post.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
-        // Find the post.
-        $post = Post::findOrFail($id);
-
-        // Check if the current user is authorized to update this post.
-        $this->authorize('update', Auth::user());
+        $this->authorize('update', $post);
 
         $request->validate([
             'title' => ['required'],
@@ -111,7 +107,8 @@ class PostController extends Controller
 
         // Save the updated post and return it as JSON.
         $post->save();
-        return response()->json($post);
+
+        return redirect()->route('posts.show', ['id' => $post->id])->with('success', 'Post updated successfully');
     }
 
     /**
@@ -123,6 +120,8 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
 
         $this->authorize('delete', $post);
+
+        
         try {
             $post->delete();
             \Log::info('Post deleted successfully with ID: ' . $post->id);

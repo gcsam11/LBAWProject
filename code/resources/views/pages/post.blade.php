@@ -7,7 +7,25 @@
         @include('partials.post', ['post' => $post])
         @include('pages.comments', ['comments' => $comments])
     </section>
-
+    {{-- Update Button --}}
+    @can('update', $post)
+    <div>
+        <h2>Edit Post</h2>
+        <form action="{{ route('posts.update', $post->id) }}" method="POST">
+            @csrf
+            @method('PATCH')
+            <div>
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" value="{{ $post->title }}">
+            </div>
+            <div>
+                <label for="caption">Caption:</label>
+                <textarea id="caption" name="caption">{{ $post->caption }}</textarea>
+            </div>
+            <button type="submit">Update Post</button>
+        </form>
+    </div>
+    @endcan
     {{-- Delete Button --}}
     @can('delete', $post)
     <form action="{{ route('posts.delete', $post->id) }}" method="POST">
