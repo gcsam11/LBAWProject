@@ -9,6 +9,7 @@
 @endsection
 
 @section('content')
+
     <div class="search&sort">
         <input type="text" placeholder="Search for News">
         <button>Search</button>

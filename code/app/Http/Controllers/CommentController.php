@@ -88,6 +88,14 @@ class CommentController extends Controller
     }
 
     /**
+     * Update a comment.
+     */
+
+    public function update(Request $request, $id){
+        
+    }
+
+    /**
      * Delete a comment.
      */
     public function delete(Request $request, $id)
