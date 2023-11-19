@@ -68,16 +68,15 @@ class PostController extends Controller
     /**
      * Creates a new post.
      */
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
         // Check if the current user is authorized to create this post.
         $this->authorize('create', Auth::user());
-
+    
         $request->validate([
             'title' => ['required'],
             'caption' => ['required']
         ]);
-
+    
         // Set post details.
         $post = Post::create([
             'title' => $request->input('title'),
@@ -85,9 +84,9 @@ class PostController extends Controller
             'postdate' => now(), // Set the current date and time.
             'user_id' => Auth::user()->id
         ]);
-
-        // Return the created post.
-        return response()->json($post);
+    
+        // Redirect the user to the newly created post page or any other page you prefer.
+        return redirect()->route('posts')->with('success', 'Post created successfully');
     }
 
     /**
