@@ -6,7 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 
 use Illuminate\View\View;
-
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -60,35 +62,75 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // Check if the current user can update the profile.
-        $this->authorize('update', $user);
-
-        // Validate the request data.
-        $validatedData = $request->validate([
-            'username' => 'nullable|string|max:255',
-            'name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'birthday' => 'nullable|date',
-            'password' => 'nullable|string|min:8',
-            'gender' => 'nullable|string|max:255',
-            'country' => 'nullable|string|max:255',
-            'url' => 'nullable|url|max:255',
-        ]);
-
-        // If a password is provided, hash it before storing.
-        if (isset($validatedData['password'])) {
-            $validatedData['password'] = Hash::make($validatedData['password']);
+        try {
+            // Check if the current user can update the profile.
+            $this->authorize('update', $user);
+    
+            // Validate the request data.
+            $validatedData = $request->validate([
+                'username' => 'nullable|string|max:255',
+                'name' => 'nullable|string|max:255',
+                'email' => 'nullable|email|max:255',
+                'birthday' => 'nullable|date',
+                'gender' => 'nullable|string|max:255',
+                'country' => 'nullable|string|max:255',
+                'url' => 'nullable|url|max:255',
+            ]);
+    
+            // Remove null values from the validated data.
+            $filteredData = array_filter($validatedData, function ($value) {
+                return $value !== null;
+            });
+            // Update the user's profile information.
+            $user->update($filteredData);
+    
+            // Save the changes to the database.
+            $user->save();
+    
+            // Redirect the user back to their profile page.
+            return redirect()->route('profile')->with('success', 'Info updated successfully');
+        } catch (\Exception $e) {
+            // Log the error message.
+            \Log::error('Failed to update user with ID: ' . $user->id . '. Error: ' . $e->getMessage());
+    
+            // Redirect back with an error message.
+            return redirect()->route('profile')->with('error', 'Failed to update info');
         }
+    }    
 
-        // Update the user's profile information.
-        $user->update($validatedData);
+    /**
+     * Change user password.
+     */
+    public function change_password(Request $request)
+    {
+        try{
+            $request->validate([
+                'last_password' => ['required'],
+                'new_password' => ['required', 'string', 'min:8'],
+            ]);
 
-        // Save the changes to the database.
-        $user->save();
+            $user = Auth::user();
 
-        // Redirect the user back to their profile page.
-        return redirect()->route('user.show', ['id' => $user->id]);
+            // Verify if the provided last password is correct
+            if (!password_verify($request->input('last_password'), $user->password)) {
+                throw ValidationException::withMessages([
+                    'last_password' => ['The provided last password is incorrect.'],
+                ]);
+            }
+
+            // Update the user's password with the new one
+            $user->password = Hash::make($request->input('new_password'));
+            $user->save();
+
+            return redirect()->route('logout')->with('success', 'Password changed successfully.');
+        } catch (ValidationException $e) {
+            return redirect()->route('profile')->withErrors($e->validator->errors());
+        } catch (\Exception $e) {
+            // Log e manipulação de outras exceções, se necessário
+            return redirect()->route('profile')->with('error', 'Failed to update password.');
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
