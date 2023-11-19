@@ -21,6 +21,26 @@ class UserController extends Controller
         return view('users.index', ['users' => $users]);
     }
 
+    public function create(array $data)
+    {
+        // Create a new user instance
+        $user = new User([
+            'name' => $data['name'],
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'password' => $data['password']
+        ]);
+
+        // Save the user to the database
+        $user->save();
+
+        // You can perform additional actions here if needed
+
+        // Redirect to a success page or return a response
+        return redirect()->route('registration.success')
+            ->with('success', 'User registered successfully!');
+    }
+
     /**
      * Display the specified resource.
      */
