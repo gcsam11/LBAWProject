@@ -8,6 +8,9 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
+use App\Http\Controllers\PostController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -44,6 +47,13 @@ Route::controller(CardController::class)->group(function () {
     Route::get('/cards/{id}', 'show');
 });
 
+// Posts
+Route::controller(PostController::class)->group(function () {
+    Route::get('/welcome/top', 'listTop')->name('posts');
+    Route::get('/welcome/recent', 'listRecent')->name('posts');
+    Route::get('/posts/{id}', 'show');
+});
+
 // API
 Route::controller(CardController::class)->group(function () {
     Route::put('/api/cards', 'create');
@@ -75,5 +85,7 @@ Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
 });
+
+
 
 ?>
