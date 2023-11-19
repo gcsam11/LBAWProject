@@ -5,5 +5,6 @@
 @section('content')
     <section id="posts">
         @include('partials.post', ['post' => $post])
+        @include('pages.comments', ['comments' => $comments])
     </section>
 @endsection
