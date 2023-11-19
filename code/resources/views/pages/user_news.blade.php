@@ -32,5 +32,8 @@
         <div class="create_post">
             <button id="create_post">+</button>
         </div>
+        <script>
+            var createPostUrl = @json(route('create_post'));
+        </script>
         <script src="{{ asset('js/create_post.js') }}"></script>
 @endsection

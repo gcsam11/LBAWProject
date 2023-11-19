@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (createPostButton) {
         createPostButton.addEventListener('click', function () {
             // Redirect the user to the create post page
-            window.location.href = '/create-post';
+            window.location.href = createPostUrl;
         });
     }
 });
