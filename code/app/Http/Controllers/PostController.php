@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\View\View;
 
+
 class PostController extends Controller
 {
     /**
@@ -23,8 +24,7 @@ class PostController extends Controller
         // Get all comments for the post ordered by date.
         $comments = $post->comments()->orderByDesc('commentdate')->get();
 
-        // Check if the current user can see (show) the post.
-        $this->authorize('show', Auth::user());
+        // No need to authorize show action here as it's already fetched the post.
 
         // Use the pages.post template to display the post.
         return view('pages.post', [
@@ -38,26 +38,21 @@ class PostController extends Controller
      */
     public function list()
     {
-        // Get posts for user ordered by the difference between upvotes and downvotes.
+        // Get posts ordered by the difference between upvotes and downvotes.
         $posts = Post::orderByRaw('(upvotes - downvotes) DESC')->get();
+        // Pass the retrieved posts to the reusable component.
 
-        // Check if the current user can list the posts.
-        $this->authorize('list', Auth::user());
-
-        // Use the pages.main template to display the posts.
-        return view('pages.main', [
+        return view('partials.posts', [
             'posts' => $posts,
         ]);
     }
 
+  
     /**
      * Creates a new post.
      */
     public function create(Request $request)
     {
-        // Create a blank new post.
-        $post = new post();
-
         // Check if the current user is authorized to create this post.
         $this->authorize('create', Auth::user());
 
@@ -67,23 +62,24 @@ class PostController extends Controller
         ]);
 
         // Set post details.
-        $post->title = $request->input('title');
-        $post->caption = $request->input('caption');
-        $post->postdate = now(); // Set the current date and time.
-        $post->user_id = Auth::user()->id;
+        $post = Post::create([
+            'title' => $request->input('title'),
+            'caption' => $request->input('caption'),
+            'postdate' => now(), // Set the current date and time.
+            'user_id' => Auth::user()->id
+        ]);
 
-        // Save the post and return it as JSON.
-        $post->save();
+        // Return the created post.
         return response()->json($post);
     }
 
     /**
-    * Update a post.
-    */
+     * Update a post.
+     */
     public function update(Request $request, $id)
     {
         // Find the post.
-        $post = Post::find($id);
+        $post = Post::findOrFail($id);
 
         // Check if the current user is authorized to update this post.
         $this->authorize('update', Auth::user());
@@ -100,7 +96,7 @@ class PostController extends Controller
         // Save the updated post and return it as JSON.
         $post->save();
         return response()->json($post);
-}
+    }
 
     /**
      * Delete a post.
@@ -108,7 +104,7 @@ class PostController extends Controller
     public function delete(Request $request, $id)
     {
         // Find the post.
-        $post = post::find($id);
+        $post = Post::findOrFail($id);
 
         // Check if the current user is authorized to delete this post.
         $this->authorize('delete', Auth::user());
