@@ -23,9 +23,17 @@ use App\Http\Controllers\PostController;
 */
 
 // Home
+@guest
 Route::get('/', function () {
     return view('pages.welcome');
 })->name('welcome');
+@endguest
+
+@auth
+Route::get('/', function () {
+    return view('pages.main');
+})->name('main');
+@endauth
 
 Route::get('/user_news', function () {
     return view('pages.user_news');
@@ -65,11 +73,6 @@ Route::controller(ItemController::class)->group(function () {
     Route::post('/api/item/{id}', 'update');
     Route::delete('/api/item/{id}', 'delete');
 });
-
-// Main
-Route::get('/main', function () {
-    return view('main');
-})->middleware('auth');
 
 // Comment
 Route::post('/post/{postId}/comment', 'CommentController@store');

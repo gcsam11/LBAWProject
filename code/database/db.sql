@@ -362,11 +362,11 @@ COMMIT;*/
 
 -- Create "user" table and populate data
 INSERT INTO "user" (id, name, username, birthday, country, gender, url, email, password, reputation)
-VALUES (1, 'John Doe', 'johndoe', '1990-05-15', 'USA', 'Male', 'http://example.com', 'johndoe@example.com', 'password123', 100),
+VALUES (1, 'John Doe', 'johndoe', '1990-05-15', 'USA', 'Male', 'http://example.com', 'johndoe@example.com', '$2a$12$2A22tlePtkuEwdB8fsMdguQID3jcZJTobnW2tGXAhHBfF/Bi7fjgy', 100),
        (2, 'Alice Johnson', 'alicej', '1988-03-10', 'Toronto', 'Female',  'http://example.com/alice', 'alice@example.com', 'pass123', 120),
        (3, 'Bob Anderson', 'bob123', '1995-11-28', 'USA', 'Male', 'http://example.com/bob', 'bob@example.com', 'securepass', 90),
        (4, 'Eva Brown', 'evab', '1982-07-15', 'UK', 'Female', 'http://example.com/eva', 'eva@example.com', 'eva123', 80),
-       (5, 'Jane Smith', 'janesmith', '1985-08-20', 'USA', 'Female', 'http://example.com/jane', 'janesmith@example.com', 'securepass', 150),
+       (5, 'Jane Smith', 'janesmith', '1985-08-20', 'USA', 'Female', 'http://example.com/jane', 'janesmith@example.com', '$2a$12$vm6oJRAm5CQQNN1Wth3ZweIRNr784B6oaOIlI/XSdzcmPXsyvqrsa', 150),
        (6, 'Michael Adams', 'mike123', '1980-09-05', 'USA', 'Male', 'http://example.com/mike', 'mike@example.com', 'mikepass', 110),
        (7, 'Sophie Martinez', 'sophie89', '1992-02-18', 'Spain', 'Female', 'http://example.com/sophie', 'sophie@example.com', 'sophie123', 95),
        (8, 'David Lee', 'davidl', '1986-07-30', 'Canada', 'Male',  'http://example.com/david', 'david@example.com', 'davidpass', 85),
