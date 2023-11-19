@@ -28,10 +28,8 @@
         <main>
             <h1>@yield('header')</h1>
             <nav>
-                <a href="{{ route('welcome') }}">News Feed</a>
-                <br>
-                <a href="{{ route('user_news') }}">User News</a>
-                <br>
+                <a href="{{ route('welcome') }}">News Feed</a>&nbsp;&nbsp;&nbsp;
+                <a href="{{ route('user_news') }}">User News</a>&nbsp;&nbsp;&nbsp;
                 <a href="{{ route('profile') }}">Profile</a>
             </nav>
             <br>
