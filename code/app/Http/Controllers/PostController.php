@@ -74,9 +74,11 @@ class PostController extends Controller
             'caption' => ['required']
         ]);
     
+        $topicId = 1; // Replace this with your desired topic ID
+
         // Set post details.
-        $post = Post::create([
-            'topic_id' => 1,
+        $post = Auth::user()->posts()->create([
+            'topic_id' => $topicId,
             'title' => $request->input('title'),
             'caption' => $request->input('caption'),
             'postdate' => now(), // Set the current date and time.
