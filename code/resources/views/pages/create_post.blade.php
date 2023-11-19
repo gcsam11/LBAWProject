@@ -10,6 +10,16 @@
 <form method="POST" action="{{ route('posts.create') }}">
   {{ csrf_field() }}
 
+  <!--
+  <label for="topic">Topic</label>
+  <input id="topic" type="text" name="topic" value=1 required autofocus>
+  @if ($errors->has('topic'))
+    <span class="error">
+      {{ $errors->first('topic') }}
+    </span>
+  @endif
+  -->
+
   <label for="title">Title</label>
   <input id="title" type="text" name="title" value="{{ old('title') }}" required autofocus>
   @if ($errors->has('title'))
