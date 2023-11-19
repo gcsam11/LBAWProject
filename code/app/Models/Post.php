@@ -71,6 +71,13 @@ class Post extends Model
     {
         return $this->hasMany(UpvotePost::class);
     }
+
+    
+    public function items()
+    {
+        return $this->hasMany(Item::class)->orderBy('id')->get();
+    }
+
 }
 
 ?>

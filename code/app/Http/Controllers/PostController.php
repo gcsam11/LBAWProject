@@ -33,21 +33,19 @@ class PostController extends Controller
         ]);
     }
 
-     /**
-     * Shows all posts.
+    /**
+     * Shows all posts on the welcome page.
      */
     public function list()
     {
         // Get posts ordered by the difference between upvotes and downvotes.
         $posts = Post::orderByRaw('(upvotes - downvotes) DESC')->get();
-        // Pass the retrieved posts to the reusable component.
 
-        return view('partials.posts', [
-            'posts' => $posts,
+        // Use the pages.cards template to display all cards.
+        return view('pages.posts', [
+            'posts' => $posts
         ]);
     }
-
-  
     /**
      * Creates a new post.
      */

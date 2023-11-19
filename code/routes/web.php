@@ -47,6 +47,12 @@ Route::controller(CardController::class)->group(function () {
     Route::get('/cards/{id}', 'show');
 });
 
+// Posts
+Route::controller(PostController::class)->group(function () {
+    Route::get('/posts', 'list')->name('posts');
+    Route::get('/posts/{id}', 'show');
+});
+
 // API
 Route::controller(CardController::class)->group(function () {
     Route::put('/api/cards', 'create');
@@ -79,10 +85,6 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
-//Posts
-Route::controller(PostController::class)->group(function () {
-    Route::get('/posts', [PostController::class, 'list']);
-});
 
 
 ?>
