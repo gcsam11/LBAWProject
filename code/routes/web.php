@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -23,55 +24,41 @@ use App\Http\Controllers\PostController;
 */
 
 // Home
-@guest
-Route::get('/', function () {
-    return view('pages.welcome');
-})->name('welcome');
-@endguest
 
-@auth
 Route::get('/', function () {
+    // If the user is authenticated, redirect to the 'main' page
+    // If not authenticated, redirect to the 'welcome' page
+    return auth()->check() ? redirect('/main') : redirect('/welcome');
+})->name('home');
+
+Route::get('/welcome', function () {
+    return view('pages.welcome');
+})->name('welcome')->middleware('guest');
+
+Route::get('/main', function () {
     return view('pages.main');
-})->name('main');
-@endauth
+})->name('main')->middleware('auth');
+
 
 Route::get('/user_news', function () {
     return view('pages.user_news');
-})->name('user_news');
+})->name('user_news')->middleware('auth');
 
 Route::get('/profile', function () {
     return view('pages.profile');
-})->name('profile');
+})->name('profile')->middleware('auth');
 
 // Create Post
 Route::get('/create_post', function () {
     return view('pages.create_post');
-})->name('create_post');
+})->name('create_post')->middleware('auth');
 
-
-// Cards
-Route::controller(CardController::class)->group(function () {
-    Route::get('/cards', 'list')->name('cards');
-    Route::get('/cards/{id}', 'show');
-});
 
 // Posts
 Route::controller(PostController::class)->group(function () {
     Route::get('/welcome/top', 'listTop')->name('posts');
     Route::get('/welcome/recent', 'listRecent')->name('posts');
     Route::get('/posts/{id}', 'show');
-});
-
-// API
-Route::controller(CardController::class)->group(function () {
-    Route::put('/api/cards', 'create');
-    Route::delete('/api/cards/{card_id}', 'delete');
-});
-
-Route::controller(ItemController::class)->group(function () {
-    Route::put('/api/cards/{card_id}', 'create');
-    Route::post('/api/item/{id}', 'update');
-    Route::delete('/api/item/{id}', 'delete');
 });
 
 // Comment
@@ -88,7 +75,4 @@ Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
 });
-
-
-
 ?>
