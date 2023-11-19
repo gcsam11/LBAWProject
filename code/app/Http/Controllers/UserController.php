@@ -6,7 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 
 use Illuminate\View\View;
-
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -83,7 +84,6 @@ class UserController extends Controller
             $filteredData = array_filter($validatedData, function ($value) {
                 return $value !== null;
             });
-            \Log::info('Dados antes da atualização: ' . json_encode($filteredData));
             // Update the user's profile information.
             $user->update($filteredData);
     
@@ -106,26 +106,32 @@ class UserController extends Controller
      */
     public function change_password(Request $request)
     {
-        $request->validate([
-            'last_password' => ['required'],
-            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        $user = Auth::user();
-
-        // Verify if the provided last password is correct
-        if (!password_verify($request->input('last_password'), $user->password)) {
-            throw ValidationException::withMessages([
-                'last_password' => ['The provided last password is incorrect.'],
+        try{
+            $request->validate([
+                'last_password' => ['required'],
+                'new_password' => ['required', 'string', 'min:8'],
             ]);
+
+            $user = Auth::user();
+
+            // Verify if the provided last password is correct
+            if (!password_verify($request->input('last_password'), $user->password)) {
+                throw ValidationException::withMessages([
+                    'last_password' => ['The provided last password is incorrect.'],
+                ]);
+            }
+
+            // Update the user's password with the new one
+            $user->password = Hash::make($request->input('new_password'));
+            $user->save();
+
+            return redirect()->route('logout')->with('success', 'Password changed successfully.');
+        } catch (ValidationException $e) {
+            return redirect()->route('profile')->withErrors($e->validator->errors());
+        } catch (\Exception $e) {
+            // Log e manipulação de outras exceções, se necessário
+            return redirect()->route('profile')->with('error', 'Failed to update password.');
         }
-
-        // Update the user's password with the new one
-        $user->update([
-            'password' => $request->input('new_password'),
-        ]);
-
-        return redirect()->route('profile')->with('success', 'Password changed successfully.');
     }
 
 

@@ -12,17 +12,20 @@
     <!-- Add content for profile page -->
     
     <div class="main_box"> 
-                @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         <div class="box_header_ticket">
             <p class="box_header_title">Info</p>
         </div>
@@ -107,13 +110,12 @@
                 </div>
                 <div class="op_box">
                     <p>New password</p>
-                    <input id="new_password" type="password" name="new_password" value="{{ old('new_password') }}">
+                    <input id="new_password" type="password" name="new_password" value="{{ old('new_password') }}" required>
                 </div>
                 <div class="btnSubmit">
                     <button type="submit">SAVE</button>
                 </div>
             </form>
-
             <form method="GET" action="{{ route('logout') }}">
                 <button type="submit">Logout</button>
             </form>
