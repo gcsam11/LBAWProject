@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
 
 
 class PostController extends Controller
@@ -92,23 +93,35 @@ class PostController extends Controller
     /**
      * Update a post.
      */
-    public function update(Request $request, Post $post)
-    {
-        $this->authorize('update', $post);
+    public function update(Request $request, $id){
+        try {
 
-        $request->validate([
-            'title' => ['required'],
-            'caption' => ['required']
-        ]);
+            // Find the post.
+            $post = Post::findOrFail($id);
+            
+            $this->authorize('update', $post);
 
-        // Update post details.
-        $post->title = $request->input('title');
-        $post->caption = $request->input('caption');
 
-        // Save the updated post and return it as JSON.
-        $post->save();
+            $request->validate([
+                'title' => ['required'],
+                'caption' => ['required']
+            ]);
+            
+            // Update post details.
+            $post->title = $request->input('title');
+            $post->caption = $request->input('caption');
 
-        return redirect()->route('posts.show', ['id' => $post->id])->with('success', 'Post updated successfully');
+            // Save the updated post.
+            $post->save();
+
+            return redirect()->route('posts')->with('success', 'Post updated successfully');
+        } catch (\Exception $e) {
+            // Log the error message.
+            \Log::error('Failed to update post with ID: ' . $post->id . '. Error: ' . $e->getMessage());
+
+            // Redirect back with an error message.
+            return redirect()->route('posts')->with('error',  'Failed to update the post');
+        }
     }
 
     /**

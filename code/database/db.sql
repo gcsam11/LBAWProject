@@ -411,7 +411,8 @@ VALUES ('Introduction to AI', 'A beginners guide to Artificial Intelligence', '2
        ('Latest Fashion Trends', 'Stay in style with these trends', '2023-10-29', 42, 2, 1, 1),
        ('Top RPG Games of All Time', 'Explore the best role-playing games', '2023-10-30', 63, 1, 2, 2),
        ('Healthy Eating Habits', 'Tips for a balanced and nutritious diet', '2023-10-31', 55, 3, 3, 3),
-       ('Australian Beaches Guide', 'Discover the most beautiful beaches', '2023-11-01', 48, 2, 4, 1);
+       ('Australian Beaches Guide', 'Discover the most beautiful beaches', '2023-11-01', 48, 2, 4, 1),
+       ('Australian Beaches Guide But Cooler', 'Discover the most beautiful beaches', '2023-11-01', 48, 2, 5, 1);
 
 
 -- Create comment table and populate data
