@@ -13,7 +13,4 @@
         <li><strong>topic_id:</strong> {{ $post->topic_id }}</li>
 
     </ul>
-    <form class="new_item">
-        <input type="text" name="description" placeholder="new item">
-    </form>
 </article>
