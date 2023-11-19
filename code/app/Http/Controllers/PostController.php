@@ -46,7 +46,7 @@ class PostController extends Controller
 
         // Use the pages.post template to display all cards.
         return view('pages.posts', [
-            'posts' => $posts
+            'posts' => $posts,
         ]);
     }
 
