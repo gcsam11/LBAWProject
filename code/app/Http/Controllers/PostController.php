@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
+
 
 class PostController extends Controller
 {
@@ -21,10 +23,12 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
 
         // Get all comments for the post ordered by date.
-        $comments = $post->comments()->orderByDesc('commentdate')->get();
+        /* $comments = $post->comments()->orderByDesc('commentdate')->get(); */
+        $comments = $post->comments()
+            ->orderByRaw('(upvotes - downvotes) DESC')
+            ->get();
 
-        // Check if the current user can see (show) the post.
-        $this->authorize('show', Auth::user());
+        // No need to authorize show action here as it's already fetched the post.
 
         // Use the pages.post template to display the post.
         return view('pages.post', [
@@ -33,74 +37,91 @@ class PostController extends Controller
         ]);
     }
 
-     /**
-     * Shows all posts.
+    /**
+     * Shows all posts sorted by Upvotes/Downvote Difference
      */
-    public function list()
+    public function listTop()
     {
-        // Get posts for user ordered by the difference between upvotes and downvotes.
+        // Get posts ordered by the difference between upvotes and downvotes.
         $posts = Post::orderByRaw('(upvotes - downvotes) DESC')->get();
 
-        // Check if the current user can list the posts.
-        $this->authorize('list', Auth::user());
-
-        // Use the pages.main template to display the posts.
-        return view('pages.main', [
+        // Use the pages.post template to display all cards.
+        return view('pages.posts', [
             'posts' => $posts,
+        ]);
+    }
+
+    /**
+     * Shows all posts sorted by How recent they were published
+     */
+    public function listRecent()
+    {
+        // Get posts ordered by postdate in descending order (most recent first).
+        $posts = Post::orderBy('postdate', 'DESC')->get();
+
+        // Use the pages.post template to display all cards.
+        return view('pages.posts', [
+            'posts' => $posts
         ]);
     }
 
     /**
      * Creates a new post.
      */
-    public function create(Request $request)
-    {
-        // Create a blank new post.
-        $post = new post();
-
+    public function create(Request $request) {
         // Check if the current user is authorized to create this post.
         $this->authorize('create', Auth::user());
-
+    
         $request->validate([
             'title' => ['required'],
             'caption' => ['required']
         ]);
-
+    
         // Set post details.
-        $post->title = $request->input('title');
-        $post->caption = $request->input('caption');
-        $post->postdate = now(); // Set the current date and time.
-        $post->user_id = Auth::user()->id;
-
-        // Save the post and return it as JSON.
-        $post->save();
-        return response()->json($post);
+        $post = Post::create([
+            'title' => $request->input('title'),
+            'caption' => $request->input('caption'),
+            'postdate' => now(), // Set the current date and time.
+            'user_id' => Auth::user()->id
+        ]);
+    
+        // Redirect the user to the newly created post page or any other page you prefer.
+        return redirect()->route('main')->with('success', 'Post created successfully');
     }
 
     /**
-    * Update a post.
-    */
-    public function update(Request $request, $id)
-    {
-        // Find the post.
-        $post = Post::find($id);
+     * Update a post.
+     */
+    public function update(Request $request, $id){
+        try {
 
-        // Check if the current user is authorized to update this post.
-        $this->authorize('update', Auth::user());
+            // Find the post.
+            $post = Post::findOrFail($id);
+            
+            $this->authorize('update', $post);
 
-        $request->validate([
-            'title' => ['required'],
-            'caption' => ['required']
-        ]);
 
-        // Update post details.
-        $post->title = $request->input('title');
-        $post->caption = $request->input('caption');
+            $request->validate([
+                'title' => ['required'],
+                'caption' => ['required']
+            ]);
+            
+            // Update post details.
+            $post->title = $request->input('title');
+            $post->caption = $request->input('caption');
 
-        // Save the updated post and return it as JSON.
-        $post->save();
-        return response()->json($post);
-}
+            // Save the updated post.
+            $post->save();
+
+            return redirect()->route('posts')->with('success', 'Post updated successfully');
+        } catch (\Exception $e) {
+            // Log the error message.
+            \Log::error('Failed to update post with ID: ' . $post->id . '. Error: ' . $e->getMessage());
+
+            // Redirect back with an error message.
+            return redirect()->route('posts')->with('error',  'Failed to update the post');
+        }
+    }
 
     /**
      * Delete a post.
@@ -108,14 +129,22 @@ class PostController extends Controller
     public function delete(Request $request, $id)
     {
         // Find the post.
-        $post = post::find($id);
+        $post = Post::findOrFail($id);
 
-        // Check if the current user is authorized to delete this post.
-        $this->authorize('delete', Auth::user());
+        $this->authorize('delete', $post);
 
-        // Delete the post and return it as JSON.
-        $post->delete();
-        return response()->json($post);
+        
+        try {
+            $post->delete();
+            \Log::info('Post deleted successfully with ID: ' . $post->id);
+            return redirect()->route('posts')->with('success', 'Post deleted successfully');
+        } 
+        catch (\Exception $e) {
+            \Log::error('Failed to delete post with ID: ' . $post->id . '. Error: ' . $e->getMessage());
+            
+            return redirect()->route('posts')->with('error', 'Failed to delete the post');
+        }
     }
+
 }
 ?>

@@ -3,11 +3,11 @@
 <!-- USER HAS TO BE LOGGED IN -->
 
 @section('title')
-    {{ "My News" }}
+    {{ "News Feed" }}
 @endsection
 
 @section('header')
-    {{ "My News" }}
+    {{ "News Feed" }}
 @endsection
 
 @section('content')
@@ -24,8 +24,8 @@
             <br>
         </div>
         <div class="news">
-            <!-- Fetch news on the database that belong only to the user -->
-
+            <!-- Fetch news on the database -->
+            
             <!-- if user clicks on upvote or downvote redirect to login page -->
         </div>
         <br>

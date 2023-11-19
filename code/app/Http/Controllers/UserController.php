@@ -48,15 +48,12 @@ class UserController extends Controller
      */
     public function show(string $id): View
     {
-        // Get the user.
-        $user = User::findOrFail($id);
-
         // Check if the current user can see (show) the user.
         $this->authorize('show', Auth::user());  
 
         // Use the pages.user template to display the user.
-        return view('pages.user', [
-            'user' => $user
+        return view('pages.profile', [
+            'id' => $id
         ]);
     }
 
@@ -147,6 +144,6 @@ class UserController extends Controller
         $user->delete();
 
         // Redirect the user to the user index page.
-        return redirect()->route('user.index');
+        return redirect()->route('logout');
     }
 }

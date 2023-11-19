@@ -7,8 +7,11 @@ use App\Http\Controllers\CardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\PostController;
+
 
 
 /*
@@ -23,50 +26,61 @@ use App\Http\Controllers\Auth\RegisterController;
 */
 
 // Home
+
 Route::get('/', function () {
+    // If the user is authenticated, redirect to the 'main' page
+    // If not authenticated, redirect to the 'welcome' page
+    return auth()->check() ? redirect('/main') : redirect('/welcome');
+})->name('home');
+
+Route::get('/welcome', function () {
     return view('pages.welcome');
-})->name('welcome');
+})->name('welcome')->middleware('guest');
+
+Route::get('/main', function () {
+    return view('pages.main');
+})->name('main')->middleware('auth');
+
 
 Route::get('/user_news', function () {
     return view('pages.user_news');
-})->name('user_news');
+})->name('user_news')->middleware('auth');
+
+// User
+Route::controller(UserController::class)->group(function () {
+    Route::get('/user/{id}/edit', 'update')->name('profile.update');
+    Route::get('/user/{id}/delete', 'delete')->name('profile.delete');
+    Route::get('/profile/{id}', 'show')->name('profile');
+})->middleware('auth');
+
 
 Route::get('/profile', function () {
     $user = Auth::user();
     return view('pages.profile', compact('user'));
 })->name('profile');
 
+
 // Create Post
 Route::get('/create_post', function () {
     return view('pages.create_post');
-})->name('create_post');
+})->name('create_post')->middleware('auth');
 
 
-// Cards
-Route::controller(CardController::class)->group(function () {
-    Route::get('/cards', 'list')->name('cards');
-    Route::get('/cards/{id}', 'show');
+
+// Posts
+Route::controller(PostController::class)->group(function () {
+    Route::get('/welcome/top', 'listTop')->name('posts');
+    Route::get('/welcome/recent', 'listRecent')->name('posts');
+    Route::get('/posts/{id}', 'show')->name('posts.show');
+    Route::post('/create_post', [PostController::class, 'create'])->name('posts.create');
+    Route::delete('/posts/{id}', [PostController::class, 'delete'])->name('posts.delete');
+    Route::patch('/posts/{id}',[PostController::class, 'update'])->name('posts.update');
 });
 
-// API
-Route::controller(CardController::class)->group(function () {
-    Route::put('/api/cards', 'create');
-    Route::delete('/api/cards/{card_id}', 'delete');
-});
-
-Route::controller(ItemController::class)->group(function () {
-    Route::put('/api/cards/{card_id}', 'create');
-    Route::post('/api/item/{id}', 'update');
-    Route::delete('/api/item/{id}', 'delete');
-});
-
-// Main
-Route::get('/main', function () {
-    return view('main');
-})->middleware('auth');
-
-// Comment
-Route::post('/post/{postId}/comment', 'CommentController@store');
+// Admin
+Route::controller(AdminController::class)->group(function () {
+    Route::get('/admin_dashboard', 'index')->name('admin_dashboard');
+})->middleware('admin');
 
 // Authentication
 Route::controller(LoginController::class)->group(function () {
@@ -79,6 +93,7 @@ Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
 });
+
 
 Route::controller(UserController::class)->group(function () {
     Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
