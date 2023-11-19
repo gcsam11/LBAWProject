@@ -122,12 +122,18 @@ class PostController extends Controller
         // Find the post.
         $post = Post::findOrFail($id);
 
-        // Check if the current user is authorized to delete this post.
-        $this->authorize('delete', Auth::user());
-
-        // Delete the post and return it as JSON.
-        $post->delete();
-        return response()->json($post);
+        $this->authorize('delete', $post);
+        try {
+            $post->delete();
+            \Log::info('Post deleted successfully with ID: ' . $post->id);
+            return redirect()->route('posts')->with('success', 'Post deleted successfully');
+        } 
+        catch (\Exception $e) {
+            \Log::error('Failed to delete post with ID: ' . $post->id . '. Error: ' . $e->getMessage());
+            
+            return redirect()->route('posts')->with('error', 'Failed to delete the post');
+        }
     }
+
 }
 ?>
