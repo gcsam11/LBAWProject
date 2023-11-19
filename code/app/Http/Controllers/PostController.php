@@ -48,7 +48,7 @@ class PostController extends Controller
     }
 
     /**
-     * Shows all posts sorted by Upvotes/Downvote Difference
+     * Shows all posts sorted by How recent they were published
      */
     public function listRecent()
     {
