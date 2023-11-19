@@ -38,7 +38,12 @@
                 @auth
                 <a href="{{ route('main') }}">News Feed</a>&nbsp;&nbsp;&nbsp;
                 <a href="{{ route('user_news') }}">User News</a>&nbsp;&nbsp;&nbsp;
-                <a href="{{ route('profile') }}">Profile</a>
+                <a href="{{ route('profile', ['id' => Auth::id()]) }}">Profile</a>&nbsp;&nbsp;&nbsp;
+
+                @if(Auth::user()->isAdmin())
+                <a href="{{ route('admin_dashboard') }}">Admin Dashboard</a>&nbsp;&nbsp;&nbsp;
+                @endif
+                
                 @endauth
 
             </nav>

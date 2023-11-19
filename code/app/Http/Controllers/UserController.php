@@ -46,15 +46,12 @@ class UserController extends Controller
      */
     public function show(string $id): View
     {
-        // Get the user.
-        $user = User::findOrFail($id);
-
         // Check if the current user can see (show) the user.
         $this->authorize('show', Auth::user());  
 
         // Use the pages.user template to display the user.
-        return view('pages.user', [
-            'user' => $user
+        return view('pages.profile', [
+            'id' => $id
         ]);
     }
 
@@ -98,19 +95,13 @@ class UserController extends Controller
      */
     public function delete(User $user)
     {
-        /**
-         * Remove the specified resource from storage.
-         */
-        public function delete(User $user)
-        {
-            // Check if the current user can delete the user.
-            $this->authorize('delete', $user);
+        // Check if the current user can delete the user.
+        $this->authorize('delete', $user);
 
-            // Delete the user.
-            $user->delete();
+        // Delete the user.
+        $user->delete();
 
-            // Redirect the user to the user index page.
-            return redirect()->route('user.index');
-        }
+        // Redirect the user to the user index page.
+        return redirect()->route('logout');
     }
 }

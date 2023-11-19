@@ -21,7 +21,7 @@ class UserPolicy
      */
     public function update(User $user): bool
     {
-        return Auth::user()->id() === $user->id();
+        return Auth::user()->id() === $user->id() || $user->isAdmin();
     }
 
     /**

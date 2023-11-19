@@ -2,13 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\CardController;
-use App\Http\Controllers\ItemController;
-use App\Http\Controllers\UserController;
 
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-
 use App\Http\Controllers\PostController;
 
 
@@ -44,15 +42,18 @@ Route::get('/user_news', function () {
     return view('pages.user_news');
 })->name('user_news')->middleware('auth');
 
-Route::get('/profile', function () {
-    return view('pages.profile');
-})->name('profile')->middleware('auth');
+// User
+Route::controller(UserController::class)->group(function () {
+    Route::get('/user/{id}/edit', 'update')->name('profile.update');
+    Route::get('/user/{id}/delete', 'delete')->name('profile.delete');
+    Route::get('/profile/{id}', 'show')->name('profile');
+})->middleware('auth');
+
 
 // Create Post
 Route::get('/create_post', function () {
     return view('pages.create_post');
 })->name('create_post')->middleware('auth');
-
 
 // Posts
 Route::controller(PostController::class)->group(function () {
@@ -61,8 +62,10 @@ Route::controller(PostController::class)->group(function () {
     Route::get('/posts/{id}', 'show');
 });
 
-// Comment
-Route::post('/post/{postId}/comment', 'CommentController@store');
+// Admin
+Route::controller(AdminController::class)->group(function () {
+    Route::get('/admin_dashboard', 'index')->name('admin_dashboard');
+})->middleware('admin');
 
 // Authentication
 Route::controller(LoginController::class)->group(function () {

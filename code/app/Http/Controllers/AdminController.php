@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
+use App\Http\Controllers\UserController;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -12,54 +14,72 @@ class AdminController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::all();
+
+        return view('pages.admin_dashboard', ['users' => $users]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'name' => 'required|string|max:250',
+            'username' => 'required|string|max:250',
+            'email' => 'required|email|max:250|unique:user',
+            'password' => 'required|min:8|confirmed'
+        ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $user = new User([
+            'name' => $request->input('name'),
+            'username' => $request->input('username'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password'))
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Admin $admin)
-    {
-        //
-    }
+        // Save the user to the database
+        $user->save();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Admin $admin)
-    {
-        //
+        index();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Admin $admin)
+    public function update(Request $request, User $user, Admin $admin)
     {
-        //
+        // Validate the request data.
+        $validatedData = $request->validate([
+            'username' => 'nullable|string|max:255',
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'birthday' => 'nullable|date',
+            'password' => 'nullable|string|min:8',
+            'gender' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:255',
+            'url' => 'nullable|url|max:255',
+        ]);
+
+        // If a password is provided, hash it before storing.
+        if (isset($validatedData['password'])) {
+            $validatedData['password'] = Hash::make($validatedData['password']);
+        }
+
+        // Update the user's profile information.
+        $user->update($validatedData);
+
+        // Save the changes to the database.
+        $user->save();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Admin $admin)
+    public function delete(User $user, Admin $admin)
     {
-        //
+        // Delete the user.
+        $user->delete();
     }
 }
+        
