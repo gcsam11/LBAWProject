@@ -18,6 +18,16 @@ class Comment extends Model
 
     protected $table = "comment";
 
+    protected $fillable = [
+        'title',
+        'caption',
+        'commentdate',
+        'upvotes',
+        'downvotes',
+        'post_id',
+        'user_id',
+    ];
+
     /**
      * Get the user that owns the comment.
      */

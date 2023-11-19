@@ -22,7 +22,10 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
 
         // Get all comments for the post ordered by date.
-        $comments = $post->comments()->orderByDesc('commentdate')->get();
+        /* $comments = $post->comments()->orderByDesc('commentdate')->get(); */
+        $comments = $post->comments()
+            ->orderByRaw('(upvotes - downvotes) DESC')
+            ->get();
 
         // No need to authorize show action here as it's already fetched the post.
 
