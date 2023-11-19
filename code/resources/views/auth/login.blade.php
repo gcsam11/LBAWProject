@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.forms')
 
 <head>
     <title>Login</title>
