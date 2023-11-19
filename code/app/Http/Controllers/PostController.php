@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
 
 
 class PostController extends Controller
@@ -46,7 +47,7 @@ class PostController extends Controller
 
         // Use the pages.post template to display all cards.
         return view('pages.posts', [
-            'posts' => $posts
+            'posts' => $posts,
         ]);
     }
 
@@ -67,16 +68,15 @@ class PostController extends Controller
     /**
      * Creates a new post.
      */
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
         // Check if the current user is authorized to create this post.
         $this->authorize('create', Auth::user());
-
+    
         $request->validate([
             'title' => ['required'],
             'caption' => ['required']
         ]);
-
+    
         // Set post details.
         $post = Post::create([
             'title' => $request->input('title'),
@@ -84,34 +84,43 @@ class PostController extends Controller
             'postdate' => now(), // Set the current date and time.
             'user_id' => Auth::user()->id
         ]);
-
-        // Return the created post.
-        return response()->json($post);
+    
+        // Redirect the user to the newly created post page or any other page you prefer.
+        return redirect()->route('posts')->with('success', 'Post created successfully');
     }
 
     /**
      * Update a post.
      */
-    public function update(Request $request, $id)
-    {
-        // Find the post.
-        $post = Post::findOrFail($id);
+    public function update(Request $request, $id){
+        try {
 
-        // Check if the current user is authorized to update this post.
-        $this->authorize('update', Auth::user());
+            // Find the post.
+            $post = Post::findOrFail($id);
+            
+            $this->authorize('update', $post);
 
-        $request->validate([
-            'title' => ['required'],
-            'caption' => ['required']
-        ]);
 
-        // Update post details.
-        $post->title = $request->input('title');
-        $post->caption = $request->input('caption');
+            $request->validate([
+                'title' => ['required'],
+                'caption' => ['required']
+            ]);
+            
+            // Update post details.
+            $post->title = $request->input('title');
+            $post->caption = $request->input('caption');
 
-        // Save the updated post and return it as JSON.
-        $post->save();
-        return response()->json($post);
+            // Save the updated post.
+            $post->save();
+
+            return redirect()->route('posts')->with('success', 'Post updated successfully');
+        } catch (\Exception $e) {
+            // Log the error message.
+            \Log::error('Failed to update post with ID: ' . $post->id . '. Error: ' . $e->getMessage());
+
+            // Redirect back with an error message.
+            return redirect()->route('posts')->with('error',  'Failed to update the post');
+        }
     }
 
     /**
@@ -122,12 +131,20 @@ class PostController extends Controller
         // Find the post.
         $post = Post::findOrFail($id);
 
-        // Check if the current user is authorized to delete this post.
-        $this->authorize('delete', Auth::user());
+        $this->authorize('delete', $post);
 
-        // Delete the post and return it as JSON.
-        $post->delete();
-        return response()->json($post);
+        
+        try {
+            $post->delete();
+            \Log::info('Post deleted successfully with ID: ' . $post->id);
+            return redirect()->route('posts')->with('success', 'Post deleted successfully');
+        } 
+        catch (\Exception $e) {
+            \Log::error('Failed to delete post with ID: ' . $post->id . '. Error: ' . $e->getMessage());
+            
+            return redirect()->route('posts')->with('error', 'Failed to delete the post');
+        }
     }
+
 }
 ?>
