@@ -6,11 +6,6 @@
 
 <section id="posts">
     @each('partials.post', $posts, 'post')
-    <article class="post">
-        <form class="new_post">
-            <input type="text" name="name" placeholder="new post">
-        </form>
-    </article>
 </section>
 
 @endsection
