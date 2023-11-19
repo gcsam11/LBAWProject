@@ -3,11 +3,11 @@
 <!-- USER HAS TO BE LOGGED IN -->
 
 @section('title')
-    {{ "My News" }}
+    {{ "News Feed" }}
 @endsection
 
 @section('header')
-    {{ "My News" }}
+    {{ "News Feed" }}
 @endsection
 
 @section('content')

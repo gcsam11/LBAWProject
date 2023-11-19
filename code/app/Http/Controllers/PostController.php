@@ -86,7 +86,7 @@ class PostController extends Controller
         ]);
     
         // Redirect the user to the newly created post page or any other page you prefer.
-        return redirect()->route('posts')->with('success', 'Post created successfully');
+        return redirect()->route('main')->with('success', 'Post created successfully');
     }
 
     /**

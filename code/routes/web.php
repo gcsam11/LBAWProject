@@ -2,10 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -57,7 +55,6 @@ Route::get('/create_post', function () {
     return view('pages.create_post');
 })->name('create_post')->middleware('auth');
 
-Route::post('/create_post', [PostController::class, 'create'])->name('create_post');
 
 
 // Posts
@@ -65,7 +62,7 @@ Route::controller(PostController::class)->group(function () {
     Route::get('/welcome/top', 'listTop')->name('posts');
     Route::get('/welcome/recent', 'listRecent')->name('posts');
     Route::get('/posts/{id}', 'show')->name('posts.show');
-    Route::post('/posts/{id}', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/create_post', [PostController::class, 'create'])->name('posts.create');
     Route::delete('/posts/{id}', [PostController::class, 'delete'])->name('posts.delete');
     Route::patch('/posts/{id}',[PostController::class, 'update'])->name('posts.update');
 });

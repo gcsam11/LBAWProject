@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-<form method="POST" action="{{ route('create_post') }}">
+<form method="POST" action="{{ route('posts.create') }}">
   {{ csrf_field() }}
 
   <label for="title">Title</label>
