@@ -92,13 +92,9 @@ class PostController extends Controller
     /**
      * Update a post.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
-        // Find the post.
-        $post = Post::findOrFail($id);
-
-        // Check if the current user is authorized to update this post.
-        $this->authorize('update', Auth::user());
+        $this->authorize('update', $post);
 
         $request->validate([
             'title' => ['required'],
@@ -111,7 +107,8 @@ class PostController extends Controller
 
         // Save the updated post and return it as JSON.
         $post->save();
-        return response()->json($post);
+
+        return redirect()->route('posts.show', ['id' => $post->id])->with('success', 'Post updated successfully');
     }
 
     /**
@@ -122,12 +119,20 @@ class PostController extends Controller
         // Find the post.
         $post = Post::findOrFail($id);
 
-        // Check if the current user is authorized to delete this post.
-        $this->authorize('delete', Auth::user());
+        $this->authorize('delete', $post);
 
-        // Delete the post and return it as JSON.
-        $post->delete();
-        return response()->json($post);
+        
+        try {
+            $post->delete();
+            \Log::info('Post deleted successfully with ID: ' . $post->id);
+            return redirect()->route('posts')->with('success', 'Post deleted successfully');
+        } 
+        catch (\Exception $e) {
+            \Log::error('Failed to delete post with ID: ' . $post->id . '. Error: ' . $e->getMessage());
+            
+            return redirect()->route('posts')->with('error', 'Failed to delete the post');
+        }
     }
+
 }
 ?>

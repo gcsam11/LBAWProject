@@ -59,6 +59,8 @@ Route::controller(PostController::class)->group(function () {
     Route::get('/welcome/top', 'listTop')->name('posts');
     Route::get('/welcome/recent', 'listRecent')->name('posts');
     Route::get('/posts/{id}', 'show');
+    Route::delete('/posts/{id}', [PostController::class, 'delete'])->name('posts.delete');
+    Route::patch('/posts/{id}',[PostController::class, 'update'])->name('posts.update');
 });
 
 // Comment
