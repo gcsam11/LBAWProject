@@ -69,7 +69,7 @@ paths:
                 302Success:
                   description: 'Successful logout. Redirect to login form.'
                   value: '/login'
-  /user/{id}:
+  /profile/{id}:
     get:
       operationId: R104
       summary: 'R104: View user profile'
@@ -88,7 +88,7 @@ paths:
         '200':
           description: 'Ok. Show User Profile UI'
 
-  /users/register:  # Adding registration endpoint
+  /register:  # Adding registration endpoint
     post:
       operationId: R105
       summary: 'R105: Register Form'
@@ -129,7 +129,7 @@ paths:
                   description: 'Password recovery initiated. Redirect to recovery instructions.'
                   value: '/recover-instructions'
 
-  /user/{id}/settings:  # Adding profile settings endpoint
+  /profile/{id}/:  # Adding profile settings endpoint
     get:
       operationId: R107
       summary: 'R107: View Profile Settings'
@@ -323,7 +323,7 @@ paths:
       responses:
         '204':
           description: 'Comment deleted successfully'         
-  /users/{id}:
+  /profile/{id}:
     get:
       operationId: R301
       summary: 'R301: View user information'
@@ -350,7 +350,7 @@ paths:
                     type: string
                   email:
                     type: string
-  /users/{id}/posts:
+  /profile/{id}/posts:
     get:
       operationId: R302
       summary: 'R302: View user posts'
@@ -379,7 +379,7 @@ paths:
                       type: string
                     content:
                       type: string
-  /users/{id}/follow:
+  /profile/{id}/follow:
     post:
       operationId: R303
       summary: 'R303: Follow a user'
