@@ -37,9 +37,8 @@ Route::get('/welcome', function () {
     return view('pages.welcome');
 })->name('welcome')->middleware('guest');
 
-Route::get('/main', function () {
-    return view('pages.main');
-})->name('main')->middleware('auth');
+Route::redirect('/main', '/main/top'); // Redirect /main to /main/top
+
 
 
 Route::get('/user_news', function () {
@@ -67,10 +66,11 @@ Route::get('/create_post', function () {
 
 
 
+
 // Posts
 Route::controller(PostController::class)->group(function () {
-    Route::get('/welcome/top', 'listTop')->name('posts');
-    Route::get('/welcome/recent', 'listRecent')->name('posts');
+    Route::get('/main/top', [PostController::class, 'listTop'])->name('posts.top');
+    Route::get('/main/recent', [PostController::class, 'listRecent'])->name('posts.recent');
     Route::get('/posts/{id}', 'show')->name('posts.show');
     Route::post('/create_post', [PostController::class, 'create'])->name('posts.create');
     Route::delete('/posts/{id}', [PostController::class, 'delete'])->name('posts.delete');

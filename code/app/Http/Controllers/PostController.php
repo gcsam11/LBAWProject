@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
+use App\Http\Controllers\Controller;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,7 +48,7 @@ class PostController extends Controller
         $posts = Post::orderByRaw('(upvotes - downvotes) DESC')->get();
 
         // Use the pages.post template to display all cards.
-        return view('pages.posts', [
+        return view('pages.main', [
             'posts' => $posts,
         ]);
     }
@@ -60,7 +62,7 @@ class PostController extends Controller
         $posts = Post::orderBy('postdate', 'DESC')->get();
 
         // Use the pages.post template to display all cards.
-        return view('pages.posts', [
+        return view('pages.main', [
             'posts' => $posts
         ]);
     }
