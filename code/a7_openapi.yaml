@@ -69,7 +69,7 @@ paths:
                 302Success:
                   description: 'Successful logout. Redirect to login form.'
                   value: '/login'
-  /user/{id}:
+  /profile/{id}:
     get:
       operationId: R104
       summary: 'R104: View user profile'
@@ -88,7 +88,16 @@ paths:
         '200':
           description: 'Ok. Show User Profile UI'
 
-  /users/register:  # Adding registration endpoint
+  /register:  # Adding registration endpoint
+    get:
+     operationId: R104
+     summary: 'R104: Register Form'
+     description: 'Provide new user registration form. Access: PUB'
+     tags:
+       - 'M01: Authentication and Individual Profile'
+     responses:
+       '200':
+         description: 'Ok. Show Sign-Up UI'
     post:
       operationId: R105
       summary: 'R105: Register Form'
@@ -96,8 +105,19 @@ paths:
       tags:
         - 'M01: Authentication and Individual Profile'
       responses:
-        '200':
-          description: 'Ok. Show Sign-Up UI'
+       '302':
+         description: 'Redirect after processing the new user information.'
+         headers:
+           Location:
+             schema:
+               type: string
+             examples:
+               302Success:
+                 description: 'Successful authentication. Redirect to main.'
+                 value: '/main'
+               302Failure:
+                 description: 'Failed authentication. Redirect to register form.'
+                 value: '/register'
 
   /users/recover-password:  # Adding password recovery endpoint
     post:
@@ -129,7 +149,7 @@ paths:
                   description: 'Password recovery initiated. Redirect to recovery instructions.'
                   value: '/recover-instructions'
 
-  /user/{id}/settings:  # Adding profile settings endpoint
+  /profile/{id}/:  # Adding profile settings endpoint
     get:
       operationId: R107
       summary: 'R107: View Profile Settings'
@@ -323,7 +343,7 @@ paths:
       responses:
         '204':
           description: 'Comment deleted successfully'         
-  /users/{id}:
+  /profile/{id}:
     get:
       operationId: R301
       summary: 'R301: View user information'
@@ -350,7 +370,7 @@ paths:
                     type: string
                   email:
                     type: string
-  /users/{id}/posts:
+  /profile/{id}/posts:
     get:
       operationId: R302
       summary: 'R302: View user posts'
@@ -379,7 +399,7 @@ paths:
                       type: string
                     content:
                       type: string
-  /users/{id}/follow:
+  /profile/{id}/follow:
     post:
       operationId: R303
       summary: 'R303: Follow a user'
