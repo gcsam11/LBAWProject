@@ -50,9 +50,9 @@ class PostController extends Controller
         
         $tsqueryString = str_replace(' ', ' & ', $searchTerm);
 
-        $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$tsqueryString])
-            ->get();
-    
+        $results = Post::whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$searchTerm])
+        ->get();
+
         return view('pages/posts_search_results', [
             'results' => $results
         ]);

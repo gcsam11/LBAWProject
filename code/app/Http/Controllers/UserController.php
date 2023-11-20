@@ -143,8 +143,8 @@ class UserController extends Controller
 
         $tsqueryString = str_replace(' ', ' & ', $searchTerm);
 
-        $results = User::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$tsqueryString])
-            ->get();
+        $results = User::whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$searchTerm])
+        ->get();
 
         return view('pages/users_search_results', ['results' => $results]);
     }
