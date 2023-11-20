@@ -9,5 +9,5 @@
         <strong>Date:</strong> {{ $post->postdate }}<br><br>
         <strong>Upvotes:</strong> {{ $post->upvotes }}<br><br>
         <strong>Downvotes:</strong> {{ $post->downvotes }}<br><br>
-        <strong>Posted by:</strong> {{ $post->user->name }}
+        <strong>Posted by:</strong> <a href="{{ route('profile_page', ['id' => $post->user->id]) }}">{{ $post->user->name }}</a>
 </article>
