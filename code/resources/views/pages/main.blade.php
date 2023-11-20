@@ -15,6 +15,7 @@
         <button id="create_post">+</button>
     </div>
     <div class="navigation">
+        <!-- Tornar isto num select -->
         <!-- Buttons to switch between routes -->
         <a href="{{ route('posts.recent') }}">Recent Posts</a>
         <a href="{{ route('posts.top') }}">Top Posts</a>

@@ -25,21 +25,11 @@ use App\Http\Controllers\PostController;
 |
 */
 
-/* // Home
-
+//Home
 Route::get('/', function () {
-    // If the user is authenticated, redirect to the 'main' page
-    // If not authenticated, redirect to the 'welcome' page
-    return auth()->check() ? redirect('/main') : redirect('/welcome');
-})->name('home'); */
-/* 
-Route::get('/welcome', function () {
-    return view('pages.welcome');
-})->name('welcome')->middleware('guest'); */
-
+    return redirect('/main');
+})->name('home');
 Route::redirect('/main', '/main/top'); // Redirect /main to /main/top
-
-
 
 Route::get('/user_news', function () {
     return view('pages.user_news');
@@ -52,20 +42,15 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/profile/{id}', 'show')->name('profile');
 })->middleware('auth');
 
-
 Route::get('/profile', function () {
     $user = Auth::user();
     return view('pages.profile', compact('user'));
 })->name('profile_page');
 
-
 // Create Post
 Route::get('/create_post', function () {
     return view('pages.create_post');
 })->name('create_post')->middleware('auth');
-
-
-
 
 // Posts
 Route::group(['prefix' => 'main'], function () {

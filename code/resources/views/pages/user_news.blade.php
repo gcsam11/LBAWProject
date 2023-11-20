@@ -25,8 +25,6 @@
         </div>
         <div class="news">
             <!-- Fetch news on the database that belong only to the user -->
-
-            <!-- if user clicks on upvote or downvote redirect to login page -->
         </div>
         <br>
         <div class="create_post">
