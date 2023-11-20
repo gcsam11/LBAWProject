@@ -30,13 +30,13 @@
             <nav>
                 
                 @guest
-                <a href="{{ route('welcome') }}">News Feed</a>&nbsp;&nbsp;&nbsp;
+                <a href="{{ route('posts.top') }}">News Feed</a>&nbsp;&nbsp;&nbsp;
                 <a href="{{ route('login') }}">Login</a>&nbsp;&nbsp;&nbsp;
                 <a href="{{ route('register') }}">Register</a>
                 @endguest
                 
                 @auth
-                <a href="{{ route('main') }}">News Feed</a>&nbsp;&nbsp;&nbsp;
+                <a href="{{ route('posts.top') }}">News Feed</a>&nbsp;&nbsp;&nbsp;
                 <a href="{{ route('user_news') }}">User News</a>&nbsp;&nbsp;&nbsp;
                 <a href="{{ route('profile_page', ['id' => Auth::id()]) }}">Profile</a>&nbsp;&nbsp;&nbsp;
 

@@ -25,17 +25,17 @@ use App\Http\Controllers\PostController;
 |
 */
 
-// Home
+/* // Home
 
 Route::get('/', function () {
     // If the user is authenticated, redirect to the 'main' page
     // If not authenticated, redirect to the 'welcome' page
     return auth()->check() ? redirect('/main') : redirect('/welcome');
-})->name('home');
-
+})->name('home'); */
+/* 
 Route::get('/welcome', function () {
     return view('pages.welcome');
-})->name('welcome')->middleware('guest');
+})->name('welcome')->middleware('guest'); */
 
 Route::redirect('/main', '/main/top'); // Redirect /main to /main/top
 
@@ -68,14 +68,19 @@ Route::get('/create_post', function () {
 
 
 // Posts
-Route::controller(PostController::class)->group(function () {
-    Route::get('/main/top', [PostController::class, 'listTop'])->name('posts.top');
-    Route::get('/main/recent', [PostController::class, 'listRecent'])->name('posts.recent');
-    Route::get('/posts/{id}', 'show')->name('posts.show');
-    Route::post('/create_post', [PostController::class, 'create'])->name('posts.create');
-    Route::delete('/posts/{id}', [PostController::class, 'delete'])->name('posts.delete');
-    Route::patch('/posts/{id}',[PostController::class, 'update'])->name('posts.update');
+Route::group(['prefix' => 'main'], function () {
+    Route::get('/top', [PostController::class, 'listTop'])->name('posts.top');
+    Route::get('/recent', [PostController::class, 'listRecent'])->name('posts.recent');
 });
+
+// Individual Post Actions
+Route::prefix('posts')->group(function () {
+    Route::get('/{id}', [PostController::class, 'show'])->name('posts.show');
+    Route::post('/create_post', [PostController::class, 'create'])->name('posts.create');
+    Route::delete('/{id}', [PostController::class, 'delete'])->name('posts.delete');
+    Route::patch('/{id}', [PostController::class, 'update'])->name('posts.update');
+});
+
 
 // Admin
 Route::controller(AdminController::class)->group(function () {

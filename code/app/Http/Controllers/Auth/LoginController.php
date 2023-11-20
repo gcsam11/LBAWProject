@@ -19,7 +19,7 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            return redirect()->route('main');
+            return redirect()->route('posts.top');
         } else {
             return view('auth.login');
         }
@@ -38,7 +38,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
  
-            return redirect()->route('main')->withSuccess('You have logged in succesfully!');
+            return redirect()->route('posts.top')->withSuccess('You have logged in succesfully!');
         }
  
         return back()->withErrors([
