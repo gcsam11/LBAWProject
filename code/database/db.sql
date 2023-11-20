@@ -194,7 +194,6 @@ EXECUTE FUNCTION post_search_update();
 -- Create the GIN index for POST full-text search
 CREATE INDEX idx_posts_tsvectors ON POST USING GIN(tsvectors);
 
-
 ALTER TABLE "user"
 ADD COLUMN tsvectors TSVECTOR;
 
@@ -219,6 +218,15 @@ BEGIN
  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Trigger for updating User search index
+CREATE TRIGGER user_search_update_trigger
+BEFORE INSERT OR UPDATE ON "user"
+FOR EACH ROW
+EXECUTE FUNCTION user_search_update();
+
+-- Create the GIN index for User full-text search
+CREATE INDEX idx_users_tsvectors ON "user" USING GIN(tsvectors);
 
 -- Trigger for updating post upvotes count
 CREATE OR REPLACE FUNCTION update_post_votes_count()
@@ -291,12 +299,6 @@ CREATE TRIGGER downvote_comment_trigger
 AFTER INSERT ON downvote_comment
 FOR EACH ROW
 EXECUTE FUNCTION downvote_comment_votes_count();
-
--- Trigger for updating "user" search index
-CREATE TRIGGER user_search_update_trigger
-BEFORE INSERT OR UPDATE ON "user"
-FOR EACH ROW
-EXECUTE FUNCTION user_search_update();
 
 -- Trigger for creating notification when a "user" comments on a POST
 CREATE OR REPLACE FUNCTION new_comment_notification()

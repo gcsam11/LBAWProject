@@ -47,14 +47,12 @@ class PostController extends Controller
         // A linha abaixo está corrigida
         $searchTerm = $validatedData['search_term'];
         
-        Log::info('Search term:', ['search_term' => $searchTerm]);
         
         $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
             ->get();
     
-        Log::info('Search results:', ['results' => $results]);
     
-        return view('pages/search_results', ['results' => $results]);
+        return view('pages/posts_search_results', ['results' => $results]);
     }
     
     /**
