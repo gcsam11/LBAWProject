@@ -40,7 +40,13 @@ class PostController extends Controller
     }
     public function search(Request $request)
     {
-        $searchTerm = $request->input('searchTerm');
+        $searchTerm = $request->validate([
+            'search_term' => ['required']
+        ]);
+
+        $searchTerm = $validatedData['search_term'];
+        
+        Log::info('Search term:', ['search_term' => $searchTerm]);
         
         $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
         ->get();

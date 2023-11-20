@@ -39,6 +39,7 @@ Route::get('/search_results', function () {
     return view('pages.search_results');
 })->name('search_results');
 
+
 // User
 Route::controller(UserController::class)->group(function () {
     Route::get('/user/{id}/edit', 'update')->name('profile.update');

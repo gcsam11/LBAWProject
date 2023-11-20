@@ -9,7 +9,12 @@
     <div class="search&sort">
         <form action="{{ route('posts.search') }}" method="POST">
             @csrf
-            <input type="text" placeholder="Search for News">
+            <input id="search_term" name="search_term" type="text" value="{{ old('search_term') }}" placeholder="Search for News">
+            @if ($errors->has('search_term'))
+                <span class="error">
+                    {{ $errors->first('search_term') }}
+                </span>
+            @endif    
             <button type="submit">Search</button>
         </form>
         <br>
