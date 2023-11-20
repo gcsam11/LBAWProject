@@ -44,17 +44,24 @@ class PostController extends Controller
             'search_term' => ['required']
         ]);
     
-        // A linha abaixo está corrigida
         $searchTerm = $validatedData['search_term'];
-        
-        
-        $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
+    
+        // Pesquisa por correspondência exata (Exact Match, case-insensitive)
+        $exactMatchResults = Post::whereRaw("LOWER(title) = LOWER(?) OR LOWER(caption) = LOWER(?)", [$searchTerm, $searchTerm])
             ->get();
     
+        // Pesquisa de texto completo (Full-text Search)
+        $fullTextSearchResults = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
+            ->get();
     
-        return view('pages/posts_search_results', ['results' => $results]);
+        // Combina e remove duplicados
+        $results = $exactMatchResults->merge($fullTextSearchResults)->unique();
+    
+        return view('pages/posts_search_results', [
+            'results' => $results
+        ]);
     }
-    
+      
     /**
      * Shows all posts sorted by Upvotes/Downvote Difference
      */
