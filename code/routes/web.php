@@ -61,7 +61,7 @@ Route::get('/create_post', function () {
 Route::group(['prefix' => 'main'], function () {
     Route::get('/top', [PostController::class, 'listTop'])->name('posts.top');
     Route::get('/recent', [PostController::class, 'listRecent'])->name('posts.recent');
-    Route::post('/search', [PostController::class, 'search'])->name('posts.search');
+    Route::get('/search', [PostController::class, 'search'])->name('posts.search');
 });
 
 // Individual Post Actions
