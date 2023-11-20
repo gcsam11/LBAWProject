@@ -68,10 +68,10 @@ Route::prefix('posts')->group(function () {
     Route::patch('/{id}/update', [PostController::class, 'update'])->name('posts.update');
 });
 
-
 // Admin
 Route::controller(AdminController::class)->group(function () {
     Route::get('/admin_dashboard', 'index')->name('admin_dashboard');
+    Route::post('/admin_dashboard', 'create')->name('admin.register');
 })->middleware('admin');
 
 // Authentication

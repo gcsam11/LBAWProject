@@ -36,8 +36,6 @@ class UserController extends Controller
         // Save the user to the database
         $user->save();
 
-        // You can perform additional actions here if needed
-
         // Redirect to a success page or return a response
         return redirect()->route('registration.success')
             ->with('success', 'User registered successfully!');
@@ -89,13 +87,13 @@ class UserController extends Controller
             $user->save();
     
             // Redirect the user back to their profile page.
-            return redirect()->route('profile')->with('success', 'Info updated successfully');
+            return redirect()->route('profile_page', ['id' => $user->id])->with('success', 'Info updated successfully');
         } catch (\Exception $e) {
             // Log the error message.
             \Log::error('Failed to update user with ID: ' . $user->id . '. Error: ' . $e->getMessage());
     
             // Redirect back with an error message.
-            return redirect()->route('profile')->with('error', 'Failed to update info');
+            return redirect()->route('profile_page', ['id' => $user->id])->with('error', 'Failed to update info');
         }
     }    
 
@@ -147,7 +145,13 @@ class UserController extends Controller
         // Delete the user.
         $user->delete();
 
-        // Redirect the user to the user index page.
-        return redirect()->route('logout');
+        if(Auth::user()->isAdmin()){
+            // Redirect the user to the admin dashboard.
+            return redirect()->route('admin_dashboard');
+        }
+        else{
+            // Redirect the user to the user index page.
+            return redirect()->route('logout');
+        }
     }
 }
