@@ -46,15 +46,17 @@ class PostController extends Controller
     
         $searchTerm = $validatedData['search_term'];
     
-        // Pesquisa por correspondência exata (Exact Match, case-insensitive)
+        $tsqueryString = str_replace(' ', ' & ', $searchTerm);
+
+
         $exactMatchResults = Post::whereRaw("LOWER(title) = LOWER(?) OR LOWER(caption) = LOWER(?)", [$searchTerm, $searchTerm])
             ->get();
     
-        // Pesquisa de texto completo (Full-text Search)
-        $fullTextSearchResults = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
+
+        $fullTextSearchResults = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$tsqueryString])
             ->get();
     
-        // Combina e remove duplicados
+
         $results = $exactMatchResults->merge($fullTextSearchResults)->unique();
     
         return view('pages/posts_search_results', [

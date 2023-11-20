@@ -139,12 +139,16 @@ class UserController extends Controller
         // A linha abaixo está corrigida
         $searchTerm = $validatedData['search_term'];
         
-        
-        $results = User::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
+        $tsqueryString = str_replace(' ', ' & ', $searchTerm);
+
+        $exactMatchResults = User::whereRaw("LOWER(name) = LOWER(?) OR LOWER(username) = LOWER(?)", [$searchTerm, $searchTerm])
+        ->get();
+
+        $results = User::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$tsqueryString])
             ->get();
     
     
-        return view('pages/users_search_results', ['results' => $results]);
+        return view('pages/users_search_results', ['results' => $results])->unique();
     }
 
     /**
