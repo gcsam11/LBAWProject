@@ -76,8 +76,11 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(User $user, Admin $admin)
+    public function delete(string $id, Admin $admin)
     {
+        // Find the user by ID.
+        $user = User::findOrFail($id);
+
         // Delete the user.
         $user->delete();
     }

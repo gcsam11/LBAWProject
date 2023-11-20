@@ -37,15 +37,11 @@ Route::get('/user_news', function () {
 
 // User
 Route::controller(UserController::class)->group(function () {
-    Route::get('/user/{id}/edit', 'update')->name('profile.update');
-    Route::get('/user/{id}/delete', 'delete')->name('profile.delete');
-    Route::get('/profile/{id}', 'show')->name('profile');
-})->middleware('auth');
-
-Route::get('/profile', function () {
-    $user = Auth::user();
-    return view('pages.profile', compact('user'));
-})->name('profile_page');
+    Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
+    Route::post('/change-password', [UserController::class, 'change_password'])->name('change.password');
+    Route::get('/profile/{id}', [UserController::class, 'show'])->name('profile_page');
+    Route::post('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
+});
 
 // Create Post
 Route::get('/create_post', function () {
@@ -62,8 +58,8 @@ Route::group(['prefix' => 'main'], function () {
 Route::prefix('posts')->group(function () {
     Route::get('/{id}', [PostController::class, 'show'])->name('posts.show');
     Route::post('/create_post', [PostController::class, 'create'])->name('posts.create');
-    Route::delete('/{id}', [PostController::class, 'delete'])->name('posts.delete');
-    Route::patch('/{id}', [PostController::class, 'update'])->name('posts.update');
+    Route::post('/{id}/delete', [PostController::class, 'delete'])->name('posts.delete');
+    Route::patch('/{id}/update', [PostController::class, 'update'])->name('posts.update');
 });
 
 
@@ -83,11 +79,4 @@ Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
 });
-
-
-Route::controller(UserController::class)->group(function () {
-    Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
-    Route::post('/change-password', [UserController::class, 'change_password'])->name('change.password');
-});
-
 ?>
