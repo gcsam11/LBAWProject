@@ -38,7 +38,25 @@ class PostController extends Controller
             'comments' => $comments
         ]);
     }
-
+    public function search(Request $request)
+    {
+        $validatedData = $request->validate([
+            'search_term' => ['required']
+        ]);
+    
+        // A linha abaixo está corrigida
+        $searchTerm = $validatedData['search_term'];
+        
+        Log::info('Search term:', ['search_term' => $searchTerm]);
+        
+        $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
+            ->get();
+    
+        Log::info('Search results:', ['results' => $results]);
+    
+        return view('pages/search_results', ['results' => $results]);
+    }
+    
     /**
      * Shows all posts sorted by Upvotes/Downvote Difference
      */
