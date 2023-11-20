@@ -48,16 +48,8 @@ class PostController extends Controller
     
         $tsqueryString = str_replace(' ', ' & ', $searchTerm);
 
-
-        $exactMatchResults = Post::whereRaw("LOWER(title) = LOWER(?) OR LOWER(caption) = LOWER(?)", [$searchTerm, $searchTerm])
+        $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$tsqueryString])
             ->get();
-    
-
-        $fullTextSearchResults = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$tsqueryString])
-            ->get();
-    
-
-        $results = $exactMatchResults->merge($fullTextSearchResults)->unique();
     
         return view('pages/posts_search_results', [
             'results' => $results

@@ -141,14 +141,9 @@ class UserController extends Controller
         
         $tsqueryString = str_replace(' ', ' & ', $searchTerm);
 
-        $exactMatchResults = User::whereRaw("LOWER(name) = LOWER(?) OR LOWER(username) = LOWER(?)", [$searchTerm, $searchTerm])
-        ->get();
-
-        $fullTextSearchResults = User::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$tsqueryString])
+        $results = User::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$tsqueryString])
             ->get();
-    
-        $results = $exactMatchResults->merge($fullTextSearchResults)->unique();
-    
+
         return view('pages/users_search_results', ['results' => $results]);
     }
 
