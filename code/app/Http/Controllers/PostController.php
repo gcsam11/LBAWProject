@@ -45,7 +45,9 @@ class PostController extends Controller
         ]);
     
         $searchTerm = $validatedData['search_term'];
-    
+        
+        $searchTerm = preg_replace('/\s+/', ' ', $searchTerm);
+        
         $tsqueryString = str_replace(' ', ' & ', $searchTerm);
 
         $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$tsqueryString])
