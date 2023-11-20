@@ -119,11 +119,11 @@ paths:
                  description: 'Failed authentication. Redirect to register form.'
                  value: '/register'
 
-  /users/recover-password:  # Adding password recovery endpoint
+  /profile/{id}/change_password:  # Adding password change endpoint
     post:
       operationId: R106
-      summary: 'R106: Recover Password'
-      description: 'Processes the request for password recovery.'
+      summary: 'R106: Change Password'
+      description: 'Processes the request for password change.'
       tags:
         - 'M01: Authentication and Individual Profile'
       requestBody:
@@ -139,15 +139,15 @@ paths:
                 - email
       responses:
         '200':
-          description: 'Password recovery initiated. Redirect to recovery instructions.'
+          description: 'Password change initiated. Redirect to user profile.'
           headers:
             Location:
               schema:
                 type: string
               examples:
                 200Success:
-                  description: 'Password recovery initiated. Redirect to recovery instructions.'
-                  value: '/recover-instructions'
+                  description: 'Password change initiated. Redirect to user profile.'
+                  value: '/profile/{id}'
 
   /profile/{id}/:  # Adding profile settings endpoint
     get:
