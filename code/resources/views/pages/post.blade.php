@@ -28,7 +28,7 @@
     @endcan
     {{-- Delete Button --}}
     @can('delete', $post)
-    <form action="{{ route('posts.delete', $post->id) }}" method="POST">
+    <form action="{{ route('posts.delete', ['id' => $post->id]) }}" method="POST">
         @csrf
         @method('DELETE')
         <button type="submit">Delete Post</button>
