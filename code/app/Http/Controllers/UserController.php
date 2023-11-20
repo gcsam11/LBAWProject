@@ -136,19 +136,18 @@ class UserController extends Controller
             'search_term' => ['required']
         ]);
     
-
         $searchTerm = $validatedData['search_term'];
-        
+    
         $searchTerm = preg_replace('/\s+/', ' ', $searchTerm);
-
-        $tsqueryString = str_replace(' ', ' & ', $searchTerm);
-
-        $results = User::whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$searchTerm])
+    
+        // Exact match search for both name and username
+        $results = User::where('name', 'ILIKE', "%$searchTerm%")
+        ->orWhere('username', 'ILIKE', "%$searchTerm%")
         ->get();
 
         return view('pages/users_search_results', ['results' => $results]);
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */

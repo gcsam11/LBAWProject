@@ -45,19 +45,26 @@ class PostController extends Controller
         ]);
     
         $searchTerm = $validatedData['search_term'];
-        
+    
         $searchTerm = preg_replace('/\s+/', ' ', $searchTerm);
-        
-        $tsqueryString = str_replace(' ', ' & ', $searchTerm);
-
-        $results = Post::whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$searchTerm])
-        ->get();
-
+    
+        if (strpos($searchTerm, ' ') !== false) {
+            // Full-text search for terms with spaces
+            $modifiedSearchTerm = str_replace(' ', ':* & ', $searchTerm) . ':*';
+            $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$modifiedSearchTerm])
+                ->get();
+        } else {
+            // Exact match search for both title and caption
+            $results = Post::where('title', 'ILIKE', "%$searchTerm%")
+            ->orWhere('caption', 'ILIKE', "%$searchTerm%")
+            ->get();
+        }
+    
         return view('pages/posts_search_results', [
             'results' => $results
         ]);
     }
-      
+    
     /**
      * Shows all posts sorted by Upvotes/Downvote Difference
      */
