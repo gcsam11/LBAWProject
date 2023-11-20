@@ -22,7 +22,7 @@ paths:
     get:
       operationId: R101
       summary: 'R101: Login Form'
-      description: 'Provide login form.'
+      description: 'Provide login form. Access: PUB'
       tags:
         - 'M01: Authentication and Individual Profile'
       responses:
@@ -31,7 +31,7 @@ paths:
     post:
       operationId: R102
       summary: 'R102: Login Action'
-      description: 'Processes the login form submission.'
+      description: 'Processes the login form submission. Access: PUB'
       tags:
         - 'M01: Authentication and Individual Profile'
       requestBody:
@@ -55,7 +55,7 @@ paths:
     post:
       operationId: R103
       summary: 'R103: Logout Action'
-      description: 'Logout the current authenticated user.'
+      description: 'Logout the current authenticated user. Access: USR'
       tags:
         - 'M01: Authentication and Individual Profile'
       responses:
@@ -73,7 +73,7 @@ paths:
     get:
       operationId: R104
       summary: 'R104: View user profile'
-      description: 'Show the individual user profile.'
+      description: 'Show the individual user profile. Access: USR'
       tags:
         - 'M01: Authentication and Individual Profile'
 
@@ -123,7 +123,7 @@ paths:
     post:
       operationId: R106
       summary: 'R106: Change Password'
-      description: 'Processes the request for password change.'
+      description: 'Processes the request for password change. Access: USR'
       tags:
         - 'M01: Authentication and Individual Profile'
       requestBody:
@@ -153,7 +153,7 @@ paths:
     get:
       operationId: R107
       summary: 'R107: View Profile Settings'
-      description: 'Show the profile settings of the user. '
+      description: 'Show the profile settings of the user. Access: USR'
       tags:
         - 'M01: Authentication and Individual Profile'
       parameters:
@@ -169,7 +169,7 @@ paths:
     put:
       operationId: R108
       summary: 'R108: Update Profile Settings'
-      description: 'Update the profile settings of the user.R'
+      description: 'Update the profile settings of the user. Access: USR'
       tags:
         - 'M01: Authentication and Individual Profile'
       parameters:
@@ -192,10 +192,10 @@ paths:
       responses:
         '200':
           description: 'Profile settings updated successfully.'
-  /posts:
+  /create_post:
     post:
       operationId: R201
-      summary: 'R201: Create a new post'
+      summary: 'R201: Create a new post. Access: USR'
       description: 'Create a new post'
       tags:
         - 'M02: Posts and Comments'
@@ -230,7 +230,7 @@ paths:
     get:
       operationId: R202
       summary: 'R202: View a post'
-      description: 'View details of a specific post'
+      description: 'View details of a specific post. Access: USR'
       tags:
         - 'M02: Posts and Comments'
       parameters:
@@ -273,7 +273,7 @@ paths:
     delete:
       operationId: R203
       summary: 'R203: Delete own post'
-      description: "Delete one's own post"
+      description: "Delete one's own post. Access: ATR"
       tags:
         - 'M02: Posts and Comments'
       parameters:
@@ -289,7 +289,7 @@ paths:
     post:
       operationId: R204
       summary: 'R204: Create comment on a post'
-      description: 'Create a comment on a specific post'
+      description: 'Create a comment on a specific post. Access: USR'
       tags:
         - 'M02: Posts and Comments'
       parameters:
@@ -326,7 +326,7 @@ paths:
     delete:
       operationId: R205
       summary: 'R205: Delete a comment'
-      description: 'Delete a comment on a post'
+      description: 'Delete a comment on a post. Access: USR'
       tags:
         - 'M02: Posts and Comments'
       parameters:
@@ -347,7 +347,7 @@ paths:
     get:
       operationId: R301
       summary: 'R301: View user information'
-      description: 'Retrieve details of a specific user'
+      description: 'Retrieve details of a specific user. Access: USR'
       tags:
         - 'M03: Users'
       parameters:
@@ -370,11 +370,11 @@ paths:
                     type: string
                   email:
                     type: string
-  /profile/{id}/posts:
+  /user_news:
     get:
       operationId: R302
       summary: 'R302: View user posts'
-      description: 'Retrieve posts created by a specific user'
+      description: 'Retrieve posts created by a specific user. Access: ATR'
       tags:
         - 'M03: Users'
       parameters:
@@ -403,7 +403,7 @@ paths:
     post:
       operationId: R303
       summary: 'R303: Follow a user'
-      description: 'Follow another user'
+      description: 'Follow another user. Access: USR'
       tags:
         - 'M03: Users'
       parameters:
@@ -423,11 +423,11 @@ paths:
                   message: 
                     type: string
                     example: 'User followed successfully'
-  /feed:
+  /main:
     get:
       operationId: R401
       summary: 'R401: Get main feed'
-      description: 'Retrieve the main feed. Access: USR'
+      description: 'Retrieve the main feed. Access: PUB'
       tags:
         - 'M04: Feed and Search'
       parameters:
@@ -469,7 +469,7 @@ paths:
     get:
       operationId: R402
       summary: 'R402: Search users by username'
-      description: 'Search for users by username. Access: USR'
+      description: 'Search for users by username. Access: PUB'
       tags:
         - 'M04: Feed and Search'
       parameters:
@@ -496,7 +496,7 @@ paths:
     get:
       operationId: R403
       summary: 'R403: Search posts by title or content'
-      description: 'Search for posts by title or content.'
+      description: 'Search for posts by title or content. Access: PUB'
       tags:
         - 'M04: Feed and Search'
       parameters:
@@ -539,7 +539,7 @@ paths:
     get:
       operationId: R404
       summary: 'R404: Search posts by user'
-      description: 'Search for posts by a specific user.'
+      description: 'Search for posts by a specific user. Access: PUB'
       tags:
         - 'M04: Feed and Search'
       parameters:
@@ -583,7 +583,7 @@ paths:
     get:
       operationId: R501
       summary: 'R501: Get notifications'
-      description: 'Retrieve notifications for the current user.'
+      description: 'Retrieve notifications for the current user. Access: USR'
       tags:
         - 'M05: Notifications'
       responses:
@@ -609,7 +609,7 @@ paths:
     post:
       operationId: R502
       summary: 'R502: Create notification pop-up'
-      description: 'Create a notification pop-up for the user.'
+      description: 'Create a notification pop-up for the user. Access: USR' 
       tags:
         - 'M05: Notifications'
       requestBody:
@@ -634,7 +634,7 @@ paths:
     post:
       operationId: R503
       summary: 'R503: Create notification based on specific actions'
-      description: 'Create notifications based on specific actions.'
+      description: 'Create notifications based on specific actions. Access: USR'
       tags:
         - 'M05: Notifications'
       requestBody:
