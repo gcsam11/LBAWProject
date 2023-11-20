@@ -7,7 +7,7 @@ info:
  description: 'Web Resources Specification (A7) for SWC News'
 
 servers:
-- url: http://lbaw.fe.up.pt
+- url: http://lbaw2374.lbaw.fe.up.pt/
   description: Production server
   
 tags:
@@ -71,8 +71,8 @@ paths:
                   value: '/login'
   /user/{id}:
     get:
-      operationId: R106
-      summary: 'R106: View user profile'
+      operationId: R104
+      summary: 'R104: View user profile'
       description: 'Show the individual user profile.'
       tags:
         - 'M01: Authentication and Individual Profile'
@@ -90,8 +90,8 @@ paths:
 
   /users/register:  # Adding registration endpoint
     post:
-      operationId: R104
-      summary: 'R104: Register Form'
+      operationId: R105
+      summary: 'R105: Register Form'
       description: 'Provide new user registration form.'
       tags:
         - 'M01: Authentication and Individual Profile'
@@ -101,8 +101,8 @@ paths:
 
   /users/recover-password:  # Adding password recovery endpoint
     post:
-      operationId: R105
-      summary: 'R105: Recover Password'
+      operationId: R106
+      summary: 'R106: Recover Password'
       description: 'Processes the request for password recovery.'
       tags:
         - 'M01: Authentication and Individual Profile'
