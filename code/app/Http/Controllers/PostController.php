@@ -44,15 +44,25 @@ class PostController extends Controller
             'search_term' => ['required']
         ]);
     
-        // A linha abaixo está corrigida
         $searchTerm = $validatedData['search_term'];
-        
-        
-        $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
+    
+        $searchTerm = preg_replace('/\s+/', ' ', $searchTerm);
+    
+        if (strpos($searchTerm, ' ') !== false) {
+            // Full-text search for terms with spaces
+            $modifiedSearchTerm = str_replace(' ', ':* & ', $searchTerm) . ':*';
+            $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$modifiedSearchTerm])
+                ->get();
+        } else {
+            // Exact match search for both title and caption
+            $results = Post::where('title', 'ILIKE', "%$searchTerm%")
+            ->orWhere('caption', 'ILIKE', "%$searchTerm%")
             ->get();
+        }
     
-    
-        return view('pages/posts_search_results', ['results' => $results]);
+        return view('pages/posts_search_results', [
+            'results' => $results
+        ]);
     }
     
     /**
