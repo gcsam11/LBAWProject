@@ -125,7 +125,7 @@ class UserController extends Controller
         } catch (ValidationException $e) {
             return redirect()->route('profile')->withErrors($e->validator->errors());
         } catch (\Exception $e) {
-            // Log e manipulação de outras exceções, se necessário
+
             return redirect()->route('profile')->with('error', 'Failed to update password.');
         }
     }
@@ -136,9 +136,11 @@ class UserController extends Controller
             'search_term' => ['required']
         ]);
     
-        // A linha abaixo está corrigida
+
         $searchTerm = $validatedData['search_term'];
         
+        $searchTerm = preg_replace('/\s+/', ' ', $searchTerm);
+
         $tsqueryString = str_replace(' ', ' & ', $searchTerm);
 
         $results = User::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$tsqueryString])
