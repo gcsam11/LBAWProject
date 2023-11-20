@@ -57,6 +57,10 @@ Route::group(['prefix' => 'main'], function () {
     Route::get('/search', [PostController::class, 'search'])->name('posts.search');
 });
 
+//user news
+Route::get('/user_news', [PostController::class, 'userNews'])->name('user_news'); 
+
+
 // Individual Post Actions
 Route::prefix('posts')->group(function () {
     Route::get('/{id}', [PostController::class, 'show'])->name('posts.show');
