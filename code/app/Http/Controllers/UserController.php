@@ -48,13 +48,14 @@ class UserController extends Controller
      */
     public function show(string $id): View
     {
+        // Find the user by ID
+        $user = User::findOrFail($id);
+
         // Check if the current user can see (show) the user.
         $this->authorize('show', Auth::user());  
 
-        // Use the pages.user template to display the user.
-        return view('pages.profile', [
-            'id' => $id
-        ]);
+        // Return the profile view to display the user.
+        return view('pages.profile', ['user' => $user]);
     }
 
     /**
@@ -135,8 +136,11 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(User $user)
+    public function delete(string $id)
     {
+        // Find the user by ID.
+        $user = User::findOrFail($id);
+        
         // Check if the current user can delete the user.
         $this->authorize('delete', $user);
 
