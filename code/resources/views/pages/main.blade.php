@@ -7,8 +7,11 @@
 @section('content')
 
     <div class="search&sort">
-        <input type="text" placeholder="Search for News">
-        <button>Search</button>
+        <form action="{{ route('posts.search') }}" method="POST">
+            @csrf
+            <input type="text" placeholder="Search for News">
+            <button type="submit">Search</button>
+        </form>
         <br>
     </div>
     <div class="create_post">

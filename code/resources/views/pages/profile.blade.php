@@ -30,7 +30,7 @@
             <p class="box_header_title">Info</p>
         </div>
             <form action="{{ route('user.update', ['user' => $user->id]) }}" method="POST">
-                {{ csrf_field() }}
+                @csrf
                 @method('PUT')
                 <div class="op_box">
                     <p>Username</p>
@@ -104,7 +104,7 @@
             </form>
             <p class="box_header_title">Change password</p>
             <form action="{{ route('change.password') }}" method="POST">
-                {{ csrf_field() }}
+                @csrf
                 <div class="op_box">
                     <p>Last password</p>
                     <input id="last_password" type="password" name="last_password" value="{{ old('last_password') }}" required>

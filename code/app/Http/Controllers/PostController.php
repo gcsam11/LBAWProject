@@ -38,7 +38,17 @@ class PostController extends Controller
             'comments' => $comments
         ]);
     }
+    public function search(Request $request)
+    {
+        $searchTerm = $request->input('searchTerm');
+        
+        $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
+        ->get();
 
+        Log::info('Search results:', ['results' => $results]);
+
+        return redirect()->route('search_results')->with(['results' => $results]);
+    }
     /**
      * Shows all posts sorted by Upvotes/Downvote Difference
      */

@@ -35,6 +35,10 @@ Route::get('/user_news', function () {
     return view('pages.user_news');
 })->name('user_news')->middleware('auth');
 
+Route::get('/search_results', function () {
+    return view('pages.search_results');
+})->name('search_results');
+
 // User
 Route::controller(UserController::class)->group(function () {
     Route::get('/user/{id}/edit', 'update')->name('profile.update');
@@ -56,6 +60,7 @@ Route::get('/create_post', function () {
 Route::group(['prefix' => 'main'], function () {
     Route::get('/top', [PostController::class, 'listTop'])->name('posts.top');
     Route::get('/recent', [PostController::class, 'listRecent'])->name('posts.recent');
+    Route::post('/search', [PostController::class, 'search'])->name('posts.search');
 });
 
 // Individual Post Actions
