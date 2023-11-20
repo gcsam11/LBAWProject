@@ -57,7 +57,7 @@ Route::controller(UserController::class)->group(function () {
 Route::get('/profile', function () {
     $user = Auth::user();
     return view('pages.profile', compact('user'));
-})->name('profile');
+})->name('profile_page');
 
 
 // Create Post
