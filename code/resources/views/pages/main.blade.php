@@ -15,10 +15,17 @@
         <button id="create_post">+</button>
     </div>
     <div class="navigation">
-        <!-- Tornar isto num select -->
-        <!-- Buttons to switch between routes -->
-        <a href="{{ route('posts.recent') }}">Recent Posts</a>
-        <a href="{{ route('posts.top') }}">Top Posts</a>
+        <form id="sortForm">
+            <label for="sortSelector">Sort Posts By:</label>
+            <select id="sortSelector" name="sort">
+                <option value="{{ route('posts.top') }}" {{ Request::is('main/top*') ? 'selected' : '' }}>Top Posts</option>
+                <option value="{{ route('posts.recent') }}" {{ Request::is('main/recent*') ? 'selected' : '' }}>Recent Posts</option>
+            </select>
+
+            <button type="submit">Sort</button>
+        </form>
+
+        <script src="{{ asset('js/sort_posts.js') }}"></script>
     </div>
     <div class="news">
         <!-- Fetch news from the database -->
