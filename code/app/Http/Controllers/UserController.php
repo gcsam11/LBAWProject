@@ -130,6 +130,22 @@ class UserController extends Controller
         }
     }
 
+    public function search(Request $request)
+    {
+        $validatedData = $request->validate([
+            'search_term' => ['required']
+        ]);
+    
+        // A linha abaixo está corrigida
+        $searchTerm = $validatedData['search_term'];
+        
+        
+        $results = User::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
+            ->get();
+    
+    
+        return view('pages/users_search_results', ['results' => $results]);
+    }
 
     /**
      * Remove the specified resource from storage.

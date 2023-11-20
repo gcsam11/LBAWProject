@@ -35,10 +35,6 @@ Route::get('/user_news', function () {
     return view('pages.user_news');
 })->name('user_news')->middleware('auth');
 
-Route::get('/search_results', function () {
-    return view('pages.search_results');
-})->name('search_results');
-
 
 // User
 Route::controller(UserController::class)->group(function () {
@@ -46,6 +42,7 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/change-password', [UserController::class, 'change_password'])->name('change.password');
     Route::get('/profile/{id}', [UserController::class, 'show'])->name('profile_page');
     Route::post('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
+    Route::get('/search', [UserController::class, 'search'])->name('user.search');
 });
 
 // Create Post

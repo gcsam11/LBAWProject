@@ -26,7 +26,15 @@
                 </ul>
             </div>
         @endif
-
+        <form action="{{ route('user.search') }}" method="GET">
+            <input id="search_term" name="search_term" type="text" value="{{ old('search_term') }}" placeholder="Search for Users">
+            @if ($errors->has('search_term'))
+                <span class="error">
+                    {{ $errors->first('search_term') }}
+                </span>
+            @endif    
+            <button type="submit">Search</button>
+        </form>
         @if(Auth::user()->isAdmin() || Auth::user()->id == $user->id)
             @include('partials.profile_edit', ['user' => $user])
         @else
