@@ -3,13 +3,11 @@
         <h2>{{ $post->title }}</h2>
         <a href="#" class="delete">&#10761;</a>
     </header>
-    <ul>
         <!-- Display post details or any specific information -->
-        <li><strong>Topic:</strong> {{ $post->topic->title }}</li>
-        <li><strong>Caption:</strong> {{ $post->caption }}</li>
-        <li><strong>Date:</strong> {{ $post->postdate }}</li>
-        <li><strong>Upvotes:</strong> {{ $post->upvotes }}</li>
-        <li><strong>Downvotes:</strong> {{ $post->downvotes }}</li>
-        <li><strong>Posted by:</strong> {{ $post->user->name }}</li>
-    </ul>
+        <strong>Topic:</strong> {{ $post->topic->title }}<br><br>
+        <strong>Caption:</strong> {{ $post->caption }}<br><br>
+        <strong>Date:</strong> {{ $post->postdate }}<br><br>
+        <strong>Upvotes:</strong> {{ $post->upvotes }}<br><br>
+        <strong>Downvotes:</strong> {{ $post->downvotes }}<br><br>
+        <strong>Posted by:</strong> {{ $post->user->name }}
 </article>

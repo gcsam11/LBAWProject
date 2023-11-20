@@ -1,4 +1,5 @@
 <div class="comments">
+    <br><hr><br>
     <h3>Comments</h3>
     <ul>
         @foreach ($comments as $comment)
