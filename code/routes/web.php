@@ -35,6 +35,11 @@ Route::get('/user_news', function () {
     return view('pages.user_news');
 })->name('user_news')->middleware('auth');
 
+Route::get('/search_results', function () {
+    return view('pages.search_results');
+})->name('search_results');
+
+
 // User
 Route::controller(UserController::class)->group(function () {
     Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
@@ -52,6 +57,7 @@ Route::get('/create_post', function () {
 Route::group(['prefix' => 'main'], function () {
     Route::get('/top', [PostController::class, 'listTop'])->name('posts.top');
     Route::get('/recent', [PostController::class, 'listRecent'])->name('posts.recent');
+    Route::get('/search', [PostController::class, 'search'])->name('posts.search');
 });
 
 // Individual Post Actions
@@ -62,10 +68,10 @@ Route::prefix('posts')->group(function () {
     Route::patch('/{id}/update', [PostController::class, 'update'])->name('posts.update');
 });
 
-
 // Admin
 Route::controller(AdminController::class)->group(function () {
     Route::get('/admin_dashboard', 'index')->name('admin_dashboard');
+    Route::post('/admin_dashboard', 'create')->name('admin.register');
 })->middleware('admin');
 
 // Authentication

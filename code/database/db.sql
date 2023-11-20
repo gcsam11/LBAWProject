@@ -148,6 +148,7 @@ CREATE TABLE IMAGE_COMMENT(
 );
 
 -- Create Indexes
+
 CREATE INDEX post_user ON POST USING btree (user_id);
 CLUSTER POST USING post_user;
 
@@ -191,6 +192,9 @@ FOR EACH ROW
 EXECUTE FUNCTION post_search_update();
 
 -- Create the GIN index for POST full-text search
+CREATE INDEX idx_posts_tsvectors ON POST USING GIN(tsvectors);
+
+
 ALTER TABLE "user"
 ADD COLUMN tsvectors TSVECTOR;
 

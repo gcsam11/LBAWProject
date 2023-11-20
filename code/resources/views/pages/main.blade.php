@@ -7,8 +7,15 @@
 @section('content')
 
     <div class="search&sort">
-        <input type="text" placeholder="Search for News">
-        <button>Search</button>
+        <form action="{{ route('posts.search') }}" method="GET">
+            <input id="search_term" name="search_term" type="text" value="{{ old('search_term') }}" placeholder="Search for News">
+            @if ($errors->has('search_term'))
+                <span class="error">
+                    {{ $errors->first('search_term') }}
+                </span>
+            @endif    
+            <button type="submit">Search</button>
+        </form>
         <br>
     </div>
     <div class="create_post">

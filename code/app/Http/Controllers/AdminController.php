@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -41,7 +42,7 @@ class AdminController extends Controller
         // Save the user to the database
         $user->save();
 
-        index();
+        return redirect()->route('admin_dashboard');
     }
 
     /**
@@ -83,6 +84,8 @@ class AdminController extends Controller
 
         // Delete the user.
         $user->delete();
+
+        return redirect()->route('admin_dashboard');
     }
 }
         

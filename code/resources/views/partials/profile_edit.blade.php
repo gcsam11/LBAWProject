@@ -99,6 +99,5 @@
             <form method="POST" action="{{ route('profile_delete', ['id' => $user->id]) }}" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
                 {{ csrf_field() }}
 
-                @method('DELETE')
                 <button type="submit">Delete Account</button>
             </form>
