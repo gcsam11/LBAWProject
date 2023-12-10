@@ -12,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-use App\Http\Controllers\FileController;
+use App\Http\Controllers\ImageController;
 
 
 class User extends Authenticatable
@@ -104,7 +104,7 @@ class User extends Authenticatable
     }
 
     public function getProfileImage() {
-        return FileController::get('profile', $this->id);
+        return ImageController::get('profile', $this->id);
     }
     
 }

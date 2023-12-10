@@ -1,7 +1,24 @@
 <script src="https://kit.fontawesome.com/f1d77e88ed.js" crossorigin="anonymous"></script>
-<div class="box_header_ticket">
-    <p class="box_header_title">Info</p>
-</div>
+<form enctype="multipart/form-data" action="{{ route('image.new', ['id' => $user->id]) }}" method="POST">
+    {{csrf_field()}}
+    <div class="op_box">
+        <div class="circle_container">
+            <img src="{{ $user->getProfileImage() }}" alt="Profile Picture">
+                <div class="overlay">
+                    <input type="file" name="image" accept="image/*" id="image_input">
+                    <div class="text">
+                        <label for="image_input">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </label>
+                    </div>
+                </div>  
+        </div> 
+    </div>
+    <br>
+    <div class="btnSubmit">
+        <button type="submit">Save Image</button>
+    </div>
+</form>
 <form action="{{ route('user.update', ['user' => $user->id]) }}" method="POST">
     {{ csrf_field() }}
                 @method('PUT')
@@ -13,16 +30,6 @@
                             {{ $errors->first('username') }}
                         </span>
                     @endif                    
-                </div>
-                <div class="op_box">
-                    <p>Profile Picture</p>
-                    <div class="circle_container">
-                        <img src="{{ $user->getProfileImage() }}" alt="Profile Picture">
-                    </div>
-                    <input type="file" name="profile_picture" accept="image/*" style="display: none;" id="profile_picture_input">
-                    <label for="profile_picture_input">
-                        <i class="fa-solid fa-upload"></i>
-                    </label>
                 </div>
                 <div class="op_box">
                     <p>Name</p>

@@ -20,4 +20,8 @@ class Image extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    public static function getImageId($filename) {
+        return self::where('filename', $filename)->value('id');
+    }
 }
