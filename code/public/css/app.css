@@ -21,64 +21,6 @@ body {
     margin: 1em;
     justify-self: center;
   }
-  #cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-  }
-  #cards article.card {
-    display: flex;
-    flex-direction: column;
-    background-color: #d3edc3;
-    padding: 1em;
-    margin: 1em;
-  }
-  #cards article.card header {
-    display: flex;
-    align-items: center;
-  }
-  #cards article.card header h2 {
-    flex-grow: 1;
-  }
-  #cards article.card header a.delete {
-    display: none;
-    font-size: 2.6rem;
-    margin-top: .5rem;
-    margin-bottom: 2.5rem;
-    line-height: 1.25;
-  }
-  #cards article.card header:hover a.delete {
-    display: inline;
-  }
-  #cards article.card li {
-    list-style-type: none;
-  }
-  #cards article.card li label {
-    display: flex;
-    align-items: baseline;
-  }
-  #cards article.card li label span {
-    margin-left: .5em;
-    flex-grow: 1;
-  }
-  #cards article.card li label a {
-    display: none;
-  }
-  #cards article.card li label:hover a {
-    display: inline;
-  }
-  #cards article.card input:checked + span {
-    text-decoration: var(--primary-color) solid line-through;
-  }
-  #cards article.card ul {
-    margin: 0;
-  }
-  #cards article.card form {
-    margin: 0;
-  }
-  #cards article.card input[type=text] {
-    background-color: white;
-    margin: 0;
-  }
   #content label {
     font-weight: normal;
   }
@@ -131,10 +73,6 @@ body {
       margin: 0;
       max-width: 25em;
     }
-    article.card {
-      margin: 0;
-      border-bottom: 1px solid rgba(96, 108, 118, 0.4);
-    }
   }
   /**
    * Override milligram colors
@@ -159,4 +97,76 @@ body {
   input[type=password]:focus {
     border-color: #9b4dca;
   }
+
+  #logout{
+    background-color: #FF0000;
+    border-color: #FF0000;
+  }
+
+  #logout:hover{
+    background-color:#606c76;
+    border-color:#606c76;
+    color:#fff;
+    outline:0;
+  }
+  
+  #delete_account{
+    background-color: #FF0000;
+    border-color: #FF0000;
+  }
+
+  #delete_account:hover{
+    background-color:#606c76;
+    border-color:#606c76;
+    color:#fff;
+    outline:0;
+  }
+  
+  #image_input{
+    display: none;
+  }
+
+  .circle_container {
+    position: relative;
+    width: 100px; /* Adjust the size of the circle */
+    height: 100px; /* Adjust the size of the circle */
+    overflow: hidden; /* Ensure the image doesn't overflow the circle */
+    border-radius: 50%; /* Create a circular shape */
+    border: 2px solid #000; /* Add a border for better visibility */
+  }
+
+  .circle_container img {
+      opacity: 1;
+      width: 100%; /* Make the image fill the circle */
+      height: auto; /* Maintain the aspect ratio of the image */
+      display: block; /* Remove any default spacing */
+      transition: .5s ease;
+      backface-visibility: hidden;
+    }
+
+    .circle_container:hover img {
+      opacity: 0.3;
+    }
+    
+    .circle_container:hover .overlay {
+      opacity: 1;
+    }
+
+    .overlay{
+      transition: .5s ease;
+      opacity: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .text {
+      color: #606c76;
+      font-size: 16px;
+      padding: 16px 32px;
+    }
+  
   

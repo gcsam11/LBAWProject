@@ -12,6 +12,8 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+use App\Http\Controllers\ImageController;
+
 
 class User extends Authenticatable
 {
@@ -35,6 +37,7 @@ class User extends Authenticatable
         'birthday',
         'gender',
         'url',
+        'image_id',
         'password',
     ];
 
@@ -83,6 +86,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the image associated with the user.
+     */
+    public function image(): HasOne
+    {
+        return $this->hasOne(Image::class);
+    }
+
+    /**
     * Check if the user is an admin.
     *
     * @return bool
@@ -91,5 +102,10 @@ class User extends Authenticatable
     {
         return Admin::where('user_id', $this->id)->exists();
     }
+
+    public function getProfileImage() {
+        return ImageController::get('profile', $this->id);
+    }
+    
 }
 ?>

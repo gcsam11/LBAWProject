@@ -1,6 +1,24 @@
-<div class="box_header_ticket">
-    <p class="box_header_title">Info</p>
-</div>
+<script src="https://kit.fontawesome.com/f1d77e88ed.js" crossorigin="anonymous"></script>
+<form enctype="multipart/form-data" action="{{ route('image.new', ['id' => $user->id]) }}" method="POST">
+    {{csrf_field()}}
+    <div class="op_box">
+        <div class="circle_container">
+            <img src="{{ $user->getProfileImage() }}" alt="Profile Picture">
+                <div class="overlay">
+                    <input type="file" name="image" accept="image/*" id="image_input">
+                    <div class="text">
+                        <label for="image_input">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </label>
+                    </div>
+                </div>  
+        </div> 
+    </div>
+    <br>
+    <div class="btnSubmit">
+        <button type="submit">Save Image</button>
+    </div>
+</form>
 <form action="{{ route('user.update', ['user' => $user->id]) }}" method="POST">
     {{ csrf_field() }}
                 @method('PUT')
@@ -50,8 +68,7 @@
                     @endif   
                 </div>
                 <div class="op_box">
-                    <p>Image</p>
-                    <img src="{{$user->url}}">
+                    <p>URL</p>
                     <input id="url" type="text" name="url" value="{{ old('url') ?? $user->url }}"></input>
                     @if ($errors->has('url'))
                         <span class="error">
@@ -92,12 +109,12 @@
 
             @if(Auth::user()->id == $user->id)
             <form method="GET" action="{{ route('logout') }}">
-                <button type="submit">Logout</button>
+                <button type="submit" id="logout">Logout</button>
             </form>
             @endif
 
             <form method="POST" action="{{ route('profile_delete', ['id' => $user->id]) }}" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
                 {{ csrf_field() }}
 
-                <button type="submit">Delete Account</button>
+                <button type="submit" id="delete_account">Delete Account</button>
             </form>

@@ -19,7 +19,12 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm(): View
     {
-        return view('auth.register');
+        if (Auth::check()) {
+            return redirect()->route('posts.top');
+        } 
+        else {
+            return view('auth.register');
+        }
     }
 
     /**

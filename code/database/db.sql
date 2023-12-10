@@ -6,7 +6,7 @@ SET search_path TO lbaw2374;
 -- Create Tables
 CREATE TABLE IMAGE (
     id SERIAL PRIMARY KEY,
-    path TEXT NOT NULL
+    filename TEXT NOT NULL
 );
 
 CREATE TABLE TOPIC (

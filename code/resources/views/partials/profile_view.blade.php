@@ -1,7 +1,9 @@
 <div>
     <h2>Name: {{ $user['name'] }}</h2>
-    <img src="{{ $user['image'] }}" alt="Profile Image"><br>
-
+    
+    <div class=circle_container>
+        <img src="{{ $user->getProfileImage() }}" alt="Profile Image"><br>
+    </div>
     <p>Username: {{ $user['username'] }}</p>
     <p>Email: {{ $user['email'] }}</p>
     <p>Gender: {{ $user['gender'] }}</p>

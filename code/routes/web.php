@@ -11,7 +11,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PostController;
-
+use App\Http\Controllers\ImageController;
 
 
 /*
@@ -44,6 +44,11 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
     Route::get('/search', [UserController::class, 'search'])->name('user.search');
 });
+
+// ImageUser
+Route::controller(ImageController::class)->group(function () {
+    Route::post('/profile/{id}/image', [ImageController::class, 'create'])->name('image.new');
+})->middleware('auth');
 
 // Create Post
 Route::get('/create_post', function () {
