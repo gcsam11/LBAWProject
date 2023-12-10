@@ -10,4 +10,6 @@
         <strong>Upvotes:</strong> {{ $post->upvotes }}<br><br>
         <strong>Downvotes:</strong> {{ $post->downvotes }}<br><br>
         <strong>Posted by:</strong> <a href="{{ route('profile_page', ['id' => $post->user->id]) }}">{{ $post->user->name }}</a>
+        <button class="not-clicked" onclick="upvote({{ $post->id }})">Upvote!</button>
+
 </article>

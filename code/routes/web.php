@@ -68,6 +68,7 @@ Route::prefix('posts')->group(function () {
     Route::post('/{id}/delete', [PostController::class, 'delete'])->name('posts.delete');
     Route::patch('/{id}/update', [PostController::class, 'update'])->name('posts.update');
 });
+Route::post('/post/upvote', [PostController::class, 'upvote']);
 
 // Admin
 Route::controller(AdminController::class)->group(function () {

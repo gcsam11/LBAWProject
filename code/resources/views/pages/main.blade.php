@@ -42,6 +42,7 @@
                 Read more...
             </button>
         @endforeach
+        @include('partials.notification')
     </div>
     <script>
         var createPostUrl = @json(route('create_post'));
