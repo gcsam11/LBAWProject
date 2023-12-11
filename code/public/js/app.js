@@ -37,9 +37,22 @@ function sendAjaxRequest(method, url, data, handler) {
   request.open(method, url, true);
   request.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
   request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  request.addEventListener('load', handler);
+
+  if (handler) {
+    request.addEventListener('load', function () {
+      if (request.status === 200) {
+        var response = JSON.parse(request.responseText);
+        handler(response);
+      } else {
+        console.error('Request failed with status:', request.status);
+      }
+
+    });
+
+  }
   request.send(encodeForAjax(data));
 }
+
 
 function sendItemUpdateRequest() {
   let item = this.closest('li.item');
@@ -187,7 +200,7 @@ function upvote(id) {
     button.className = "clicked";
     button.innerHTML = "Upvoted";
     sendAjaxRequest('post', '../post/upvote', { id: id }, function (response) {
-      console.log(response);
+      upvotesElement.innerHTML = '<p class="upvotes" data-id="{{ $post->id }}"><strong>Upvotes: </strong>' + response + '</p>';
     });
   }
   else {
@@ -196,7 +209,7 @@ function upvote(id) {
     <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/> \
     </svg>';
     sendAjaxRequest('post', '../post/undoupvote', { id: id }, function (response) {
-      console.log(response);
+      upvotesElement.innerHTML = '<p class="upvotes" data-id="{{ $post->id }}"><strong>Upvotes: </strong>' + response + '</p>';
     });
   }
 }

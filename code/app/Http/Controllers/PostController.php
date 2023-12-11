@@ -213,9 +213,7 @@ class PostController extends Controller
             \Log::info('Failed to upvote post with ID: ' . $postId);
         }
         $post = Post::findOrFail($postId);
-        \Log::info('Detalhes do Post: ' . $post);
         $upvotes = $post->upvotes;
-        \Log::info('Upvotes: ' . $upvotes);
         return response()->json($upvotes, 200);
     }
 
@@ -233,9 +231,7 @@ class PostController extends Controller
             \Log::info('Upvote not found for post with ID: ' . $postId);
         }
         $post = Post::findOrFail($postId);
-        \Log::info('Detalhes do Post: ' . $post);
         $upvotes = $post->upvotes;
-        \Log::info('Upvotes: ' . $upvotes);
         return response()->json($upvotes, 200);
     }
 }
