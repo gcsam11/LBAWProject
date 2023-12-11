@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 use Illuminate\Http\RedirectResponse;
@@ -64,27 +65,35 @@ class CommentController extends Controller
      */
     public function create(Request $request)
     {
-        // Create a blank new comment.
-        $comment = new comment();
+        // Find the post.
+        $post = Post::findOrFail($postId);
+
+        // Create a new comment instance.
+        $comment = new Comment();
 
         // Check if the current user is authorized to create this comment.
         $this->authorize('create', $comment);
 
+        // Validate the request data.
         $request->validate([
             'title' => ['required'],
             'caption' => ['required']
         ]);
 
         // Set comment details.
-        $comment->title = $request->input('title');
-        $comment->caption = $request->input('caption');
-        $comment->commentdate = now(); // Set the current date and time.
-        $comment->user_id = Auth::user()->id;
-        $comment->post_id = $request->route('postId');
+        $comment = Auth::user()->comments()->create([
+            'title' => $request->input('title'),
+            'caption' => $request->input('caption'),
+            'commentdate' => now(), // Set the current date and time.
+            'user_id' => Auth::user()->id,
+            'post_id' => $request->route('postId')
+        ]);
 
-        // Save the comment and return it as JSON.
+        // Save the comment
         $comment->save();
-        return response()->json($comment);
+
+        // Redirect back to the post page
+        return redirect()->route('posts.show', ['id' => $postId])->with('success', 'Comment created successfully');
     }
 
     /**

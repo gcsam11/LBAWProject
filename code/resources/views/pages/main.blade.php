@@ -16,10 +16,6 @@
             @endif    
             <button type="submit">Search</button>
         </form>
-        <br>
-    </div>
-    <div class="create_post">
-        <button id="create_post">+</button>
     </div>
     <div class="navigation">
         <form id="sortForm">
@@ -42,6 +38,9 @@
                 Read more...
             </button>
         @endforeach
+    </div>
+    <div class="create_post">
+        <button id="create_post">+</button>
     </div>
     <script>
         var createPostUrl = @json(route('create_post'));

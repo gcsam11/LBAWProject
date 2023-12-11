@@ -74,6 +74,9 @@ Route::prefix('posts')->group(function () {
     Route::patch('/{id}/update', [PostController::class, 'update'])->name('posts.update');
 });
 
+// Comments
+Route::post('/posts/{id}/comments', [CommentController::class, 'create'])->name('comments.create');
+
 // Admin
 Route::controller(AdminController::class)->group(function () {
     Route::get('/admin_dashboard', 'index')->name('admin_dashboard');
