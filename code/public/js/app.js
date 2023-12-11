@@ -188,7 +188,6 @@ function upvote(id) {
     button.innerHTML = "Upvoted";
     sendAjaxRequest('post', '../post/upvote', { id: id }, function (response) {
       console.log(response);
-      upvotesElement.innerHTML = response.upvotes;
     });
   }
   else {
@@ -198,7 +197,6 @@ function upvote(id) {
     </svg>';
     sendAjaxRequest('post', '../post/undoupvote', { id: id }, function (response) {
       console.log(response);
-      upvotesElement.innerHTML = response.upvotes;
     });
   }
 }
