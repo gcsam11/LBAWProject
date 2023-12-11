@@ -195,5 +195,29 @@ class PostController extends Controller
         }
     }
 
+    public function filter(Request $request)
+    {
+        $query = Post::query();
+
+        // Apply filters based on request query parameters
+        if ($request->filled('minimum_upvote')) {
+            $query->where('upvotes', '>=', $request->input('minimum_upvote'));
+        }
+
+        if ($request->filled('maximum_downvote')) {
+            $query->where('downvotes', '<=', $request->input('maximum_downvote'));
+        }
+
+        if ($request->filled('user_name')) {
+            $userName = $request->input('user_name');
+            $query->whereHas('user', function ($userQuery) use ($userName) {
+                $userQuery->where('name', 'like', "%$userName%");
+            });
+        }
+
+        $filteredPosts = $query->get();
+
+        return view('pages.filtered_posts', ['posts' => $filteredPosts]);
+    }
 }
 ?>

@@ -43,6 +43,8 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/profile/{id}', [UserController::class, 'show'])->name('profile_page');
     Route::post('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
     Route::get('/search', [UserController::class, 'search'])->name('user.search');
+    Route::get('/posts/filters', [PostController::class, 'filterRedirect'])->name('filter.posts');
+    Route::get('/posts/filter', [PostController::class, 'filter'])->name('posts.filter');
 });
 
 // ImageUser
