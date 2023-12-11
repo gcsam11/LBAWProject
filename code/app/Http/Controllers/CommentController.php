@@ -63,10 +63,10 @@ class CommentController extends Controller
     /**
      * Creates a new comment.
      */
-    public function create(Request $request)
+    public function create(Request $request, $id)
     {
         // Find the post.
-        $post = Post::findOrFail($postId);
+        $post = Post::findOrFail($id);
 
         // Create a new comment instance.
         $comment = new Comment();
@@ -86,20 +86,19 @@ class CommentController extends Controller
             'caption' => $request->input('caption'),
             'commentdate' => now(), // Set the current date and time.
             'user_id' => Auth::user()->id,
-            'post_id' => $request->route('postId')
+            'post_id' => $request->route('id')
         ]);
 
         // Save the comment
         $comment->save();
 
         // Redirect back to the post page
-        return redirect()->route('posts.show', ['id' => $postId])->with('success', 'Comment created successfully');
+        return redirect()->route('posts.show', ['id' => $id])->with('success', 'Comment created successfully');
     }
 
     /**
      * Update a comment.
-     */
-
+    */
     public function update(Request $request, $id){
         
     }
