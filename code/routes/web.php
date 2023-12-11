@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ImageController;
 
 
@@ -73,6 +74,9 @@ Route::prefix('posts')->group(function () {
     Route::post('/{id}/delete', [PostController::class, 'delete'])->name('posts.delete');
     Route::patch('/{id}/update', [PostController::class, 'update'])->name('posts.update');
 });
+
+// Comments
+Route::post('/posts/{id}/comments', [CommentController::class, 'create'])->name('comments.create');
 
 // Admin
 Route::controller(AdminController::class)->group(function () {
