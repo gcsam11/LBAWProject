@@ -97,10 +97,41 @@ class CommentController extends Controller
     }
 
     /**
-     * Update a comment.
+    * Show the form for editing a specific comment.
     */
-    public function update(Request $request, $id){
-        
+    public function edit($id)
+    {
+        $comment = Comment::findOrFail($id);
+
+        // Check if the current user is authorized to edit this comment
+        $this->authorize('update', $comment);
+
+        return view('pages.edit_comment', ['comment' => $comment]);
+    }
+
+    /**
+    * Update the specified comment in storage.
+    */
+    public function updateComment(Request $request, $id)
+    {
+        $comment = Comment::findOrFail($id);
+
+        // Check if the current user is authorized to update this comment
+        $this->authorize('update', $comment);
+
+        $request->validate([
+            'title' => ['required'],
+            'caption' => ['required'],
+        ]);
+
+        // Update comment details
+        $comment->title = $request->input('title');
+        $comment->caption = $request->input('caption');
+
+        // Save the updated comment
+        $comment->save();
+
+        return redirect()->route('posts.show', ['id' => $comment->post_id])->with('success', 'Comment updated successfully');
     }
 
     /**
