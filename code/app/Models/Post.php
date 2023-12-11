@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 
 // Added to define Eloquent relationships.
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -79,6 +80,11 @@ class Post extends Model
         return $this->hasMany(Item::class)->orderBy('id')->get();
     }
 
+    public function checkIfUserUpvoted()
+    {
+        $userId = Auth::id();
+        return $this->upvotes()->where('user_id', $userId)->exists();
+    }
 }
 
 ?>

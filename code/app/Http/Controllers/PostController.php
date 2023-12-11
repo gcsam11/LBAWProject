@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\UpvotePost;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 use App\Http\Controllers\Controller;
 
@@ -198,7 +200,43 @@ class PostController extends Controller
     }
 
     function upvote(Request $request) {
-        event(new Upvote($request->id));
+        $postId = $request->id;
+        $userId = Auth::id();
+        
+        $upvotePost = new UpvotePost();
+        $upvotePost->post_id = $postId;
+        $upvotePost->user_id = $userId;
+        
+        if ($upvotePost->save()) {
+            event(new Upvote($postId));
+        } else {
+            \Log::info('Failed to upvote post with ID: ' . $postId);
+        }
+        $post = Post::findOrFail($postId);
+        \Log::info('Detalhes do Post: ' . $post);
+        $upvotes = $post->upvotes;
+        \Log::info('Upvotes: ' . $upvotes);
+        return response()->json($upvotes, 200);
+    }
+
+    function undoupvote(Request $request) {
+        $postId = $request->id;
+        $userId = Auth::id();
+        $upvotePost = UpvotePost::where('post_id', $postId)
+        ->where('user_id', $userId)
+        ->first();
+
+        if ($upvotePost) {
+            $upvotePost->delete();
+
+        } else {
+            \Log::info('Upvote not found for post with ID: ' . $postId);
+        }
+        $post = Post::findOrFail($postId);
+        \Log::info('Detalhes do Post: ' . $post);
+        $upvotes = $post->upvotes;
+        \Log::info('Upvotes: ' . $upvotes);
+        return response()->json($upvotes, 200);
     }
 }
 ?>

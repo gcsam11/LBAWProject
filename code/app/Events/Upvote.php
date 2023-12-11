@@ -20,7 +20,7 @@ class Upvote implements ShouldBroadcast
     // Here you create the message to be sent when the event is triggered.
     public function __construct($post_id) {
         $this->post_id = $post_id;
-        $this->message = 'You like post ' . $post_id;
+        $this->message = 'Upvoted post ' . $post_id;
     }
 
     // You should specify the name of the channel created in Pusher.
