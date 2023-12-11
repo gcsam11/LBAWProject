@@ -162,13 +162,13 @@ class PostController extends Controller
             // Save the updated post.
             $post->save();
 
-            return redirect()->route('posts')->with('success', 'Post updated successfully');
+            return redirect()->route('home')->with('success', 'Post updated successfully');
         } catch (\Exception $e) {
             // Log the error message.
             \Log::error('Failed to update post with ID: ' . $post->id . '. Error: ' . $e->getMessage());
 
             // Redirect back with an error message.
-            return redirect()->route('posts')->with('error',  'Failed to update the post');
+            return redirect()->route('home')->with('error',  'Failed to update the post');
         }
     }
 
@@ -191,7 +191,7 @@ class PostController extends Controller
         catch (\Exception $e) {
             \Log::error('Failed to delete post with ID: ' . $post->id . '. Error: ' . $e->getMessage());
             
-            return redirect()->route('posts')->with('error', 'Failed to delete the post');
+            return redirect()->route('home')->with('error', 'Failed to delete the post');
         }
     }
 
