@@ -109,7 +109,7 @@ class UserController extends Controller
         $user = User::findOrFail($userId);
 
         // Update the user's image
-        $user->image_id = $imageIOd;
+        $user->image_id = $imageId;
 
         // Save the changes to the database
         $user->save();

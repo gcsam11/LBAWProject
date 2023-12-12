@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Image extends Model
+class ImagePost extends Model
 {
     use HasFactory;
 
@@ -13,16 +13,19 @@ class Image extends Model
 
     protected $table = 'image_post';
 
+    protected $primaryKey = 'image_id';
+
     protected $fillable = [
-        'filename',
+        'image_id',
+        'post_id',
     ];
 
-    public function user() {
-        return $this->belongsTo(User::class);
+    public function post() {
+        return $this->belongsTo(Post::class);
     }
 
-    public function imagepost() {
-        return $this->HasMany(ImagePost::class);
+    public function image() {
+        return $this->belongsTo(Image::class);
     }
 
     public static function getImageId($filename) {

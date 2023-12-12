@@ -64,7 +64,7 @@ class ImageController extends Controller
         return self::defaultAsset($type);
     }
 
-    public function create(Request $request, string $userId)
+    public function create(Request $request, int $userId)
     {
         // Validate input
         $request->validate([

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Through;
 
 
 class Post extends Model
@@ -54,7 +55,7 @@ class Post extends Model
      */
     public function video()
     {
-        return $this->belongsTo(Video::class);
+        return $this->HasOne(Video::class);
     }
 
     /**
@@ -73,10 +74,19 @@ class Post extends Model
         return $this->hasMany(UpvotePost::class);
     }
 
-    
-    public function items()
+    /**
+     * Get the images for the post.
+     */
+    public function images()
     {
-        return $this->hasMany(Item::class)->orderBy('id')->get();
+        return $this->hasManyThrough(
+            Image::class,
+            ImagePost::class,
+            'post_id', // Foreign key on ImagePost table...
+            'id', // Foreign key on Images table...
+            'id', // Local key on Posts table...
+            'image_id' // Local key on ImagePost table...
+        );
     }
 
 }
