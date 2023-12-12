@@ -19,7 +19,7 @@
                 <br><br>
                 <strong>Title:</strong> {{ $comment->title }}<br><br>
                 <strong>Caption:</strong> {{ $comment->caption }}<br><br>
-                <strong>Comment Date:</strong> {{ $comment->commentdate }}<br><br>
+                <strong>Date:</strong> {{ $comment->commentdate }}<br><br>
                 <strong>Upvotes:</strong> {{ $comment->upvotes }}<br><br>
                 <strong>Downvotes:</strong> {{ $comment->downvotes }}<br><br>
                 <strong>Posted by:</strong> <a href="{{ route('profile_page', ['id' => $comment->user->id]) }}">{{ $comment->user->name }}</a>
