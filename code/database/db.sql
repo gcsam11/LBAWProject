@@ -281,6 +281,23 @@ AFTER INSERT ON downvote_post
 FOR EACH ROW
 EXECUTE FUNCTION downvote_post_votes_count();
 
+CREATE OR REPLACE FUNCTION decrement_post_downvotes_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        UPDATE post
+        SET downvotes = downvotes - 1
+        WHERE id = OLD.post_id;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER decrement_downpost_trigger
+AFTER DELETE ON downvote_post
+FOR EACH ROW
+EXECUTE FUNCTION decrement_post_downvotes_count();
+
 -- Trigger for updating comment upvotes count
 CREATE OR REPLACE FUNCTION update_comment_votes_count()
 RETURNS TRIGGER AS $$

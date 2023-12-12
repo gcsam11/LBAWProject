@@ -194,22 +194,63 @@ addEventListeners();
 
 
 function upvote(id) {
-  const button = document.querySelector(`[data-id="${id}"] button`);
+  const buttonUpvote = document.getElementById(`${id}upvoteButton`);
+  const buttonDownvote = document.getElementById(`${id}downvoteButton`);
   const upvotesElement = document.querySelector(`[data-id="${id}"] .upvotes`);
-  if (button.className === "not-clicked") {
-    button.className = "clicked";
-    button.innerHTML = "Upvoted";
+  const downvotesElement = document.querySelector(`[data-id="${id}"] .downvotes`);
+  if (buttonUpvote.className === "not-clicked") {
+    buttonUpvote.className = "clicked";
+    buttonUpvote.innerHTML = "Upvoted";
     sendAjaxRequest('post', '../post/upvote', { id: id }, function (response) {
       upvotesElement.innerHTML = '<p class="upvotes" data-id="{{ $post->id }}"><strong>Upvotes: </strong>' + response + '</p>';
     });
+    if (buttonDownvote.className === "clicked") {
+      buttonDownvote.className = "not-clicked";
+      buttonDownvote.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/></svg>`;
+      sendAjaxRequest('post', '../post/undodownvote', { id: id }, function (response) {
+        downvotesElement.innerHTML = '<p class="downvotes" data-id="{{ $post->id }}"><strong>Downvotes: </strong>' + response + '</p>';
+      });
+    }
   }
   else {
-    button.className = "not-clicked";
-    button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"> \
+    buttonUpvote.className = "not-clicked";
+    buttonUpvote.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"> \
     <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/> \
     </svg>';
     sendAjaxRequest('post', '../post/undoupvote', { id: id }, function (response) {
       upvotesElement.innerHTML = '<p class="upvotes" data-id="{{ $post->id }}"><strong>Upvotes: </strong>' + response + '</p>';
+    });
+  }
+}
+
+function downvote(id) {
+  const buttonUpvote = document.getElementById(`${id}upvoteButton`);
+  const buttonDownvote = document.getElementById(`${id}downvoteButton`);
+  const upvotesElement = document.querySelector(`[data-id="${id}"] .upvotes`);
+  const downvotesElement = document.querySelector(`[data-id="${id}"] .downvotes`);
+  if (buttonDownvote.className === "not-clicked") {
+    buttonDownvote.className = "clicked";
+    buttonDownvote.innerHTML = "Downvoted";
+    sendAjaxRequest('post', '../post/downvote', { id: id }, function (response) {
+      downvotesElement.innerHTML = '<p class="downvotes" data-id="{{ $post->id }}"><strong>Downvotes: </strong>' + response + '</p>';
+    });
+    if (buttonUpvote.className === "clicked") {
+      buttonUpvote.className = "not-clicked";
+      buttonUpvote.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16"> \
+      <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/> \
+      </svg>';
+      sendAjaxRequest('post', '../post/undoupvote', { id: id }, function (response) {
+        upvotesElement.innerHTML = '<p class="upvotes" data-id="{{ $post->id }}"><strong>Upvotes: </strong>' + response + '</p>';
+      });
+    }
+  }
+  else {
+    buttonDownvote.className = "not-clicked";
+    buttonDownvote.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/></svg>`;
+    sendAjaxRequest('post', '../post/undodownvote', { id: id }, function (response) {
+      downvotesElement.innerHTML = '<p class="downvotes" data-id="{{ $post->id }}"><strong>Downvotes: </strong>' + response + '</p>';
     });
   }
 }
@@ -221,6 +262,57 @@ const pusher = new Pusher(pusherAppKey, {
 
 const channel = pusher.subscribe('lbaw2374');
 channel.bind('notification-upvote', function (data) {
+
+  const notification = document.getElementById('notification');
+  const closeButton = document.getElementById('closeButton');
+  const notificationText = document.getElementById('notificationText');
+  notificationText.textContent = data.message;
+  notification.classList.add('show');
+
+  closeButton.addEventListener('click', function () {
+    notification.classList.remove('show');
+  });
+
+  setTimeout(function () {
+    notification.classList.remove('show');
+  }, 5000);
+});
+
+channel.bind('notification-undoupvote', function (data) {
+
+  const notification = document.getElementById('notification');
+  const closeButton = document.getElementById('closeButton');
+  const notificationText = document.getElementById('notificationText');
+  notificationText.textContent = data.message;
+  notification.classList.add('show');
+
+  closeButton.addEventListener('click', function () {
+    notification.classList.remove('show');
+  });
+
+  setTimeout(function () {
+    notification.classList.remove('show');
+  }, 5000);
+});
+
+channel.bind('notification-downvote', function (data) {
+
+  const notification = document.getElementById('notification');
+  const closeButton = document.getElementById('closeButton');
+  const notificationText = document.getElementById('notificationText');
+  notificationText.textContent = data.message;
+  notification.classList.add('show');
+
+  closeButton.addEventListener('click', function () {
+    notification.classList.remove('show');
+  });
+
+  setTimeout(function () {
+    notification.classList.remove('show');
+  }, 5000);
+});
+
+channel.bind('notification-undodownvote', function (data) {
 
   const notification = document.getElementById('notification');
   const closeButton = document.getElementById('closeButton');

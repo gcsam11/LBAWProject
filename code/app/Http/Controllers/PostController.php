@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\UpvotePost;
+use App\Models\DownvotePost;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -16,6 +17,9 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
 
 use App\Events\Upvote;
+use App\Events\Downvote;
+use App\Events\UndoDownvote;
+use App\Events\UndoUpvote;
 
 
 class PostController extends Controller
@@ -226,6 +230,7 @@ class PostController extends Controller
 
         if ($upvotePost) {
             $upvotePost->delete();
+            event(new UndoUpvote($postId));
 
         } else {
             \Log::info('Upvote not found for post with ID: ' . $postId);
@@ -233,6 +238,43 @@ class PostController extends Controller
         $post = Post::findOrFail($postId);
         $upvotes = $post->upvotes;
         return response()->json($upvotes, 200);
+    }
+
+    function downvote(Request $request) {
+        $postId = $request->id;
+        $userId = Auth::id();
+        
+        $downvotePost = new DownvotePost();
+        $downvotePost->post_id = $postId;
+        $downvotePost->user_id = $userId;
+        
+        if ($downvotePost->save()) {
+            event(new Downvote($postId));
+        } else {
+            \Log::info('Failed to downvote post with ID: ' . $postId);
+        }
+        $post = Post::findOrFail($postId);
+        $downvotes = $post->downvotes;
+        return response()->json($downvotes, 200);
+    }
+
+    function undodownvote(Request $request) {
+        $postId = $request->id;
+        $userId = Auth::id();
+        $downvotePost = DownvotePost::where('post_id', $postId)
+        ->where('user_id', $userId)
+        ->first();
+
+        if ($downvotePost) {
+            $downvotePost->delete();
+            event(new UndoDownvote($postId));
+
+        } else {
+            \Log::info('Downvote not found for post with ID: ' . $postId);
+        }
+        $post = Post::findOrFail($postId);
+        $downvotes = $post->downvotes;
+        return response()->json($downvotes, 200);
     }
 }
 ?>

@@ -74,6 +74,10 @@ class Post extends Model
         return $this->hasMany(UpvotePost::class);
     }
 
+    public function downvotes()
+    {
+        return $this->hasMany(DownvotePost::class);
+    }
     
     public function items()
     {
@@ -84,6 +88,12 @@ class Post extends Model
     {
         $userId = Auth::id();
         return $this->upvotes()->where('user_id', $userId)->exists();
+    }
+
+    public function checkIfUserDownvoted()
+    {
+        $userId = Auth::id();
+        return $this->downvotes()->where('user_id', $userId)->exists();
     }
 }
 

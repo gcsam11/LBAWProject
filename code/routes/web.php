@@ -71,6 +71,8 @@ Route::prefix('posts')->group(function () {
 
 Route::post('/post/upvote', [PostController::class, 'upvote']);
 Route::post('/post/undoupvote', [PostController::class, 'undoupvote']);
+Route::post('/post/downvote', [PostController::class, 'downvote']);
+Route::post('/post/undodownvote', [PostController::class, 'undodownvote']);
 
 // Admin
 Route::controller(AdminController::class)->group(function () {
