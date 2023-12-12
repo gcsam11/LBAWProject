@@ -79,6 +79,7 @@ Route::prefix('posts')->group(function () {
 Route::post('/posts/{id}/comments', [CommentController::class, 'create'])->name('comments.create');
 Route::get('/comments/{id}/edit', [CommentController::class, 'edit'])->name('comments.edit');
 Route::post('/comments/{id}/update', [CommentController::class, 'updateComment'])->name('comments.update');
+Route::delete('/comments/{id}/delete', [CommentController::class, 'delete'])->name('comments.delete');
 
 // Admin
 Route::controller(AdminController::class)->group(function () {

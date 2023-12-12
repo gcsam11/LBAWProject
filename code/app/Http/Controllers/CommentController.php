@@ -140,14 +140,18 @@ class CommentController extends Controller
     public function delete(Request $request, $id)
     {
         // Find the comment.
-        $comment = comment::find($id);
+        $comment = Comment::findOrFail($id);
 
         // Check if the current user is authorized to delete this comment.
         $this->authorize('delete', $comment);
 
-        // Delete the comment and return it as JSON.
-        $comment->delete();
-        return response()->json($comment);
+        try {
+            $comment->delete();
+            return redirect()->route('posts.show', ['id' => $comment->post_id])->with('success', 'Comment deleted successfully');
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete comment with ID: ' . $comment->id . '. Error: ' . $e->getMessage());
+            return redirect()->route('posts.show', ['id' => $comment->post_id])->with('error', 'Failed to delete the comment');
+        }
     }
 }
 ?>
