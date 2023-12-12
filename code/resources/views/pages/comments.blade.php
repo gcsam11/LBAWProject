@@ -9,6 +9,14 @@
                         <button type="submit">Edit</button>
                     </form>
                 @endcan
+                @can('delete', $comment)
+                    <form action="{{ route('comments.delete', ['id' => $comment->id]) }}" method="POST" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit">Delete</button>
+                    </form>
+                @endcan
+                <br><br>
                 <strong>Title:</strong> {{ $comment->title }}<br><br>
                 <strong>Caption:</strong> {{ $comment->caption }}<br><br>
                 <strong>Comment Date:</strong> {{ $comment->commentdate }}<br><br>
