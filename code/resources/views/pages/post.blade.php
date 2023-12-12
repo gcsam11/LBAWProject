@@ -4,7 +4,7 @@
 
 @section('content')
     <section id="posts">
-        @include('partials.post', ['post' => $post])
+        @include('partials.posts', ['post' => $post])
         @include('pages.comments', ['comments' => $comments])
     </section>
     {{-- Update Button --}}

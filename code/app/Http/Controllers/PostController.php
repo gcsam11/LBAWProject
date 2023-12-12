@@ -79,9 +79,7 @@ class PostController extends Controller
         ]);
     }
 
-    /**
-     * Shows all posts sorted by How recent they were published
-     */
+/*  
     public function listRecent()
     {
         // Get posts ordered by postdate in descending order (most recent first).
@@ -92,7 +90,7 @@ class PostController extends Controller
             'posts' => $posts
         ]);
     }
-
+ */
     /**
      * Shows all posts made by the currently logged-in user.
      */
@@ -195,13 +193,33 @@ class PostController extends Controller
         }
     }
 
-    public function filter(Request $request)
+    public function applyFilter(Request $request)
     {
         $query = Post::query();
 
-        // Apply filters based on request query parameters
+
+        // Minimum Date
+        if ($request->filled('minimum_date')) {
+            $minDate = $request->input('minimum_date');
+            $query->whereDate('postdate', '>=', $minDate);
+        }
+
+        // Maximum Date
+        if ($request->filled('maximum_date')) {
+            $maxDate = $request->input('maximum_date');
+            $query->whereDate('postdate', '<=', $maxDate);
+        }
+
         if ($request->filled('minimum_upvote')) {
             $query->where('upvotes', '>=', $request->input('minimum_upvote'));
+        }
+
+        if ($request->filled('maximum_upvote')) {
+            $query->where('upvotes', '<=', $request->input('maximum_upvote'));
+        }
+
+        if ($request->filled('minimum_downvotevote')) {
+            $query->where('downvotes', '>=', $request->input('minimum_downvote'));
         }
 
         if ($request->filled('maximum_downvote')) {
@@ -214,10 +232,41 @@ class PostController extends Controller
                 $userQuery->where('name', 'like', "%$userName%");
             });
         }
+        
+        if ($request->filled('user_id')) {
+            $userId = $request->input('user_id');
+            $query->where('user_id', $userId);
+        }
+
+        if ($request->has('sort')) {
+            $sortQuery = $request->input('sort');
+
+            switch ($sortQuery) {
+                case 'dateDown':
+                    $query->orderBy('postdate', 'DESC');
+                    break;
+                case 'dateUp':
+                    $query->orderBy('postdate', 'ASC');
+                    break;
+                case 'voteDown':
+                    $query->orderBy('upvotes', 'DESC');
+                    break;
+                case 'voteUp':
+                    $query->orderBy('upvotes', 'ASC');
+                    break;
+                default:
+                    $query->orderBy('postdate', 'DESC');
+                    break;
+            }
+        } else {
+            $query->orderBy('upvotes', 'DESC');
+        }
 
         $filteredPosts = $query->get();
 
-        return view('pages.filtered_posts', ['posts' => $filteredPosts]);
+        $filteredPostsHtml = view('partials.posts', ['posts' => $filteredPosts])->render();
+
+        return response()->json(['success' => true, 'html' => $filteredPostsHtml]);
     }
 }
 ?>

@@ -29,7 +29,7 @@ use App\Http\Controllers\ImageController;
 Route::get('/', function () {
     return redirect('/main');
 })->name('home');
-Route::redirect('/main', '/main/top'); // Redirect /main to /main/top
+
 
 Route::get('/user_news', function () {
     return view('pages.user_news');
@@ -43,8 +43,8 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/profile/{id}', [UserController::class, 'show'])->name('profile_page');
     Route::post('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
     Route::get('/search', [UserController::class, 'search'])->name('user.search');
-    Route::get('/posts/filters', [PostController::class, 'filterRedirect'])->name('filter.posts');
-    Route::get('/posts/filter', [PostController::class, 'filter'])->name('posts.filter');
+    Route::post('/posts/filter/apply', [PostController::class, 'applyFilter'])->name('filter.posts.apply');
+
 });
 
 // ImageUser
@@ -57,12 +57,12 @@ Route::get('/create_post', function () {
     return view('pages.create_post');
 })->name('create_post')->middleware('auth');
 
-// Posts
+// Main Page Routes
 Route::group(['prefix' => 'main'], function () {
-    Route::get('/top', [PostController::class, 'listTop'])->name('posts.top');
-    Route::get('/recent', [PostController::class, 'listRecent'])->name('posts.recent');
+    Route::get('/', [PostController::class, 'listTop'])->name('posts.top');
     Route::get('/search', [PostController::class, 'search'])->name('posts.search');
 });
+
 
 //user news
 Route::get('/user_news', [PostController::class, 'userNews'])->name('user_news'); 
