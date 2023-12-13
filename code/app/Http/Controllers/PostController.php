@@ -2,6 +2,7 @@
  
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Post;
 use App\Models\UpvotePost;
 use App\Models\DownvotePost;
@@ -20,6 +21,9 @@ use App\Events\Upvote;
 use App\Events\Downvote;
 use App\Events\UndoDownvote;
 use App\Events\UndoUpvote;
+
+use App\Notifications\UpvotedPost;
+use App\Notifications\DownvotedPost;
 
 
 class PostController extends Controller
@@ -218,6 +222,9 @@ class PostController extends Controller
         }
         $post = Post::findOrFail($postId);
         $upvotes = $post->upvotes;
+        $postOwner = User::findOrFail($post->user_id);
+        $upvoter = User::findOrFail($userId);
+        $postOwner->notify(new UpvotedPost($upvoter, $post));
         return response()->json($upvotes, 200);
     }
 
@@ -227,7 +234,6 @@ class PostController extends Controller
         $upvotePost = UpvotePost::where('post_id', $postId)
         ->where('user_id', $userId)
         ->first();
-
         if ($upvotePost) {
             $upvotePost->delete();
             event(new UndoUpvote($postId));
@@ -255,6 +261,9 @@ class PostController extends Controller
         }
         $post = Post::findOrFail($postId);
         $downvotes = $post->downvotes;
+        $postOwner = User::findOrFail($post->user_id);
+        $downvoter = User::findOrFail($userId);
+        $postOwner->notify(new DownvotedPost($downvoter, $post));
         return response()->json($downvotes, 200);
     }
 
