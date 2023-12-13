@@ -6,7 +6,7 @@ SET search_path TO lbaw2374;
 -- Create Tables
 CREATE TABLE IMAGE (
     id SERIAL PRIMARY KEY,
-    path TEXT NOT NULL
+    filename TEXT NOT NULL
 );
 
 CREATE TABLE TOPIC (
@@ -158,19 +158,19 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' THEN
         NEW.tsvectors = (
-         setweight(to_tsvector('english', NEW.title), 'A') ||
-         setweight(to_tsvector('english', NEW.caption), 'B')
+            setweight(to_tsvector('english', NEW.title), 'A') ||
+            setweight(to_tsvector('english', NEW.caption), 'B')
         );
- END IF;
- IF TG_OP = 'UPDATE' THEN
-         IF (NEW.title <> OLD.title OR NEW.caption <> OLD.caption) THEN
-           NEW.tsvectors = (
-             setweight(to_tsvector('english', NEW.title), 'A') ||
-             setweight(to_tsvector('english', NEW.caption), 'B')
-           );
-         END IF;
- END IF;
- RETURN NEW;
+    END IF;
+    IF TG_OP = 'UPDATE' THEN
+        IF (NEW.title <> OLD.title OR NEW.caption <> OLD.caption) THEN
+            NEW.tsvectors = (
+                setweight(to_tsvector('english', NEW.title), 'A') ||
+                setweight(to_tsvector('english', NEW.caption), 'B')
+            );
+        END IF;
+    END IF;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 

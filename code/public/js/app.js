@@ -328,3 +328,4 @@ channel.bind('notification-undodownvote', function (data) {
     notification.classList.remove('show');
   }, 5000);
 });
+

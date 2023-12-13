@@ -26,6 +26,7 @@
         </form>
     </div>
     @endcan
+
     {{-- Delete Button --}}
     @can('delete', $post)
     <form action="{{ route('posts.delete', ['id' => $post->id]) }}" method="POST">
@@ -34,6 +35,23 @@
         <button type="submit">Delete Post</button>
     </form> 
     @endcan
+
+    {{-- Create Comment Form --}}
+    @auth
+        <div>
+            <h4>Add a Comment</h4>
+            <form action="{{ route('comments.create', ['id' => $post->id]) }}" method="POST">
+                @csrf
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+                <label for="caption">Caption:</label>
+                <textarea id="caption" name="caption" required></textarea>
+                <button type="submit">Post</button>
+            </form>
+        </div>
+    @endauth
+
+    {{-- Display Success Message --}}
     @if(session('success'))
         <script>
             // Store the success message in a JavaScript variable

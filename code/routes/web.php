@@ -11,7 +11,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PostController;
-
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ImageController;
 
 
 /*
@@ -45,6 +46,11 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/search', [UserController::class, 'search'])->name('user.search');
 });
 
+// ImageUser
+Route::controller(ImageController::class)->group(function () {
+    Route::post('/profile/{id}/image', [ImageController::class, 'create'])->name('image.new');
+})->middleware('auth');
+
 // Create Post
 Route::get('/create_post', function () {
     return view('pages.create_post');
@@ -69,10 +75,18 @@ Route::prefix('posts')->group(function () {
     Route::patch('/{id}/update', [PostController::class, 'update'])->name('posts.update');
 });
 
+
 Route::post('/post/upvote', [PostController::class, 'upvote']);
 Route::post('/post/undoupvote', [PostController::class, 'undoupvote']);
 Route::post('/post/downvote', [PostController::class, 'downvote']);
 Route::post('/post/undodownvote', [PostController::class, 'undodownvote']);
+
+// Comments
+Route::post('/posts/{id}/comments', [CommentController::class, 'create'])->name('comments.create');
+Route::get('/comments/{id}/edit', [CommentController::class, 'edit'])->name('comments.edit');
+Route::post('/comments/{id}/update', [CommentController::class, 'updateComment'])->name('comments.update');
+Route::delete('/comments/{id}/delete', [CommentController::class, 'delete'])->name('comments.delete');
+
 
 // Admin
 Route::controller(AdminController::class)->group(function () {

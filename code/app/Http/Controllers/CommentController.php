@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 use Illuminate\Http\RedirectResponse;
@@ -62,37 +63,75 @@ class CommentController extends Controller
     /**
      * Creates a new comment.
      */
-    public function create(Request $request)
+    public function create(Request $request, $id)
     {
-        // Create a blank new comment.
-        $comment = new comment();
+        // Find the post.
+        $post = Post::findOrFail($id);
+
+        // Create a new comment instance.
+        $comment = new Comment();
 
         // Check if the current user is authorized to create this comment.
         $this->authorize('create', $comment);
 
+        // Validate the request data.
         $request->validate([
             'title' => ['required'],
             'caption' => ['required']
         ]);
 
         // Set comment details.
-        $comment->title = $request->input('title');
-        $comment->caption = $request->input('caption');
-        $comment->commentdate = now(); // Set the current date and time.
-        $comment->user_id = Auth::user()->id;
-        $comment->post_id = $request->route('postId');
+        $comment = Auth::user()->comments()->create([
+            'title' => $request->input('title'),
+            'caption' => $request->input('caption'),
+            'commentdate' => now(), // Set the current date and time.
+            'user_id' => Auth::user()->id,
+            'post_id' => $request->route('id')
+        ]);
 
-        // Save the comment and return it as JSON.
+        // Save the comment
         $comment->save();
-        return response()->json($comment);
+
+        // Redirect back to the post page
+        return redirect()->route('posts.show', ['id' => $id])->with('success', 'Comment created successfully');
     }
 
     /**
-     * Update a comment.
-     */
+    * Show the form for editing a specific comment.
+    */
+    public function edit($id)
+    {
+        $comment = Comment::findOrFail($id);
 
-    public function update(Request $request, $id){
-        
+        // Check if the current user is authorized to edit this comment
+        $this->authorize('update', $comment);
+
+        return view('pages.edit_comment', ['comment' => $comment]);
+    }
+
+    /**
+    * Update the specified comment in storage.
+    */
+    public function updateComment(Request $request, $id)
+    {
+        $comment = Comment::findOrFail($id);
+
+        // Check if the current user is authorized to update this comment
+        $this->authorize('update', $comment);
+
+        $request->validate([
+            'title' => ['required'],
+            'caption' => ['required'],
+        ]);
+
+        // Update comment details
+        $comment->title = $request->input('title');
+        $comment->caption = $request->input('caption');
+
+        // Save the updated comment
+        $comment->save();
+
+        return redirect()->route('posts.show', ['id' => $comment->post_id])->with('success', 'Comment updated successfully');
     }
 
     /**
@@ -101,14 +140,18 @@ class CommentController extends Controller
     public function delete(Request $request, $id)
     {
         // Find the comment.
-        $comment = comment::find($id);
+        $comment = Comment::findOrFail($id);
 
         // Check if the current user is authorized to delete this comment.
         $this->authorize('delete', $comment);
 
-        // Delete the comment and return it as JSON.
-        $comment->delete();
-        return response()->json($comment);
+        try {
+            $comment->delete();
+            return redirect()->route('posts.show', ['id' => $comment->post_id])->with('success', 'Comment deleted successfully');
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete comment with ID: ' . $comment->id . '. Error: ' . $e->getMessage());
+            return redirect()->route('posts.show', ['id' => $comment->post_id])->with('error', 'Failed to delete the comment');
+        }
     }
 }
 ?>

@@ -9,6 +9,7 @@
         <p><strong>Date:</strong> {{ $post->postdate }}</p>
         <p class="upvotes" data-id="{{ $post->id }}"><strong>Upvotes:</strong> {{ $post->upvotes }}</p>
         <p class="downvotes" data-id="{{ $post->id }}"><strong>Downvotes:</strong> {{ $post->downvotes }}</p>
+        <p><strong>Comments:</strong> {{ $post->comments->count() }}</p>
         <strong>Posted by:</strong> <a href="{{ route('profile_page', ['id' => $post->user->id]) }}">{{ $post->user->name }}</a>
         @php
             $userUpvoted = $post->checkIfUserUpvoted();

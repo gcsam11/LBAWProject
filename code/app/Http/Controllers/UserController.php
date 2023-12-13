@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Http\Controllers\ImageController;
 use Illuminate\Http\Request;
 
 use Illuminate\View\View;
@@ -75,19 +76,21 @@ class UserController extends Controller
                 'country' => 'nullable|string|max:255',
                 'url' => 'nullable|url|max:255',
             ]);
+
+        // Remove null values from the validated data.
+        $filteredData = array_filter($validatedData, function ($value) {
+            return $value !== null;
+        });     
+
+        // Update the user's profile information.
+        $user->update($filteredData);
+
+        // Save the changes to the database.
+        $user->save();
+
+        // Redirect the user back to their profile page.
+        return redirect()->route('profile_page', ['id' => $user->id])->with('success', 'Info updated successfully');
     
-            // Remove null values from the validated data.
-            $filteredData = array_filter($validatedData, function ($value) {
-                return $value !== null;
-            });
-            // Update the user's profile information.
-            $user->update($filteredData);
-    
-            // Save the changes to the database.
-            $user->save();
-    
-            // Redirect the user back to their profile page.
-            return redirect()->route('profile_page', ['id' => $user->id])->with('success', 'Info updated successfully');
         } catch (\Exception $e) {
             // Log the error message.
             \Log::error('Failed to update user with ID: ' . $user->id . '. Error: ' . $e->getMessage());
@@ -96,6 +99,21 @@ class UserController extends Controller
             return redirect()->route('profile_page', ['id' => $user->id])->with('error', 'Failed to update info');
         }
     }    
+
+    /**
+     * Update the image of a user in the user table.
+     */
+    public static function updateImage(int $userId, int $imageId): void
+    {
+        // Find the user by ID
+        $user = User::findOrFail($userId);
+
+        // Update the user's image
+        $user->image_id = $imageIOd;
+
+        // Save the changes to the database
+        $user->save();
+    }
 
     /**
      * Change user password.
