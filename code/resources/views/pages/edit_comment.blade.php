@@ -4,7 +4,7 @@
 
 @section('content')
     <h2>Edit Comment</h2>
-    <form action="{{ route('comments.update', ['id' => $comment->id]) }}" method="POST">
+    <form enctype="multipart/form-data" action="{{ route('comments.update', ['id' => $comment->id]) }}" method="POST">
         @csrf
         <div>
             <label for="title">Title:</label>

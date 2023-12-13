@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model
 {
@@ -55,7 +55,7 @@ class Post extends Model
      */
     public function video()
     {
-        return $this->belongsTo(Video::class);
+        return $this->HasOne(Video::class);
     }
 
     /**
@@ -73,16 +73,21 @@ class Post extends Model
     {
         return $this->hasMany(UpvotePost::class);
     }
-
     public function downvotes()
     {
         return $this->hasMany(DownvotePost::class);
     }
-    
-    public function items()
+
+    public function images()
     {
-        return $this->hasMany(Item::class)->orderBy('id')->get();
+        return $this->belongsToMany(
+            Image::class,
+            'image_post', // Pivot table name...
+            'post_id', // Foreign key on the pivot table related to the Post model...
+            'image_id' // Foreign key on the pivot table related to the Image model...
+        )->pluck('filename')->toArray();
     }
+
 
     public function checkIfUserUpvoted()
     {
@@ -95,6 +100,8 @@ class Post extends Model
         $userId = Auth::id();
         return $this->downvotes()->where('user_id', $userId)->exists();
     }
+
+
 }
 
 ?>

@@ -108,11 +108,35 @@ class UserController extends Controller
         // Find the user by ID
         $user = User::findOrFail($userId);
 
+        // Check if the current user can update the profile.
+        $this->authorize('update', $user);
+
         // Update the user's image
-        $user->image_id = $imageIOd;
+        $user->image_id = $imageId;
 
         // Save the changes to the database
         $user->save();
+    }
+
+    /**
+     * Remove the image.
+     */
+    public function removeImage(int $userId): 
+    {
+        // Find the user by ID
+        $user = User::findOrFail($userId);
+
+        // Check if the current user can update the profile.
+        $this->authorize('update', $user);
+
+        // Update the user's image
+        $user->image_id = null;
+
+        // Save the changes to the database
+        $user->save();
+
+        // Redirect the user back to their profile page.
+        return redirect()->route('profile_page', ['id' => $user->id])->with('success', 'Image removed successfully');
     }
 
     /**

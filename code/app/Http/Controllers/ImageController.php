@@ -15,7 +15,6 @@ class ImageController extends Controller
 
     static $systemTypes = [
         'profile' => ['png', 'jpg', 'gif', 'svg', 'jpeg'],
-        'post' => ['mov', 'mp4', 'gif', 'svg', 'png', 'jpg', 'jpeg'],
     ];
 
     private static function isValidType(String $type) {
@@ -64,7 +63,33 @@ class ImageController extends Controller
         return self::defaultAsset($type);
     }
 
-    public function create(Request $request, string $userId)
+    public static function create($actualImage, string $filename){
+
+        // Check if the filename is not empty
+        if (empty($filename)) {
+            return;
+        }
+
+        // Store the image in the database
+        $image = new Image;
+
+        $image->filename = $filename;
+
+        $image->save();
+
+        $actualImage->storeAs('post', $filename, self::$diskName);
+
+        $image = Image::where('filename', $filename)->first();
+
+        if ($image) {
+            return $image->id;
+        }
+        
+        // Return a response
+        return;
+    }
+
+    public function createUserImage(Request $request, int $userId)
     {
         // Validate input
         $request->validate([
@@ -79,9 +104,7 @@ class ImageController extends Controller
             return response()->json(['message' => 'Filename is empty'], 400);
         }
 
-        // Check if the hashed filename exists in the database
         $hashedFilename = hash('sha256', $filename . time());
-        $image = Image::where('filename', $hashedFilename)->first();
 
         // Store the image in the database
         $image = new Image;
@@ -92,11 +115,8 @@ class ImageController extends Controller
 
         $request->image->storeAs('profile', $hashedFilename, self::$diskName);
 
-        $image = Image::where('filename', $hashedFilename)->first();
-
-        if ($image) {
-            $image_id = $image->id;
-            UserController::updateImage($userId, $image_id);
+        if ($image->id) {
+            UserController::updateImage($userId, $image->id);
 
             // Return a response
             return redirect()->route('profile_page', ['id' => $userId])->with('success', 'Image changed successfully.');
