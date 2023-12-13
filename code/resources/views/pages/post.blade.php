@@ -5,13 +5,19 @@
 @section('content')
     <section id="posts">
         @include('partials.post', ['post' => $post])
+
+        {{-- Print Images --}}
+        @if(!empty($images))
+            @include('partials.carousel', ['images' => $images])
+        @endif
+
         @include('pages.comments', ['comments' => $comments])
     </section>
     {{-- Update Button --}}
     @can('update', $post)
     <div>
         <h2>Edit Post</h2>
-        <form action="{{ route('posts.update', $post->id) }}" method="POST">
+        <form enctype="multipart/form-data" action="{{ route('posts.update', $post->id) }}" method="POST">
             @csrf
             @method('PATCH')
             <div>
@@ -22,6 +28,12 @@
                 <label for="caption">Caption:</label>
                 <textarea id="caption" name="caption">{{ $post->caption }}</textarea>
             </div>
+            <label id="box_container" for="image_input2">
+                <div class="text2">
+                    <i class="fa-solid fa-upload"></i>
+                </div>
+                <input type="file" name="images[]" accept="image/*" id="image_input2" multiple>
+            </label><br>
             <button type="submit">Update Post</button>
         </form>
     </div>
@@ -46,6 +58,13 @@
                 <input type="text" id="title" name="title" required>
                 <label for="caption">Caption:</label>
                 <textarea id="caption" name="caption" required></textarea>
+                <label id="box_container" for="image_input2">
+                    <div class="text2">
+                        <i class="fa-solid fa-upload"></i>
+                    </div>
+                    <input type="file" name="images[]" accept="image/*" id="image_input2" multiple>
+                </label>
+                <br>
                 <button type="submit">Post</button>
             </form>
         </div>

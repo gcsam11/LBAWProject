@@ -11,7 +11,7 @@ class Image extends Model
 
     public $timestamps  = false;
 
-    protected $table = 'image_post';
+    protected $table = 'image';
 
     protected $fillable = [
         'filename',

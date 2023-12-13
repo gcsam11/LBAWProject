@@ -4,7 +4,7 @@
         <a href="#" class="delete">&#10761;</a>
     </header>
         <!-- Display post details or any specific information -->
-        <strong>Topic:</strong> {{ $post->topic->title }}<br><br>
+        <strong>Topic:</strong> {{ $post->topic->title ?? 'N/A' }}<br><br>
         <strong>Caption:</strong> {{ $post->caption }}<br><br>
         <strong>Date:</strong> {{ $post->postdate }}<br><br>
         <strong>Upvotes:</strong> {{ $post->upvotes }}<br><br>

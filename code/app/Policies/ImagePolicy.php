@@ -11,7 +11,7 @@ class ImagePolicy
         return Auth::user()->id === $userId || $user->isAdmin;
     }
 
-    public function create(Request $request, int $userId): bool
+    public function createUserImage(Request $request, int $userId): bool
     {
         return Auth::user()->id === $userId || $user->isAdmin;
     }

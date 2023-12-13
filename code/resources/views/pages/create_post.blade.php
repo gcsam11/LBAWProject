@@ -6,8 +6,18 @@
     {{ "Publish new Post" }}
 @endsection
 
+@if ($errors->any())
+    <div class="error">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 @section('content')
-<form method="POST" action="{{ route('posts.create') }}">
+<form enctype="multipart/form-data" method="POST" action="{{ route('posts.create') }}">
   {{ csrf_field() }}
 
   <!--
@@ -22,22 +32,18 @@
 
   <label for="title">Title</label>
   <input id="title" type="text" name="title" value="{{ old('title') }}" required autofocus>
-  @if ($errors->has('title'))
-    <span class="error">
-      {{ $errors->first('title') }}
-    </span>
-  @endif
 
   <label for="caption">Caption</label>
   <textarea id="caption" type="text" name="caption" required></textarea>
-  @if ($errors->has('caption'))
-    <span class="error">
-      {{ $errors->first('caption') }}
-    </span>
-  @endif
 
-  <button type="submit">
-    Publish
-  </button>
+  <label id="box_container" for="image_input2">
+    <div class="text2">
+      <i class="fa-solid fa-upload"></i>
+    </div>
+    <input type="file" name="images[]" accept="image/*" id="image_input2" multiple>
+  </label>
+  <br>
+  
+  <button type="submit">Publish</button>
 </form>
 @endsection

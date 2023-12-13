@@ -6,6 +6,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImagePostController;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -30,12 +31,14 @@ class PostController extends Controller
             ->orderByRaw('(upvotes - downvotes) DESC')
             ->get();
 
-        // No need to authorize show action here as it's already fetched the post.
+        // Get all images that belong to the Post.
+        $images = $post->images();
 
         // Use the pages.post template to display the post.
         return view('pages.post', [
             'post' => $post,
-            'comments' => $comments
+            'comments' => $comments,
+            'images' => $images,
         ]);
     }
     public function search(Request $request)
@@ -119,21 +122,43 @@ class PostController extends Controller
      */
     public function create(Request $request) {
         $request->validate([
-            'title' => ['required'],
-            'caption' => ['required']
+            'title' => 'required',
+            'caption' => 'required',
+            'images' => 'array',
+            'topic' => 'string',
+            'images.*' =>  'image|max:2048|mimes:jpg,jpeg,svg,gif,png',
         ]);
     
-        $topicId = 1; // Replace this with your desired topic ID
+        // $topicId = getTopicId($request->topic);
 
         // Set post details.
         $post = Auth::user()->posts()->create([
-            'topic_id' => $topicId,
+            //'topic_id' => $topicId,
             'title' => $request->input('title'),
             'caption' => $request->input('caption'),
             'postdate' => now(), // Set the current date and time.
             'user_id' => Auth::user()->id
         ]);
-    
+
+
+        // Check if images array is not null
+        if (!empty($request->images)) {
+            // Call the create method of ImagePostController and pass the images array
+            $errorImages = ImagePostController::create($request, $post->id);
+            if ($errorImages === true) {
+                // No errors, continue with the code
+            } else {
+                // Delete any images associated with the post
+                ImagePost::where('post_id', $post->id)->delete();
+
+                // Delete the post
+                $post->delete();
+
+                // Return error Message                
+                return redirect()->route('pages.create_post')->withErrors($errorImages);
+            }
+
+        }
         // Redirect the user to the newly created post page or any other page you prefer.
         return redirect()->route('user_news')->with('success', 'Post created successfully');
     }

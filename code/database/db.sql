@@ -339,7 +339,7 @@ DECLARE
     image_count INT;
 BEGIN
     SELECT COUNT(*) INTO image_count
-    FROM Images
+    FROM Image_Post
     WHERE Post_Id = NEW.Post_Id;
 
     IF image_count >= 5 THEN

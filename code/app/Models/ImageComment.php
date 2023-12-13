@@ -5,23 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ImagePost extends Model
+class ImageComment extends Model
 {
     use HasFactory;
 
     public $timestamps  = false;
 
-    protected $table = 'image_post';
+    protected $table = 'image_comment';
 
     protected $primaryKey = 'image_id';
 
     protected $fillable = [
         'image_id',
-        'post_id',
+        'comment_id',
     ];
 
-    public function post() {
-        return $this->belongsTo(Post::class);
+    public function comment() {
+        return $this->belongsTo(Comment::class);
     }
 
     public function image() {
