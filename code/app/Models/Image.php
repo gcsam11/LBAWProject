@@ -21,6 +21,10 @@ class Image extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function imagepost() {
+        return $this->HasMany(ImagePost::class);
+    }
+
     public static function getImageId($filename) {
         return self::where('filename', $filename)->value('id');
     }

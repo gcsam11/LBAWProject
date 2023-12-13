@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 // Added to define Eloquent relationships.
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Comment extends Model
 {
@@ -54,5 +55,17 @@ class Comment extends Model
         return $this->belongsTo(Post::class);
     }
 
+    /**
+     * Get the images for the comment.
+     */
+    public function images()
+    {
+        return $this->belongsToMany(
+            Image::class,
+            'image_comment', // Pivot table name...
+            'comment_id', // Foreign key on the pivot table related to the Post model...
+            'image_id' // Foreign key on the pivot table related to the Image model...
+        );
+    }
 }
 ?>

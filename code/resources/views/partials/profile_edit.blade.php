@@ -3,15 +3,15 @@
     {{csrf_field()}}
     <div class="op_box">
         <div class="circle_container">
+        <label for="image_input" id="label_file">
             <img src="{{ $user->getProfileImage() }}" alt="Profile Picture">
-                <div class="overlay">
-                    <input type="file" name="image" accept="image/*" id="image_input">
+        </label>  
+            <div class="overlay">
+                <input type="file" name="image" accept="image/*" id="image_input">
                     <div class="text">
-                        <label for="image_input">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </label>
+                        <i class="fa-solid fa-pen-to-square"></i>
                     </div>
-                </div>  
+            </div>
         </div> 
     </div>
     <br>

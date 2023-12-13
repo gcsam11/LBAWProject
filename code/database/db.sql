@@ -136,7 +136,7 @@ CREATE TABLE IMAGE_POST(
     post_id INTEGER NOT NULL,
     CONSTRAINT fk_image_post FOREIGN KEY(image_id) REFERENCES IMAGE(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_post FOREIGN KEY(post_id) REFERENCES POST(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    PRIMARY KEY(image_id, post_id)
+    PRIMARY KEY(image_id)
 );
 
 CREATE TABLE IMAGE_COMMENT(
@@ -144,7 +144,7 @@ CREATE TABLE IMAGE_COMMENT(
     comment_id INTEGER NOT NULL,
     CONSTRAINT fk_image_comment FOREIGN KEY(image_id) REFERENCES IMAGE(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_comment FOREIGN KEY(comment_id) REFERENCES COMMENT(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    PRIMARY KEY(image_id, comment_id)
+    PRIMARY KEY(image_id)
 );
 
 -- Create Indexes
@@ -333,6 +333,48 @@ CREATE TRIGGER enforce_comment_date_constraint_trigger
 BEFORE INSERT ON COMMENT
 FOR EACH ROW
 EXECUTE FUNCTION enforce_comment_date_constraint();
+
+CREATE OR REPLACE FUNCTION checkimagecount() RETURNS TRIGGER AS $$
+DECLARE
+    image_count INT;
+BEGIN
+    SELECT COUNT(*) INTO image_count
+    FROM Image_Post
+    WHERE Post_Id = NEW.Post_Id;
+
+    IF image_count >= 5 THEN
+        RAISE EXCEPTION 'Cannot insert more than % images for the same post.', max_images;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER BeforeInsertImage
+BEFORE INSERT ON Image_Post
+FOR EACH ROW
+EXECUTE FUNCTION checkimagecount();
+
+CREATE OR REPLACE FUNCTION checkcommentcount() RETURNS TRIGGER AS $$
+DECLARE
+    comment_count INT;
+BEGIN
+    SELECT COUNT(*) INTO comment_count
+    FROM Image_Comment
+    WHERE comment_id = NEW.comment_id;
+
+    IF comment_count >= 5 THEN
+        RAISE EXCEPTION 'Cannot insert more than % comments for the same image.', max_comments;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER BeforeInsertComment
+BEFORE INSERT ON Image_Comment
+FOR EACH ROW
+EXECUTE FUNCTION checkcommentcount();
 
 --Create Trigger for POST UPVOTE/DOWNVOTE counter
 
