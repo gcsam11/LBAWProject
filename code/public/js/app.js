@@ -263,9 +263,9 @@ const pusher = new Pusher(pusherAppKey, {
 const channel = pusher.subscribe('lbaw2374');
 channel.bind('notification-upvote', function (data) {
 
-  const notification = document.getElementById('notification');
+  const notification = document.getElementById('event');
   const closeButton = document.getElementById('closeButton');
-  const notificationText = document.getElementById('notificationText');
+  const notificationText = document.getElementById('eventText');
   notificationText.textContent = data.message;
   notification.classList.add('show');
 
@@ -280,9 +280,9 @@ channel.bind('notification-upvote', function (data) {
 
 channel.bind('notification-undoupvote', function (data) {
 
-  const notification = document.getElementById('notification');
+  const notification = document.getElementById('event');
   const closeButton = document.getElementById('closeButton');
-  const notificationText = document.getElementById('notificationText');
+  const notificationText = document.getElementById('eventText');
   notificationText.textContent = data.message;
   notification.classList.add('show');
 
@@ -297,9 +297,9 @@ channel.bind('notification-undoupvote', function (data) {
 
 channel.bind('notification-downvote', function (data) {
 
-  const notification = document.getElementById('notification');
+  const notification = document.getElementById('event');
   const closeButton = document.getElementById('closeButton');
-  const notificationText = document.getElementById('notificationText');
+  const notificationText = document.getElementById('eventText');
   notificationText.textContent = data.message;
   notification.classList.add('show');
 
@@ -314,9 +314,9 @@ channel.bind('notification-downvote', function (data) {
 
 channel.bind('notification-undodownvote', function (data) {
 
-  const notification = document.getElementById('notification');
+  const notification = document.getElementById('event');
   const closeButton = document.getElementById('closeButton');
-  const notificationText = document.getElementById('notificationText');
+  const notificationText = document.getElementById('eventText');
   notificationText.textContent = data.message;
   notification.classList.add('show');
 

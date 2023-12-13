@@ -42,7 +42,7 @@
                 Read more...
             </button>
         @endforeach
-        @include('partials.notification')
+        @include('partials.event')
     </div>
     <script>
         var createPostUrl = @json(route('create_post'));
