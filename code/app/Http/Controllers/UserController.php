@@ -121,7 +121,7 @@ class UserController extends Controller
     /**
      * Remove the image.
      */
-    public function removeImage(int $userId): 
+    public function removeImage(int $userId) 
     {
         // Find the user by ID
         $user = User::findOrFail($userId);
