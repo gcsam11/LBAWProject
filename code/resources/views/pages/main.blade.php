@@ -47,4 +47,5 @@
         var createPostUrl = @json(route('create_post'));
     </script>
     <script src="{{ asset('js/create_post.js') }}"></script>
+    <div id="notificationsContainer"></div>
 @endsection

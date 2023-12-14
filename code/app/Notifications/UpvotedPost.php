@@ -29,8 +29,10 @@ class UpvotedPost extends Notification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'upvoter_name' => $this->upvoter->name,
-            'post_title' => $this->post->title,
+            'sender_id' => $this->upvoter->id,
+            'name' => $this->upvoter->name,
+            'title' => $this->post->title,
+            'description' => "Upvoted Post",
         ];
     }
 }

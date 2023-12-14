@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ImageController;
 
 
@@ -50,6 +51,7 @@ Route::controller(UserController::class)->group(function () {
 Route::controller(ImageController::class)->group(function () {
     Route::post('/profile/{id}/image', [ImageController::class, 'create'])->name('image.new');
 })->middleware('auth');
+Route::post('/profileimage', [ImageController::class, 'getAJAX']);
 
 // Create Post
 Route::get('/create_post', function () {
@@ -80,6 +82,9 @@ Route::post('/post/upvote', [PostController::class, 'upvote']);
 Route::post('/post/undoupvote', [PostController::class, 'undoupvote']);
 Route::post('/post/downvote', [PostController::class, 'downvote']);
 Route::post('/post/undodownvote', [PostController::class, 'undodownvote']);
+
+//Notification
+Route::get('/unreadnotifications', [NotificationController::class, 'unreadNotifications']);
 
 // Comments
 Route::post('/posts/{id}/comments', [CommentController::class, 'create'])->name('comments.create');

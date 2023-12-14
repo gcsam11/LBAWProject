@@ -29,8 +29,10 @@ class DownvotedPost extends Notification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'downvoter_name' => $this->downvoter->name,
-            'post_title' => $this->post->title,
+            'sender_id' => $this->downvoter->id,
+            'name' => $this->downvoter->name,
+            'title' => $this->post->title,
+            'description' => "Downvoted Post",
         ];
     }
 }
