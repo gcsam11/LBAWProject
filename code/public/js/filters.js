@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (filtersForm) {
         filtersForm.addEventListener('submit', function(event) {
-            console.log('cona\n');
             event.preventDefault();
             var formDataFilters = new FormData();
             var csrfToken = document.querySelector('meta[name="csrf-token"]');
@@ -75,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     formDataFilters.append(element.name, element.value);
                 }
             }
-            console.log('cona\n');
             formDataFilters.append('_token', token);
             formDataFilters.append('sort', sortElem.value);
             formDataFilters.append('time_sort', timeSortElem.value);
@@ -89,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
             body: requestData
         })
         .then(function(response) {
-            console.log('Response status:', response.status,'\n');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
