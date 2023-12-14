@@ -43,7 +43,7 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/profile/{id}', [UserController::class, 'show'])->name('profile_page');
     Route::post('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
     Route::get('/search', [UserController::class, 'search'])->name('user.search');
-    Route::post('/posts/filter/apply', [PostController::class, 'applyFilter'])->name('filter.posts.apply');
+    Route::post('/main', [PostController::class, 'applyFilter'])->name('filter.posts.apply');
 
 });
 
