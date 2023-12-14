@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
 
-
 class PostController extends Controller
 {
     /**
@@ -82,9 +81,7 @@ class PostController extends Controller
         ]);
     }
 
-    /**
-     * Shows all posts sorted by How recent they were published
-     */
+/*  
     public function listRecent()
     {
         // Get posts ordered by postdate in descending order (most recent first).
@@ -95,7 +92,7 @@ class PostController extends Controller
             'posts' => $posts
         ]);
     }
-
+ */
     /**
      * Shows all posts made by the currently logged-in user.
      */
@@ -220,5 +217,119 @@ class PostController extends Controller
         }
     }
 
+    public function applyFilter(Request $request)
+    { 
+        \Log::info('Request arguments:', $request->all());
+
+
+        $query = Post::query();
+
+        if ($request->has('sort')) {
+            $sortQuery = $request->input('sort');
+
+            switch ($sortQuery) {
+                case 'dateDown':
+                    $query->orderBy('postdate', 'DESC');
+                    break;
+                case 'dateUp':
+                    $query->orderBy('postdate', 'ASC');
+                    break;
+                case 'voteDown':
+                    $query->orderBy('upvotes', 'DESC');
+                    break;
+                case 'voteUp':
+                    $query->orderBy('upvotes', 'ASC');
+                    break;
+                default:
+                    $query->orderBy('postdate', 'DESC');
+                    break;
+            }
+        } else {
+            $query->orderBy('upvotes', 'DESC');
+        }
+
+
+        // Time-based filtering
+        if ($request->filled('time_sort')) {
+            $timeSort = $request->input('time_sort');
+            if($timeSort != 'all_time'){
+
+                switch ($timeSort) {
+                    case 'last_24_hours':
+                        $query->where('postdate', '>=', now()->subHours(24));
+                        break;
+                    case 'last_week':
+                        $query->where('postdate', '>=', now()->subWeek());
+                        break;
+                    case 'last_month':
+                        $query->where('postdate', '>=', now()->subMonth());
+                        break;
+                    case 'last_year':
+                        $query->where('postdate', '>=', now()->subYear());
+                        break;
+
+                }
+            }
+        }
+
+
+        // Minimum Date
+        if ($request->filled('minimum_date')) {
+            $minDate = $request->input('minimum_date');
+            $query->whereDate('postdate', '>=', $minDate);
+        }
+
+        // Maximum Date
+        if ($request->filled('maximum_date')) {
+            $maxDate = $request->input('maximum_date');
+            $query->whereDate('postdate', '<=', $maxDate);
+        }
+
+        // Minimum Upvotes
+        if ($request->filled('minimum_upvote')) {
+            $minUpvotes = $request->input('minimum_upvote');
+            $query->where('upvotes', '<=', $minUpvotes);
+        }
+
+        // Maximum Upvotes
+        if ($request->filled('maximum_upvote')) {
+            $maxUpvotes = $request->input('maximum_upvote');
+            $query->where('upvotes', '<=', $maxUpvotes);
+        }
+
+        // Minimum Downvotes
+        if ($request->filled('minimum_downvote')) {
+            $minDownvotes = $request->input('minimum_downvote');
+            $query->where('downvotes', '>=', $minDownvotes);
+        }
+
+        // Maximum Downvotes
+        if ($request->filled('maximum_downvote')) {
+            $maxDownvotes = $request->input('maximum_downvote');
+            $query->where('downvotes', '<=', $maxDownvotes);
+        }
+
+        if ($request->filled('user_name')) {
+            $userName = $request->input('user_name');
+            $query->whereHas('user', function ($userQuery) use ($userName) {
+                $userQuery->where('name', 'like', "%$userName%");
+            });
+        }
+        
+        if ($request->filled('user_id')) {
+            $userId = $request->input('user_id');
+            $query->where('user_id', $userId);
+        }
+
+        $filteredPosts = $query->get();
+
+        foreach ($filteredPosts as $post) {
+            \Log::info('Post ID:', ['id' => $post->id]);
+            \Log::info('Post Upvotes:', ['upvotes' => $post->upvotes]);
+        }
+        
+        $filteredPostsHtml = view('partials.posts', ['posts' => $filteredPosts])->render();
+        return response()->json(['success' => true, 'html' => $filteredPostsHtml]);
+    }
 }
 ?>

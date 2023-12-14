@@ -57,7 +57,7 @@
     <div class="news">
         <!-- Fetch news from the database -->
         @foreach($posts as $post)
-            @include('partials.post', ['post' => $post])
+            @include('partials.posts', ['post' => $post])
             <button class="btn btn-primary" onclick="window.location='{{ route('posts.show', ['id' => $post->id]) }}'">
                 Read more...
             </button>
