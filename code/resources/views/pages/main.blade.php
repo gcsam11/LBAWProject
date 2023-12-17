@@ -34,7 +34,7 @@
         <!-- Fetch news from the database -->
         @foreach($posts as $post)
             @include('partials.post', ['post' => $post])
-            <button class="btn btn-primary" onclick="window.location='{{ route('posts.show', ['id' => $post->id]) }}'">
+            <button onclick="window.location='{{ route('posts.show', ['id' => $post->id]) }}'">
                 Read more...
             </button>
         @endforeach
