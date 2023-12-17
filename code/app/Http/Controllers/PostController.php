@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
 
-<<<<<<< HEAD
+
 use App\Events\Upvote;
 use App\Events\Downvote;
 use App\Events\UndoDownvote;
@@ -27,9 +27,6 @@ use App\Events\UndoUpvote;
 use App\Notifications\UpvotedPost;
 use App\Notifications\DownvotedPost;
 
-
-=======
->>>>>>> main
 class PostController extends Controller
 {
     /**
@@ -229,8 +226,6 @@ class PostController extends Controller
             return redirect()->route('home')->with('error', 'Failed to delete the post');
         }
     }
-
-<<<<<<< HEAD
     function upvote(Request $request) {
         $postId = $request->id;
         $userId = Auth::id();
@@ -309,7 +304,7 @@ class PostController extends Controller
         $post = Post::findOrFail($postId);
         $downvotes = $post->downvotes;
         return response()->json($downvotes, 200);
-=======
+    }
     public function applyFilter(Request $request)
     { 
         \Log::info('Request arguments:', $request->all());
@@ -423,7 +418,6 @@ class PostController extends Controller
         
         $filteredPostsHtml = view('partials.posts', ['posts' => $filteredPosts])->render();
         return response()->json(['success' => true, 'html' => $filteredPostsHtml]);
->>>>>>> main
     }
 }
 ?>
