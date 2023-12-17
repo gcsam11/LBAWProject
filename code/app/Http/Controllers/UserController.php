@@ -192,4 +192,25 @@ class UserController extends Controller
             return redirect()->route('logout');
         }
     }
+
+    public function follow($id)
+    {
+        try {
+            $userToFollow = User::findOrFail($id);
+
+            Auth::user()->follows()->toggle($userToFollow);
+
+            $followersCount = Auth::user()->followers()->count();
+            $followingCount = Auth::user()->following()->count();
+
+            return response()->json([
+                'followersCount' => $followersCount,
+                'followingCount' => $followingCount,
+                'isFollowing' => Auth::user()->follows->contains($userToFollow),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Follow Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
+    }
 }
