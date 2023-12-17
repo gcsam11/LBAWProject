@@ -14,4 +14,3 @@
     request.addEventListener('load', handler);
     request.send(encodeForAjax(data));
   }
-  
