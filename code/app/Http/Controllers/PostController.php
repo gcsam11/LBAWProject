@@ -27,10 +27,7 @@ class PostController extends Controller
 
         // Get all comments for the post ordered by date.
         /* $comments = $post->comments()->orderByDesc('commentdate')->get(); */
-        $comments = $post->comments()
-            ->orderByRaw('(upvotes - downvotes) DESC')
-            ->get();
-
+        $comments = $post->comments()->orderByRaw('(upvotes - downvotes) DESC')->with('image')->get();
         // Get all images that belong to the Post.
         $images = $post->images();
 

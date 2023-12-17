@@ -63,7 +63,7 @@ class CommentController extends Controller
     /**
      * Creates a new comment.
      */
-    public function create(Request $request, $id)
+    public function create(Request $request, int $id)
     {
         // Find the post.
         $post = Post::findOrFail($id);
@@ -77,7 +77,8 @@ class CommentController extends Controller
         // Validate the request data.
         $request->validate([
             'title' => ['required'],
-            'caption' => ['required']
+            'caption' => ['required'],
+            'image' =>  'image|max:2048|mimes:jpg,jpeg,svg,gif,png',
         ]);
 
         // Set comment details.
@@ -92,7 +93,19 @@ class CommentController extends Controller
         // Save the comment
         $comment->save();
 
-        // Redirect back to the post page
+        // Check if image is not null
+        if (!empty($request->image)) {
+            
+            $response = ImageCommentController::create($request, $comment->id);
+            if ($response != '200') {
+                // Delete the comment
+                $comment->delete();
+
+                // Return error Message                
+                return redirect()->route('posts.show', ['id' => $id])->with('error', 'Could not create comment.');
+            }
+        }
+
         return redirect()->route('posts.show', ['id' => $id])->with('success', 'Comment created successfully');
     }
 

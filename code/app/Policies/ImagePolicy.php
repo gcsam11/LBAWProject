@@ -3,16 +3,17 @@
 namespace App\Policies;
 
 use App\Models\Image;
+use App\Models\User;
 
 class ImagePolicy
 {
-    public function get(string $type, int $userId): bool
+    public function get(User $user): bool
     {
-        return Auth::user()->id === $userId || $user->isAdmin;
+        return Auth::user()->id === $user->id || $user->isAdmin;
     }
 
-    public function createUserImage(Request $request, int $userId): bool
+    public function createUserImage(User $user): bool
     {
-        return Auth::user()->id === $userId || $user->isAdmin;
+        return Auth::user()->id === $user->id || $user->isAdmin;
     }
 }
