@@ -12,7 +12,7 @@ class ImagePostController extends Controller
     static $diskName = 'Tutorial02';
 
     static $systemTypes = [
-        'profile' => ['png', 'jpg', 'gif', 'svg', 'jpeg'],
+        'post' => ['png', 'jpg', 'gif', 'svg', 'jpeg'],
     ];
 
     public static function create(Request $request, int $post_id)
@@ -26,7 +26,7 @@ class ImagePostController extends Controller
             // Check if the filename is not empty
             if (empty($filename)) {
                 array_push($errors, 'Filename is empty');
-                return response()->json(['message' => 'Filename is empty'], 400);
+                continue;
             }
 
             $hashedFilename = hash('sha256', $filename . time());
@@ -35,7 +35,8 @@ class ImagePostController extends Controller
 
             // Verify if imageId is empty
             if (empty($imageId)) {
-                array_push($errors, $filename);
+                array_push($errors, 'Could not create '.$filename);
+                continue;
             }
 
             // Store the image in the database
@@ -49,7 +50,7 @@ class ImagePostController extends Controller
             $image = Image::where('filename', $hashedFilename)->first();
 
             if (!$image) {
-                array_push($errors, $filename);
+                array_push($errors, 'Could not create '.$filename);
             }
         }
 
