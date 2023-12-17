@@ -198,7 +198,7 @@ class UserController extends Controller
         try {
             $userToFollow = User::findOrFail($id);
 
-            Auth::user()->follows()->toggle($userToFollow);
+            Auth::user()->following()->toggle($userToFollow);
 
             $followersCount = Auth::user()->followers()->count();
             $followingCount = Auth::user()->following()->count();
@@ -206,7 +206,7 @@ class UserController extends Controller
             return response()->json([
                 'followersCount' => $followersCount,
                 'followingCount' => $followingCount,
-                'isFollowing' => Auth::user()->follows->contains($userToFollow),
+                'isFollowing' => Auth::user()->following->contains($userToFollow),
             ]);
         } catch (\Exception $e) {
             \Log::error('Follow Error: ' . $e->getMessage());

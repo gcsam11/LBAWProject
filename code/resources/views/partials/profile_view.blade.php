@@ -11,8 +11,8 @@
     <p>Reputation: {{ $user['reputation'] }}</p>
     
     <div>
-        <p>Followers: <span id="followersCount">{{ $user->followerUsers()->count() ?? 0 }}</span></p>
-        <p>Following: <span id="followingCount">{{ $user->followingUsers()->count() ?? 0 }}</span></p>
+        <p>Followers: <span id="followersCount">{{ $user->followers()->count() ?? 0 }}</span></p>
+        <p>Following: <span id="followingCount">{{ $user->following()->count() ?? 0 }}</span></p>
     </div>
 
     @if(Auth::check() && Auth::user()->id !== $user->id)
