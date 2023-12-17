@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 // Added to define Eloquent relationships.
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Comment extends Model
 {
@@ -55,17 +54,20 @@ class Comment extends Model
         return $this->belongsTo(Post::class);
     }
 
+
     /**
-     * Get the images for the comment.
-     */
-    public function images()
-    {
-        return $this->belongsToMany(
-            Image::class,
-            'image_comment', // Pivot table name...
-            'comment_id', // Foreign key on the pivot table related to the Post model...
-            'image_id' // Foreign key on the pivot table related to the Image model...
-        );
-    }
+    * Get the image for the comment.
+    */
+    public function image(): HasOneThrough
+{
+    return $this->hasOneThrough(
+        Image::class,
+        ImageComment::class,
+        'comment_id', // Foreign key on image_comment table...
+        'id', // Foreign key on images table...
+        'id', // Local key on comments table...
+        'image_id' // Local key on image_comment table...
+    );
+}
 }
 ?>

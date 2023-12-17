@@ -32,6 +32,7 @@ CREATE TABLE "user" (
     email TEXT UNIQUE,
     password TEXT,
     reputation INTEGER,
+    remember_token TEXT,
     image_id INTEGER,
     CONSTRAINT fk_userimage FOREIGN KEY(image_id) REFERENCES IMAGE(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -373,7 +374,7 @@ BEGIN
     FROM Image_Comment
     WHERE comment_id = NEW.comment_id;
 
-    IF comment_count >= 5 THEN
+    IF comment_count >= 1 THEN
         RAISE EXCEPTION 'Cannot insert more than % comments for the same image.', max_comments;
     END IF;
 

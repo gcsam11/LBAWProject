@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 
-class ImageCommentPolicy
+class ImagePostPolicy
 {
     public function create(User $user): bool
     {
