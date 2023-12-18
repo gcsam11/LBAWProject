@@ -193,11 +193,11 @@ class UserController extends Controller
         }
     }
 
-    public function follow($id)
+/*     public function follow(Request $request)
     {
         try {
-            $userToFollow = User::findOrFail($id);
-
+            $userToFollow = $request->input('followed_id');
+            \Log::info('Request arguments:', $request->all());
             $authUser = Auth::user();
 
             // Check if the user is already following the target user
@@ -228,5 +228,37 @@ class UserController extends Controller
             \Log::error('Follow Error: ' . $e->getMessage());
             return response()->json(['error' => 'Internal Server Error'], 500);
         }
+    } */
+    public function follow(Request $request)
+    {
+        try {
+            $followedUserId = $request->input('followed_id');
+            $authUser = auth()->user();
+
+            $isFollowing = $authUser->followingUsers()->where('following_id', $followedUserId)->exists();
+
+            if ($isFollowing) {
+                // If already following, unfollow
+                $authUser->followingUsers()->detach($followedUserId);
+            } else {
+                // If not following, follow
+                $authUser->followingUsers()->attach($followedUserId);
+            }
+
+            // Fetch updated counts after follow/unfollow
+            $followersCount = $authUser->followersUsers()->count();
+            $followingCount = $authUser->followingUsers()->count();
+            
+            \Log::info("message");
+            return response()->json([
+                'followersCount' => $followersCount,
+                'followingCount' => $followingCount,
+                'isFollowing' => !$isFollowing, // Toggle the status manually
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Follow Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
     }
+
 }

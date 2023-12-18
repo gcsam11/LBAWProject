@@ -22,4 +22,5 @@
         </button>
         <script src="{{ asset('js/follow.js') }}"></script>
     @endif
+    <script src="{{ asset('js/follow.js') }}"></script>
 </div>
