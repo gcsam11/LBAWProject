@@ -10,7 +10,6 @@
         <button>Search</button>
         <br>
     </div>
-
     <div class="create_post">
         <button id="create_post">+</button>
     </div>
@@ -20,6 +19,7 @@
     <div class="news">
         @include('partials.posts', ['posts' => $posts])
     </div>
+    @include('partials.event')
     <br>
 
     <script src="{{ asset('js/create_post.js') }}"></script>

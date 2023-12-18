@@ -19,7 +19,6 @@
         </form>
         <br>
     </div>
-
     <div class="create_post">
         <button id="create_post">+</button>
     </div>
@@ -27,9 +26,9 @@
     @include('partials.filters')
 
     {{-- Posts--}}
-    <script src="{{ asset('js/app.js') }}"></script>
     <div class="news">
         @include('partials.posts', ['posts' => $posts])
     </div>
+    @include('partials.event')
     <script src="{{ asset('js/create_post.js') }}"></script>
 @endsection
