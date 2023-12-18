@@ -212,10 +212,10 @@ class UserController extends Controller
             }
 
             // Update counts after follow/unfollow
-            $followersCount = $userToFollow->followersUsers->count();
-            $followingCount = $userToFollow->followingUsers->count();
-            $authUserFollowersCount = $authUser->followersUsers->count();
-            $authUserFollowingCount = $authUser->followingUsers->count();
+            $followersCount = $userToFollow->followers;
+            $followingCount = $userToFollow->following;
+            $authUserFollowersCount = $authUser->followers;
+            $authUserFollowingCount = $authUser->following;
 
             return response()->json([
                 'followersCount' => $followersCount,

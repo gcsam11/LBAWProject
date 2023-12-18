@@ -10,8 +10,8 @@
     <p>Birthday: {{ $user['birthday'] }}</p>
     <p>Reputation: {{ $user['reputation'] }}</p>
     
-    <p>Followers: <span id="followersCount">{{ $user->followers ?? 0 }}</span></p>
-    <p>Following: <span id="followingCount">{{ $user->following ?? 0 }}</span></p>
+    <p>Followers: <span id="followersCount">{{ $user->followers}}</span></p>
+    <p>Following: <span id="followingCount">{{ $user->following}}</span></p>
 
     @if(Auth::check() && Auth::user()->id !== $user->id)
         @php
