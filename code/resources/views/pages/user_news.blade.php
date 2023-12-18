@@ -84,6 +84,7 @@
     <div class="news">
         @include('partials.posts', ['posts' => $posts])
     </div>
+    @include('partials.event')
     <br>
     <script>
         var filterPostsApplyRoute  = @json(route('filter.posts.apply'));
