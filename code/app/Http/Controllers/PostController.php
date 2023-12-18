@@ -249,7 +249,6 @@ class PostController extends Controller
 
     function undoupvote(Request $request) {
         $postId = $request->id;
-        \Log::info('Upvote not found for post with ID: ' . $postId);
         $userId = Auth::id();
         $upvotePost = UpvotePost::where('post_id', $postId)
         ->where('user_id', $userId)

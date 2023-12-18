@@ -91,7 +91,6 @@
     </div>
 
     {{-- Posts--}}
-    <script src="{{ asset('js/app.js') }}"></script>
     <div class="news">
         @include('partials.posts', ['posts' => $posts])
     </div>

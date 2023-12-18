@@ -63,6 +63,7 @@
             </button>
         @endforeach
     </div>
+    @include('partials.event')
     <br>
     <div class="create_post">
         <button id="create_post">+</button>
