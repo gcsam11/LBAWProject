@@ -198,19 +198,31 @@ class UserController extends Controller
         try {
             $userToFollow = User::findOrFail($id);
 
-            Auth::user()->following()->toggle($userToFollow);
+            $authUser = Auth::user();
 
-            $followersCount = $userToFollow->followers()->count();
-            $followingCount = $userToFollow->following()->count();
-            $authUserFollowersCount = Auth::user()->followers()->count();
-            $authUserFollowingCount = Auth::user()->following()->count();
+            // Check if the user is already following the target user
+            $isFollowing = $authUser->followingUsers->contains($userToFollow);
+
+            if ($isFollowing) {
+                // If already following, unfollow
+                $authUser->followingUsers->detach($userToFollow);
+            } else {
+                // If not following, follow
+                $authUser->followingUsers->attach($userToFollow);
+            }
+
+            // Update counts after follow/unfollow
+            $followersCount = $userToFollow->followersUsers->count();
+            $followingCount = $userToFollow->followingUsers->count();
+            $authUserFollowersCount = $authUser->followersUsers->count();
+            $authUserFollowingCount = $authUser->followingUsers->count();
 
             return response()->json([
                 'followersCount' => $followersCount,
                 'followingCount' => $followingCount,
                 'authUserFollowersCount' => $authUserFollowersCount,
                 'authUserFollowingCount' => $authUserFollowingCount,
-                'isFollowing' => Auth::user()->following->contains($userToFollow),
+                'isFollowing' => !$isFollowing, // Toggle the status manually
             ]);
         } catch (\Exception $e) {
             \Log::error('Follow Error: ' . $e->getMessage());

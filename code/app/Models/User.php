@@ -107,12 +107,12 @@ class User extends Authenticatable
         return ImageController::get('profile', $this->id);
     }
 
-    public function followers()
+    public function followersUsers()
     {
         return $this->belongsToMany(User::class, 'user_follow', 'following_id', 'follower_id');
     }
 
-    public function following()
+    public function followingUsers()
     {
         return $this->belongsToMany(User::class, 'user_follow', 'follower_id', 'following_id');
     }
