@@ -98,7 +98,6 @@
     </div>
     
     <script>
-        var createPostUrl = @json(route('create_post'));
         var filterPostsApplyRoute  = @json(route('filter.posts.apply'));
     </script>
     <script src="{{ asset('js/create_post.js') }}"></script>

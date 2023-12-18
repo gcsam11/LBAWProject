@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Topic;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
@@ -134,6 +135,14 @@ class PostController extends Controller
             'user_id' => Auth::user()->id
         ]);
 
+        
+        $topicId = $request->input('topic_id');
+        $topic = Topic::find($topicId);
+        if ($topic) {
+            $post->topic()->associate($topic);
+            $post->save();
+        }
+    
 
         // Check if images array is not null
         if (!empty($request->images)) {
