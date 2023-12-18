@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 
 // Added to define Eloquent relationships.
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -72,10 +73,11 @@ class Post extends Model
     {
         return $this->hasMany(UpvotePost::class);
     }
+    public function downvotes()
+    {
+        return $this->hasMany(DownvotePost::class);
+    }
 
-    /**
-     * Get the images for the post.
-     */
     public function images()
     {
         return $this->belongsToMany(
@@ -85,6 +87,21 @@ class Post extends Model
             'image_id' // Foreign key on the pivot table related to the Image model...
         )->pluck('filename')->toArray();
     }
+
+
+    public function checkIfUserUpvoted()
+    {
+        $userId = Auth::id();
+        return $this->upvotes()->where('user_id', $userId)->exists();
+    }
+
+    public function checkIfUserDownvoted()
+    {
+        $userId = Auth::id();
+        return $this->downvotes()->where('user_id', $userId)->exists();
+    }
+
+
 }
 
 ?>

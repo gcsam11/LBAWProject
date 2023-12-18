@@ -2,6 +2,10 @@
 
 @section('title', 'News Feed')
 
+@section('scripts')
+<script type="text/javascript" src={{ url('js/readmore_post.js') }} defer></script>
+@endsection
+
 @section('header', 'News Feed')
 
 @section('content')
@@ -19,7 +23,6 @@
         </form>
         <br>
     </div>
-
     <div class="create_post">
         <button id="create_post">+</button>
     </div>
@@ -27,9 +30,9 @@
     @include('partials.filters')
 
     {{-- Posts--}}
-    <script src="{{ asset('js/app.js') }}"></script>
     <div class="news">
         @include('partials.posts', ['posts' => $posts])
     </div>
+    @include('partials.event')
     <script src="{{ asset('js/create_post.js') }}"></script>
 @endsection

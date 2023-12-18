@@ -19,40 +19,44 @@
                 <th>Birthday</th>
                 <th>Reputation</th>
                 <th>URL</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach ($users as $user)
-                @include('partials.user_row', ['user' => $user])
+                @if (!str_contains($user->username, 'anonymous'))
+                    @include('partials.user_row', ['user' => $user])
+                @endif
             @endforeach
         </tbody>
     </table>
 
     <h2>Create New Account</h2>
     <form action="{{ route('admin.register') }}" method="POST">
-    {{ csrf_field() }}
+        {{ csrf_field() }}
 
         <label for="name">Name</label>
-        <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>
+        <input id="name" type="text" name="name" value="{{ old('name') }}" required>
         @if ($errors->has('name'))
-        <span class="error">
-        {{ $errors->first('name') }}
-        </span>
+            <span class="error">
+                {{ $errors->first('name') }}
+            </span>
         @endif
 
         <label for="username">Username</label>
-        <input id="username" type="text" name="username" value="{{ old('username') }}" required autofocus>
+        <input id="username" type="text" name="username" value="{{ old('username') }}" required>
         @if ($errors->has('username'))
-        <span class="error">
-            {{ $errors->first('username') }}
-        </span>
+            <span class="error">
+                {{ $errors->first('username') }}
+            </span>
         @endif
 
         <label for="email">E-Mail Address</label>
         <input id="email" type="email" name="email" value="{{ old('email') }}" required>
         @if ($errors->has('email'))
             <span class="error">
-            {{ $errors->first('email') }}
+                {{ $errors->first('email') }}
             </span>
         @endif
 

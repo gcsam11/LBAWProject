@@ -12,9 +12,10 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\TopicController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -43,16 +44,16 @@ Route::controller(UserController::class)->group(function () {
     Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
     Route::post('/change-password', [UserController::class, 'change_password'])->name('change.password');
     Route::get('/profile/{id}', [UserController::class, 'show'])->name('profile_page');
-    Route::post('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
+    Route::delete('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
     Route::get('/search', [UserController::class, 'search'])->name('user.search');
-    Route::post('/main', [PostController::class, 'applyFilter'])->name('filter.posts.apply');
-
+    Route::get('/profile/{id}/block', [UserController::class, 'block'])->name('user.block');
 });
 
 // ImageUser
 Route::controller(ImageController::class)->group(function () {
     Route::post('/profile/{id}/image', [ImageController::class, 'create'])->name('image.new');
 })->middleware('auth');
+Route::post('/profileimage', [ImageController::class, 'getAJAX']);
 
 // Create Post
 Route::get('/create_post', function () {
@@ -61,6 +62,7 @@ Route::get('/create_post', function () {
 
 // Main Page Routes
 Route::group(['prefix' => 'main'], function () {
+    Route::post('/main', [PostController::class, 'applyFilter'])->name('filter.posts.apply');
     Route::get('/', [PostController::class, 'listTop'])->name('posts.top');
     Route::get('/search', [PostController::class, 'search'])->name('posts.search');
 });
@@ -78,11 +80,21 @@ Route::prefix('posts')->group(function () {
     Route::patch('/{id}/update', [PostController::class, 'update'])->name('posts.update');
 });
 
+
+Route::post('/post/upvote', [PostController::class, 'upvote']);
+Route::post('/post/undoupvote', [PostController::class, 'undoupvote']);
+Route::post('/post/downvote', [PostController::class, 'downvote']);
+Route::post('/post/undodownvote', [PostController::class, 'undodownvote']);
+
+//Notification
+Route::get('/unreadnotifications', [NotificationController::class, 'unreadNotifications']);
+
 // Comments
 Route::post('/posts/{id}/comments', [CommentController::class, 'create'])->name('comments.create');
 Route::get('/comments/{id}/edit', [CommentController::class, 'edit'])->name('comments.edit');
 Route::post('/comments/{id}/update', [CommentController::class, 'updateComment'])->name('comments.update');
 Route::delete('/comments/{id}/delete', [CommentController::class, 'delete'])->name('comments.delete');
+
 
 // Admin
 Route::controller(AdminController::class)->group(function () {
@@ -103,4 +115,10 @@ Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
 });
+
+Route::controller(GoogleController::class)->group(function () {
+    Route::get('auth/google', 'redirect')->name('google-auth');
+    Route::get('auth/google/call-back', 'callbackGoogle')->name('google-call-back');
+});
+
 ?>
