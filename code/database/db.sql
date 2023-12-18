@@ -33,11 +33,13 @@ CREATE TABLE "user" (
     password TEXT,
     reputation INTEGER DEFAULT 0,
     remember_token TEXT,
+    google_id VARCHAR,
     image_id INTEGER,
     followers INTEGER DEFAULT 0,
     following INTEGER DEFAULT 0,
     CONSTRAINT fk_userimage FOREIGN KEY(image_id) REFERENCES IMAGE(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
 
 CREATE TABLE ADMIN (
     id SERIAL PRIMARY KEY,
