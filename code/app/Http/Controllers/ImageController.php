@@ -7,6 +7,7 @@ use App\Models\Image;
 use App\Models\User;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 
 class ImageController extends Controller
 {
@@ -61,6 +62,28 @@ class ImageController extends Controller
     
         // Not found: returns default asset
         return self::defaultAsset($type);
+    }
+
+    public function getAJAX(Request $request) {
+        $type = $request->type;
+        $userId = $request->userId;
+        // Validation: upload type
+        if (!self::isValidType($type)) {
+            return response()->json(self::defaultAsset($type), 200);
+        }
+    
+        // Validation: file exists
+        $fileName = self::getFileName($userId);
+        if ($fileName) {
+            $filePath = $type . '/' . $fileName;
+            if (Storage::disk(self::$diskName)->exists($filePath)) {
+                \Log::info('asset: ' . $filePath);
+                return response()->json($filePath, 200);
+            }
+        }
+    
+        // Not found: returns default asset
+        return response()->json(self::defaultAsset($type), 200);
     }
 
     public static function create($actualImage, string $filename){

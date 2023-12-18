@@ -108,15 +108,6 @@ CREATE TABLE DOWNVOTE_COMMENT(
     CONSTRAINT fk_usercommentdownvote FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE NOTIFICATION (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    title TEXT NOT NULL,
-    caption TEXT,
-    type TEXT NOT NULL,
-    CONSTRAINT fk_notificationuser FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
 CREATE TABLE USER_TOPIC(
     user_id INTEGER,
     topic_id INTEGER,
@@ -168,8 +159,6 @@ CLUSTER POST USING post_user;
 
 CREATE INDEX comment_post ON COMMENT USING btree (post_id);
 CLUSTER COMMENT USING comment_post;
-
-CREATE INDEX notification_user ON notification USING btree (user_id);
 
 -- Full Text Search Indexes
 -- (Assuming you have a tsvector column tsvectors in POST and "user" tables)
@@ -260,6 +249,23 @@ AFTER INSERT ON upvote_post
 FOR EACH ROW
 EXECUTE FUNCTION update_post_votes_count();
 
+CREATE OR REPLACE FUNCTION decrement_post_votes_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        UPDATE post
+        SET upvotes = upvotes - 1
+        WHERE id = OLD.post_id;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER decrement_post_trigger
+AFTER DELETE ON upvote_post
+FOR EACH ROW
+EXECUTE FUNCTION decrement_post_votes_count();
+
 -- Trigger for updating post upvotes and downvotes count
 CREATE OR REPLACE FUNCTION downvote_post_votes_count()
 RETURNS TRIGGER AS $$
@@ -277,6 +283,23 @@ CREATE TRIGGER downvote_post_trigger
 AFTER INSERT ON downvote_post
 FOR EACH ROW
 EXECUTE FUNCTION downvote_post_votes_count();
+
+CREATE OR REPLACE FUNCTION decrement_post_downvotes_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        UPDATE post
+        SET downvotes = downvotes - 1
+        WHERE id = OLD.post_id;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER decrement_downpost_trigger
+AFTER DELETE ON downvote_post
+FOR EACH ROW
+EXECUTE FUNCTION decrement_post_downvotes_count();
 
 -- Trigger for updating comment upvotes count
 CREATE OR REPLACE FUNCTION update_comment_votes_count()
@@ -314,15 +337,7 @@ AFTER INSERT ON downvote_comment
 FOR EACH ROW
 EXECUTE FUNCTION downvote_comment_votes_count();
 
--- Trigger for creating notification when a "user" comments on a POST
-CREATE OR REPLACE FUNCTION new_comment_notification()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO notification (user_id, title, type)
-    VALUES ((SELECT user_id FROM POST WHERE id = NEW.post_id), 'New COMMENT on your POST', 'New COMMENT');
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+
 
 -- Trigger for enforcing COMMENT date constraint
 CREATE OR REPLACE FUNCTION enforce_comment_date_constraint()
@@ -337,11 +352,6 @@ BEGIN
 END
 $$ LANGUAGE plpgsql;
 
--- Attach triggers to the COMMENT table
-CREATE TRIGGER new_comment_trigger
-AFTER INSERT ON COMMENT
-FOR EACH ROW
-EXECUTE FUNCTION new_comment_notification();
 
 CREATE TRIGGER enforce_comment_date_constraint_trigger
 BEFORE INSERT ON COMMENT
@@ -492,18 +502,6 @@ VALUES ('Great article!', 'Very informative, thanks for sharing.', '2023-10-20',
        ('Great list!', 'Ive played most of these games, they are fantastic.', '2023-10-30', 40, 0, 2, 4),
        ('Important tips!', 'Healthy eating is crucial for a good life.', '2023-10-31', 35, 2, 3, 2),
        ('Fantastic guide!', 'Planning my next beach vacation already.', '2023-11-01', 25, 0, 4, 3);
-
-
--- Create notification table and populate data
-INSERT INTO NOTIFICATION (user_id, title, caption, type)
-VALUES (1, 'New Follower', 'User xyz started following you.', 'follower'),
-       (2, 'New Comment', 'Your post received a new comment.', 'comment'),
-       (3, 'New Follower', 'User xyz started following you.', 'follower'),
-       (1, 'New Comment', 'Your post received a new comment.', 'comment'),
-       (4, 'New Follower', 'User abc started following you.', 'follower'),
-       (1, 'New Comment', 'Your post received a new comment.', 'comment'),
-       (2, 'New Follower', 'User xyz started following you.', 'follower'),
-       (3, 'New Comment', 'Your post received a new comment.', 'comment');
 
 
 -- Create topic_proposal table and populate data

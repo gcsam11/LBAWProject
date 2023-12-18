@@ -43,7 +43,17 @@
     <input type="file" name="images[]" accept="image/*" id="image_input2" multiple>
   </label>
   <br>
-  
+  <label for="topic_id">Select Topic</label>
+  <select id="topic_id" name="topic_id">
+      <option value="none" selected disabled>Please select a topic</option>
+      @foreach($topics as $topic)
+          <option value="{{ $topic->id }}">{{ $topic->title }}</option>
+      @endforeach
+  </select>
+
   <button type="submit">Publish</button>
 </form>
+<script src="createPostPage.js"></script>
+
 @endsection
+

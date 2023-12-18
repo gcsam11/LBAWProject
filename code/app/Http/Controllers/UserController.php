@@ -21,9 +21,8 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
-    {
-        
+    public function index()
+    {        
         $users = User::where('username', 'not like', '%anonymous%')->get();
         return view('users.index', ['users' => $users]);
     }

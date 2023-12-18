@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to handle filter form submission
     var filtersForm = document.querySelector('.filters-dropdown form');
 
+    //get current page
+    var currentUrl = window.location.href;
+    var isUserNewsPage = currentUrl.includes('/user_news');
 
     if (sortElem && timeSortElem) {
         sortElem.addEventListener('change', function() {
@@ -63,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (filtersForm) {
         filtersForm.addEventListener('submit', function(event) {
             event.preventDefault();
+            console.log('comunismo/n');
             var formDataFilters = new FormData();
             var csrfToken = document.querySelector('meta[name="csrf-token"]');
             var token = csrfToken ? csrfToken.getAttribute('content') : '';
@@ -81,7 +85,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function applyFilters(requestData) {    
+    function applyFilters(requestData) {
+        if (isUserNewsPage) {
+            requestData.append('user_id', window.userID);
+
+        }
         fetch(filterPostsApplyRoute, {
             method: 'POST',
             body: requestData

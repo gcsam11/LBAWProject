@@ -2,8 +2,13 @@
  
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Post;
+use App\Models\UpvotePost;
+use App\Models\DownvotePost;
+use App\Models\Topic;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ImagePostController;
@@ -13,6 +18,15 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
+
+
+use App\Events\Upvote;
+use App\Events\Downvote;
+use App\Events\UndoDownvote;
+use App\Events\UndoUpvote;
+
+use App\Notifications\UpvotedPost;
+use App\Notifications\DownvotedPost;
 
 class PostController extends Controller
 {
@@ -101,9 +115,8 @@ class PostController extends Controller
 
         // Get posts made by the user ordered by postdate in descending order (most recent first).
         $posts = Post::where('user_id', $userId)
-            ->orderBy('postdate', 'DESC')
+            ->orderBy('upvotes', 'DESC')
             ->get();
-
         // Pass the retrieved posts to the view
         return view('pages.user_news', [
             'posts' => $posts
@@ -134,6 +147,14 @@ class PostController extends Controller
             'user_id' => Auth::user()->id
         ]);
 
+        
+        $topicId = $request->input('topic_id');
+        $topic = Topic::find($topicId);
+        if ($topic) {
+            $post->topic()->associate($topic);
+            $post->save();
+        }
+    
 
         // Check if images array is not null
         if (!empty($request->images)) {
@@ -213,7 +234,84 @@ class PostController extends Controller
             return redirect()->route('home')->with('error', 'Failed to delete the post');
         }
     }
+    function upvote(Request $request) {
+        $postId = $request->id;
+        $userId = Auth::id();
+        
+        $upvotePost = new UpvotePost();
+        $upvotePost->post_id = $postId;
+        $upvotePost->user_id = $userId;
+        
+        if ($upvotePost->save()) {
+            event(new Upvote($postId));
+        } else {
+            \Log::info('Failed to upvote post with ID: ' . $postId);
+        }
+        $post = Post::findOrFail($postId);
+        $upvotes = $post->upvotes;
+        $postOwner = User::findOrFail($post->user_id);
+        $upvoter = User::findOrFail($userId);
+        $postOwner->notify(new UpvotedPost($upvoter, $post));
+        return response()->json($upvotes, 200);
+    }
 
+    function undoupvote(Request $request) {
+        $postId = $request->id;
+        $userId = Auth::id();
+        $upvotePost = UpvotePost::where('post_id', $postId)
+        ->where('user_id', $userId)
+        ->first();
+        if ($upvotePost) {
+            $upvotePost->delete();
+            event(new UndoUpvote($postId));
+
+        } else {
+            \Log::info('Upvote not found for post with ID: ' . $postId);
+        }
+        $post = Post::findOrFail($postId);
+        $upvotes = $post->upvotes;
+        return response()->json($upvotes, 200);
+    }
+
+    function downvote(Request $request) {
+        $postId = $request->id;
+        $userId = Auth::id();
+        
+        $downvotePost = new DownvotePost();
+        $downvotePost->post_id = $postId;
+        $downvotePost->user_id = $userId;
+        
+        if ($downvotePost->save()) {
+            event(new Downvote($postId));
+        } else {
+            \Log::info('Failed to downvote post with ID: ' . $postId);
+        }
+        $post = Post::findOrFail($postId);
+        $downvotes = $post->downvotes;
+        $postOwner = User::findOrFail($post->user_id);
+        $downvoter = User::findOrFail($userId);
+        $postOwner->notify(new DownvotedPost($downvoter, $post));
+        return response()->json($downvotes, 200);
+    }
+
+    function undodownvote(Request $request) {
+        $postId = $request->id;
+        $userId = Auth::id();
+        $downvotePost = DownvotePost::where('post_id', $postId)
+        ->where('user_id', $userId)
+        ->first();
+
+        if ($downvotePost) {
+            $downvotePost->delete();
+            event(new UndoDownvote($postId));
+
+        } else {
+            \Log::info('Downvote not found for post with ID: ' . $postId);
+        }
+        $post = Post::findOrFail($postId);
+        $downvotes = $post->downvotes;
+        return response()->json($downvotes, 200);
+    }
     public function applyFilter(Request $request)
     { 
         \Log::info('Request arguments:', $request->all());
@@ -306,13 +404,7 @@ class PostController extends Controller
             $query->where('downvotes', '<=', $maxDownvotes);
         }
 
-        if ($request->filled('user_name')) {
-            $userName = $request->input('user_name');
-            $query->whereHas('user', function ($userQuery) use ($userName) {
-                $userQuery->where('name', 'like', "%$userName%");
-            });
-        }
-        
+        //User ID
         if ($request->filled('user_id')) {
             $userId = $request->input('user_id');
             $query->where('user_id', $userId);
