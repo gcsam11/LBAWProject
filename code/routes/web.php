@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\TopicController;
 
 
 /*
@@ -95,6 +96,8 @@ Route::controller(LoginController::class)->group(function () {
     Route::post('/login', 'authenticate');
     Route::get('/logout', 'logout')->name('logout');
 });
+
+Route::get('/create_post', [TopicController::class, 'showCreatePostForm'])->name('create_post_topics');
 
 Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
