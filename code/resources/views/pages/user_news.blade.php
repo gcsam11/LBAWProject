@@ -10,6 +10,7 @@
         <button>Search</button>
         <br>
     </div>
+
     <div class="create_post">
         <button id="create_post">+</button>
     </div>

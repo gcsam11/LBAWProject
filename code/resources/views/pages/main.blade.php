@@ -2,6 +2,10 @@
 
 @section('title', 'News Feed')
 
+@section('scripts')
+<script type="text/javascript" src={{ url('js/readmore_post.js') }} defer></script>
+@endsection
+
 @section('header', 'News Feed')
 
 @section('content')

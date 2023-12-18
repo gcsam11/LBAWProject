@@ -15,8 +15,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-
+        $users = User::where('username', 'not like', '%anonymous%')->get();
         return view('pages.admin_dashboard', ['users' => $users]);
     }
 
@@ -27,7 +26,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:250',
-            'username' => 'required|string|max:250',
+            'username' => 'required|string|max:250|not_regex:/anonymous/',
             'email' => 'required|email|max:250|unique:user',
             'password' => 'required|min:8|confirmed'
         ]);
@@ -53,7 +52,7 @@ class AdminController extends Controller
         // Validate the request data.
         $validatedData = $request->validate([
             'username' => 'nullable|string|max:255',
-            'name' => 'nullable|string|max:255',
+            'name' => 'nullable|string|max:255|not_regex:/anonymous/',
             'email' => 'nullable|email|max:255',
             'birthday' => 'nullable|date',
             'password' => 'nullable|string|min:8',
@@ -72,20 +71,6 @@ class AdminController extends Controller
 
         // Save the changes to the database.
         $user->save();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function delete(string $id, Admin $admin)
-    {
-        // Find the user by ID.
-        $user = User::findOrFail($id);
-
-        // Delete the user.
-        $user->delete();
-
-        return redirect()->route('admin_dashboard');
     }
 }
         

@@ -35,6 +35,9 @@
         Login
     </button>
     <a class="button button-outline" href="{{ route('register') }}">Register</a>
+    <a id="google_button" href="{{ route('google-auth') }}">
+        <i class="fa-brands fa-google"></i>
+    </a>
     @if (session('success'))
         <p class="success">
             {{ session('success') }}

@@ -38,6 +38,15 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
  
+            if (Auth::user()->block === true) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Your account has been blocked.',
+                ]);
+            }
+
             return redirect()->route('posts.top')->withSuccess('You have logged in succesfully!');
         }
  

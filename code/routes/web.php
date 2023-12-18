@@ -14,8 +14,8 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\TopicController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -44,10 +44,9 @@ Route::controller(UserController::class)->group(function () {
     Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
     Route::post('/change-password', [UserController::class, 'change_password'])->name('change.password');
     Route::get('/profile/{id}', [UserController::class, 'show'])->name('profile_page');
-    Route::post('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
+    Route::delete('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
     Route::get('/search', [UserController::class, 'search'])->name('user.search');
-    Route::post('/main', [PostController::class, 'applyFilter'])->name('filter.posts.apply');
-
+    Route::get('/profile/{id}/block', [UserController::class, 'block'])->name('user.block');
 });
 
 // ImageUser
@@ -63,6 +62,7 @@ Route::get('/create_post', function () {
 
 // Main Page Routes
 Route::group(['prefix' => 'main'], function () {
+    Route::post('/main', [PostController::class, 'applyFilter'])->name('filter.posts.apply');
     Route::get('/', [PostController::class, 'listTop'])->name('posts.top');
     Route::get('/search', [PostController::class, 'search'])->name('posts.search');
 });
@@ -115,4 +115,10 @@ Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
 });
+
+Route::controller(GoogleController::class)->group(function () {
+    Route::get('auth/google', 'redirect')->name('google-auth');
+    Route::get('auth/google/call-back', 'callbackGoogle')->name('google-call-back');
+});
+
 ?>
