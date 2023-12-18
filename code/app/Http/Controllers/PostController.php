@@ -115,9 +115,8 @@ class PostController extends Controller
 
         // Get posts made by the user ordered by postdate in descending order (most recent first).
         $posts = Post::where('user_id', $userId)
-            ->orderBy('postdate', 'DESC')
+            ->orderBy('upvotes', 'DESC')
             ->get();
-
         // Pass the retrieved posts to the view
         return view('pages.user_news', [
             'posts' => $posts
