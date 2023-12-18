@@ -20,6 +20,25 @@
     text-decoration:underline;
 }
 
-i{
+i {
     color: #F0B27C;
+    font-size: 20px; /* Increase the font size as desired */
+}
+
+.clicked {
+    color: #F0B27C;
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.not-clicked {
+    color: #F0B27C;
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
 }
