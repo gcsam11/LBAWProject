@@ -31,11 +31,16 @@ CREATE TABLE "user" (
     url TEXT,
     email TEXT UNIQUE,
     password TEXT,
-    reputation INTEGER,
+    reputation INTEGER DEFAULT 0,
     remember_token TEXT,
+    google_id VARCHAR,
     image_id INTEGER,
+    followers INTEGER DEFAULT 0,
+    following INTEGER DEFAULT 0,
+    blocked BOOLEAN DEFAULT FALSE,
     CONSTRAINT fk_userimage FOREIGN KEY(image_id) REFERENCES IMAGE(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
 
 CREATE TABLE ADMIN (
     id SERIAL PRIMARY KEY,
@@ -146,6 +151,14 @@ CREATE TABLE IMAGE_COMMENT(
     CONSTRAINT fk_image_comment FOREIGN KEY(image_id) REFERENCES IMAGE(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_comment FOREIGN KEY(comment_id) REFERENCES COMMENT(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY(image_id)
+);
+
+CREATE TABLE USER_FOLLOW (
+    follower_id INTEGER NOT NULL,
+    following_id INTEGER NOT NULL,
+    PRIMARY KEY(follower_id, following_id),
+    CONSTRAINT fk_follower FOREIGN KEY(follower_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_following FOREIGN KEY(following_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Create Indexes

@@ -13,10 +13,10 @@
 
 
         <title>@yield('title')</title>
-
-        <!-- Styles -->
-        <link href="{{ url('css/milligram.min.css') }}" rel="stylesheet">
         <link href="{{ url('css/app.css') }}" rel="stylesheet">
+        <!-- Styles -->
+        @yield('styles')
+        @yield('scripts')
         <script type="text/javascript">
             // Fix for Firefox autofocus CSS bug
             // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
@@ -28,12 +28,10 @@
     <body>
         <header>
             <h3>SWC News</h3>
-            <hr>
         </header>
         <main>
             <h1>@yield('header')</h1>
             <nav>
-                
                 @guest
                 <a href="{{ route('posts.top') }}">News Feed</a>&nbsp;&nbsp;&nbsp;
                 <a href="{{ route('login') }}">Login</a>&nbsp;&nbsp;&nbsp;

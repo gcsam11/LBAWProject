@@ -1,14 +1,25 @@
-<article class="post" data-id="{{ $post->id }}">
-    <header>
-        <h2>{{ $post->title }}</h2>
-        <a href="#" class="delete">&#10761;</a>
-    </header>
-        <!-- Display post details or any specific information -->
-        <strong>Topic:</strong> {{ $post->topic->title ?? 'N/A' }}<br><br>
-        <strong>Caption:</strong> {{ $post->caption }}<br><br>
-        <strong>Date:</strong> {{ $post->postdate }}<br><br>
-        <strong>Upvotes:</strong> {{ $post->upvotes }}<br><br>
-        <strong>Downvotes:</strong> {{ $post->downvotes }}<br><br>
-        <strong>Comments:</strong> {{ $post->comments->count() }}<br><br>
-        <strong>Posted by:</strong> <a href="{{ route('profile_page', ['id' => $post->user->id]) }}">{{ $post->user->name }}</a>
+@section('styles')
+    <link href="{{ url('css/postcard.css') }}" rel="stylesheet">
+@endsection
+
+<div class="postcard" data-id="{{ $post->id }}">
+<article class="post">
+    <h2>{{ $post->title }}</h2>
+    <div class="post-info">
+        <strong>by </strong>
+        @if(!str_contains($post->user->username, 'anonymous'))
+            <strong><a href="{{ route('profile_page', ['id' => $post->user->id]) }}">{{ $post->user->name }}</a></strong>
+        @else
+            <strong class="anonymous_username">{{$post->user->username}}</strong>
+        @endif
+        <strong>on {{ date('Y-m-d', strtotime($post->postdate)) }} at {{ date('H:i:s', strtotime($post->postdate))}}</strong>
+        <br>
+        <p>{{ $post->topic->title ?? 'N/A' }}</p><br><br>
+        <p><strong>{{ $post->caption }}</strong></p><br><br>
+        <i class="fa-regular fa-circle-up"></i><br>
+        <strong>{{ $post->upvotes - $post->downvotes }}</strong><br>
+        <i class="fa-regular fa-circle-down"></i><br><br>
+        <i class="fa-regular fa-comment"></i> <strong>{{ $post->comments->count() }}</strong><br><br>
+    </div>
 </article>
+</div>
