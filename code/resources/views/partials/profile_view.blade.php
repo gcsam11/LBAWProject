@@ -17,7 +17,7 @@
 
     @if(Auth::check() && Auth::user()->id !== $user->id)
         @php
-            $isFollowing = Auth::user()->follows ? Auth::user()->follows->contains($user) : false;
+            $isFollowing = Auth::user()->followingUsers ? Auth::user()->followingUsers->contains($user) : false;
         @endphp
         <div>
             <button id="followButton" class="btn btn-primary" onclick="toggleFollow({{ $user->id }})">
@@ -32,6 +32,5 @@
 </div>
 
 @if(Auth::check() && Auth::user()->id !== $user->id)
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="{{ asset('js/follow.js') }}"></script>
 @endif

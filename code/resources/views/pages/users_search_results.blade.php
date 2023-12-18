@@ -21,7 +21,6 @@
     @endforeach
 
     @if(Auth::check() && Auth::user()->id !== $user->id)
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="{{ asset('js/follow.js') }}"></script>
     @endif
 @endsection
