@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Post;
 use App\Models\UpvotePost;
 use App\Models\DownvotePost;
+use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -147,6 +148,14 @@ class PostController extends Controller
             'user_id' => Auth::user()->id
         ]);
 
+        
+        $topicId = $request->input('topic_id');
+        $topic = Topic::find($topicId);
+        if ($topic) {
+            $post->topic()->associate($topic);
+            $post->save();
+        }
+    
 
         // Check if images array is not null
         if (!empty($request->images)) {
@@ -396,13 +405,7 @@ class PostController extends Controller
             $query->where('downvotes', '<=', $maxDownvotes);
         }
 
-        if ($request->filled('user_name')) {
-            $userName = $request->input('user_name');
-            $query->whereHas('user', function ($userQuery) use ($userName) {
-                $userQuery->where('name', 'like', "%$userName%");
-            });
-        }
-        
+        //User ID
         if ($request->filled('user_id')) {
             $userId = $request->input('user_id');
             $query->where('user_id', $userId);

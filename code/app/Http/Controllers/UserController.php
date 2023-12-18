@@ -18,10 +18,12 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index()
     {
-        $users = User::all();
-        return view('users.index', ['users' => $users]);
+        $user = Auth::user();
+        $posts = $user->posts; // Assuming there's a relationship defined between User and Post
+
+        return view('pages.user_news', ['posts' => $posts]);
     }
 
     public function create(array $data)

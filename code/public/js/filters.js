@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (filtersForm) {
         filtersForm.addEventListener('submit', function(event) {
             event.preventDefault();
+            console.log('comunismo/n');
             var formDataFilters = new FormData();
             var csrfToken = document.querySelector('meta[name="csrf-token"]');
             var token = csrfToken ? csrfToken.getAttribute('content') : '';
