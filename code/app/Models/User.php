@@ -106,15 +106,6 @@ class User extends Authenticatable
     public function getProfileImage() {
         return ImageController::get('profile', $this->id);
     }
-
-    public function followers()
-    {
-        return $this->belongsToMany(User::class, 'user_follow', 'following_id', 'follower_id');
-    }
-
-    public function following()
-    {
-        return $this->belongsToMany(User::class, 'user_follow', 'follower_id', 'following_id');
-    }
+    
 }
 ?>

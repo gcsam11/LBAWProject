@@ -100,8 +100,4 @@ Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
 });
-
-Route::middleware(['auth'])->group(function () {
-    Route::post('/follow/{id}', [UserController::class, 'follow'])->name('follow');
-});
 ?>
