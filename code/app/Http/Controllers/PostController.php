@@ -315,13 +315,7 @@ class PostController extends Controller
             $query->where('downvotes', '<=', $maxDownvotes);
         }
 
-        if ($request->filled('user_name')) {
-            $userName = $request->input('user_name');
-            $query->whereHas('user', function ($userQuery) use ($userName) {
-                $userQuery->where('name', 'like', "%$userName%");
-            });
-        }
-        
+        //User ID
         if ($request->filled('user_id')) {
             $userId = $request->input('user_id');
             $query->where('user_id', $userId);
