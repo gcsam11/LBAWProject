@@ -37,6 +37,7 @@ CREATE TABLE "user" (
     image_id INTEGER,
     followers INTEGER DEFAULT 0,
     following INTEGER DEFAULT 0,
+    blocked BOOLEAN DEFAULT FALSE,
     CONSTRAINT fk_userimage FOREIGN KEY(image_id) REFERENCES IMAGE(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
