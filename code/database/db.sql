@@ -394,7 +394,7 @@ FOR EACH ROW
 EXECUTE FUNCTION increment_followers_count();
 
 -- Trigger for decrementing users following count
-CREATE OR REPLACE FUNCTION decrement_following_count_again()
+CREATE OR REPLACE FUNCTION decrement_following_count()
 RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'DELETE' THEN
