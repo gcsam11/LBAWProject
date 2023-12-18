@@ -200,12 +200,16 @@ class UserController extends Controller
 
             Auth::user()->following()->toggle($userToFollow);
 
-            $followersCount = Auth::user()->followers()->count();
-            $followingCount = Auth::user()->following()->count();
+            $followersCount = $userToFollow->followers()->count();
+            $followingCount = $userToFollow->following()->count();
+            $authUserFollowersCount = Auth::user()->followers()->count();
+            $authUserFollowingCount = Auth::user()->following()->count();
 
             return response()->json([
                 'followersCount' => $followersCount,
                 'followingCount' => $followingCount,
+                'authUserFollowersCount' => $authUserFollowersCount,
+                'authUserFollowingCount' => $authUserFollowingCount,
                 'isFollowing' => Auth::user()->following->contains($userToFollow),
             ]);
         } catch (\Exception $e) {

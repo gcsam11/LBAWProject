@@ -10,24 +10,17 @@
     <p>Birthday: {{ $user['birthday'] }}</p>
     <p>Reputation: {{ $user['reputation'] }}</p>
     
-    <div>
-        <p>Followers: <span id="followersCount">{{ $user->followers()->count() ?? 0 }}</span></p>
-        <p>Following: <span id="followingCount">{{ $user->following()->count() ?? 0 }}</span></p>
-    </div>
+    <p>Followers: <span id="followersCount">{{ $user->followers()->count() ?? 0 }}</span></p>
+    <p>Following: <span id="followingCount">{{ $user->following()->count() ?? 0 }}</span></p>
 
     @if(Auth::check() && Auth::user()->id !== $user->id)
         @php
-            $isFollowing = Auth::user()->followingUsers ? Auth::user()->followingUsers->contains($user) : false;
+            $following = Auth::user()->following;
+            $isFollowing = $following instanceof \Illuminate\Database\Eloquent\Collection && $following->contains($user);
         @endphp
-        <div>
-            <button id="followButton" class="btn btn-primary" onclick="toggleFollow({{ $user->id }})">
-                @if($isFollowing)
-                    Unfollow
-                @else
-                    Follow
-                @endif
-            </button>
-        </div>
+        <button id="followButton" onclick="toggleFollow({{ $user->id }})">
+            {{ $isFollowing ? 'Unfollow' : 'Follow' }}
+        </button>
     @endif
 </div>
 
