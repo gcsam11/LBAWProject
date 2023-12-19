@@ -26,6 +26,16 @@ class UserPolicy
         return Auth::user()->id === $user->id || $user->isAdmin;
     }
 
+    public function block(User $user): bool
+    {
+        return $user->isAdmin;
+    }
+
+    public function unblock(User $user): bool
+    {
+        return $user->isAdmin;
+    }
+
     /**
      * Determine whether the user can delete the user.
      */

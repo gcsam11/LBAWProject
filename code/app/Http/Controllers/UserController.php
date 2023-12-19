@@ -12,15 +12,18 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
+    private static $counter = 1;
+
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
-    {
-        $users = User::all();
+    public function index()
+    {        
+        $users = User::where('username', 'not like', '%anonymous%')->get();
         return view('users.index', ['users' => $users]);
     }
 
@@ -38,17 +41,20 @@ class UserController extends Controller
         $user->save();
 
         // Redirect to a success page or return a response
-        return redirect()->route('registration.success')
-            ->with('success', 'User registered successfully!');
+        return redirect()->route('registration.success')->with('success', 'User registered successfully!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id): View
+    public function show(string $id)
     {
         // Find the user by ID
         $user = User::findOrFail($id);
+
+        if (str_contains($user->username, 'anonymous')) {
+            return redirect()->route('home')->with('error', 'This profile has been deleted.');
+        }
 
         // Check if the current user can see (show) the user.
         $this->authorize('show', Auth::user());  
@@ -68,7 +74,7 @@ class UserController extends Controller
     
             // Validate the request data.
             $validatedData = $request->validate([
-                'username' => 'nullable|string|max:255',
+                'username' => 'nullable|string|max:255|',
                 'name' => 'nullable|string|max:255',
                 'email' => 'nullable|email|max:255',
                 'birthday' => 'nullable|date',
@@ -163,10 +169,37 @@ class UserController extends Controller
     
         // Exact match search for both name and username
         $results = User::where('name', 'ILIKE', "%$searchTerm%")
-        ->orWhere('username', 'ILIKE', "%$searchTerm%")
-        ->get();
+            ->orWhere('username', 'ILIKE', "%$searchTerm%")
+            ->orWhere('username', 'NOT LIKE', '%anonymous%')
+            ->get();
 
         return view('pages/users_search_results', ['results' => $results]);
+    }
+
+    public function block(Request $request){
+        $validatedData = $request->validate([
+            'user_id' => ['required']
+        ]);
+
+        $user = User::findOrFail($validatedData['user_id']);
+
+        $user->blocked = true;
+        $user->save();
+
+        return redirect()->route('admin_dashboard');
+    }
+
+    public function unblock(Request $request){
+        $validatedData = $request->validate([
+            'user_id' => ['required']
+        ]);
+
+        $user = User::findOrFail($validatedData['user_id']);
+
+        $user->blocked = false;
+        $user->save();
+
+        return redirect()->route('admin_dashboard');
     }
     
     /**
@@ -180,8 +213,17 @@ class UserController extends Controller
         // Check if the current user can delete the user.
         $this->authorize('delete', $user);
 
+        $counter = Cache::get('counter', 1);
+
         // Delete the user.
-        $user->delete();
+        $user->username = 'anonymous' . ($counter);
+        $user->email = 'anonymous' . ($counter) . '@example.com';
+        $user->password = bcrypt('inaccessible_password'); // Change the password to something inaccessible
+        $counter++;
+        Cache::put('counter', $counter, now()->addYears(10));
+        
+        $user->save();
+
 
         if(Auth::user()->isAdmin()){
             // Redirect the user to the admin dashboard.

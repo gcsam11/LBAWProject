@@ -113,8 +113,8 @@
             </form>
             @endif
 
-            <form method="POST" action="{{ route('profile_delete', ['id' => $user->id]) }}" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+            <form id='delete_form' action="{{ route('profile_delete', ['id' => $user->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
                 {{ csrf_field() }}
-
+                {{ method_field('DELETE') }} 
                 <button type="submit" id="delete_account">Delete Account</button>
             </form>
