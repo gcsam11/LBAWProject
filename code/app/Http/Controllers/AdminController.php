@@ -21,6 +21,15 @@ class AdminController extends Controller
     }
 
     /**
+     * Display listing of contact us requests.
+     */
+    public function display()
+    {
+        $contactUsRequests = ContactUs::orderByDesc('date')->get();
+        return view('pages.admin_dashboard', ['contactUsRequests' => $contactUsRequests]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create(Request $request)
