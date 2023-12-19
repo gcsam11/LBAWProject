@@ -17,6 +17,8 @@ function toggleFollow(userId) {
     })
     .then(function(data) {
         document.getElementById('followersCount').innerText = data.followersCount;
+        document.getElementById('followingsCount').innerText = data.followingsCount;
+
         var followButton = document.getElementById('followButton');
         followButton.innerText = data.isFollowing ? 'Unfollow' : 'Follow';       
     })

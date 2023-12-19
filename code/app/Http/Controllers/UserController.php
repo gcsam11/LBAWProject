@@ -201,25 +201,31 @@ class UserController extends Controller
         try {
             $followedUserId = $request->input('followed_id');
             $authUser = auth()->user();
+            $userToFollow = User::findOrFail($followedUserId);
 
-            $isFollowing = $authUser->followingUsers->contains($followedUserId);
+            $isFollowing = $authUser->followingUsers->contains($userToFollow);
 
             if ($isFollowing) {
                 // If already following, unfollow
-                $authUser->followingUsers()->detach($followedUserId);
+                $authUser->followingUsers()->detach($userToFollow);
             } else {
                 // If not following, follow
-                $authUser->followingUsers()->attach($followedUserId);
+                $authUser->followingUsers()->attach($userToFollow);
             }
 
             // Fetch updated counts after follow/unfollow
-            $followersCount = $authUser->followersUsers()->count();
-            $followingCount = $authUser->followingUsers()->count();
+            $followersCount = $userToFollow->followersUsers()->count();
+            $followingCount = $userToFollow->followingUsers()->count();
+            $authUserFollowersCount = $authUser->followersUsers()->count();
+            $authUserFollowingCount = $authUser->followingUsers()->count();
+            
             
             \Log::info("message");
             return response()->json([
                 'followersCount' => $followersCount,
                 'followingCount' => $followingCount,
+                'authUserFollowersCount' => $authUserFollowersCount,
+                'authUserFollowingCount' => $authUserFollowingCount,
                 'isFollowing' => !$isFollowing,
             ]);
         } catch (\Exception $e) {
