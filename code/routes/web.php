@@ -125,4 +125,5 @@ Route::controller(GoogleController::class)->group(function () {
     Route::get('auth/google/call-back', 'callbackGoogle')->name('google-call-back');
 });
 
+Route::get('/about_us', function () {return view('pages.about_us');})->name('about_us');
 ?>
