@@ -113,8 +113,8 @@ Route::controller(LoginController::class)->group(function () {
 //Topics
 Route::get('/create_post', [TopicController::class, 'showCreatePostForm'])->name('create_post_topics');
 Route::get('/get_topics',  [TopicController::class, 'showFiltersTopic'])->name('get_filters_with_topics');
-
-
+//Topic Follow
+Route::post('/topics/{topicId}/toggle-follow', [TopicController::class, 'toggleFollow'])->name('toggle_follow');
 
 Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
