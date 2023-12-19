@@ -183,10 +183,14 @@ class UserController extends Controller
 
         $user = User::findOrFail($validatedData['user_id']);
 
-        $user->blocked = true;
-        $user->save();
+        $user->blocked = 1;
+        $result = $user->save();
 
-        return redirect()->route('admin_dashboard');
+        if ($result) {
+            return response()->json(200);
+        }
+
+        return response()->json(400);
     }
 
     public function unblock(Request $request){
@@ -196,10 +200,15 @@ class UserController extends Controller
 
         $user = User::findOrFail($validatedData['user_id']);
 
-        $user->blocked = false;
-        $user->save();
+        $user->blocked = 0;
+        $result = $user->save();
 
-        return redirect()->route('admin_dashboard');
+        if (!$result) {
+            return response()->json(200);
+        }
+
+        return response()->json(400);
+
     }
     
     /**
