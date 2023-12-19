@@ -161,13 +161,21 @@ CREATE TABLE USER_FOLLOW (
     CONSTRAINT fk_following FOREIGN KEY(following_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-
 CREATE TABLE TOPIC_FOLLOW (
     follower_id INTEGER NOT NULL,
     followed_tag_id INTEGER NOT NULL,
     PRIMARY KEY(follower_id, followed_tag_id),
     CONSTRAINT fk_follower FOREIGN KEY(follower_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_following FOREIGN KEY(followed_tag_id) REFERENCES TOPIC(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE CONTACT_US (
+    id SERIAL PRIMARY KEY,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    message TEXT NOT NULL,
+    date timestamptz
 );
 
 -- Create Indexes

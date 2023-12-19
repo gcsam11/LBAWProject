@@ -1,4 +1,3 @@
-<!-- resources/views/about_us.blade.php -->
 @extends('layouts.app')
 
 @section('title', 'About Us')
