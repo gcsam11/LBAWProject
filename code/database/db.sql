@@ -161,6 +161,15 @@ CREATE TABLE USER_FOLLOW (
     CONSTRAINT fk_following FOREIGN KEY(following_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE CONTACT_US (
+    id SERIAL PRIMARY KEY,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    message TEXT NOT NULL,
+    date timestamptz,
+);
+
 -- Create Indexes
 
 CREATE INDEX post_user ON POST USING btree (user_id);

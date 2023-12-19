@@ -73,4 +73,6 @@
 
         <button type="submit">Add Account</button>
     </form>
+    <hr>
+    @include('partials.contact_us_requests', ['contactUsRequests' => $contactUsRequests])
 @endsection

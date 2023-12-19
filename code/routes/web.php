@@ -131,4 +131,8 @@ Route::controller(GoogleController::class)->group(function () {
 });
 
 Route::get('/about_us', function () {return view('pages.about_us');})->name('about_us');
+Route::get('/contact_us', function () {return view('pages.contact_us');})->name('contact_us');
+
+//Contact Us
+Route::post('/admin_dashboard/contact_us', [ContactUsController::class, 'create'])->name('contact_us.create');
 ?>
