@@ -110,7 +110,11 @@ Route::controller(LoginController::class)->group(function () {
     Route::get('/logout', 'logout')->name('logout');
 });
 
+//Topics
 Route::get('/create_post', [TopicController::class, 'showCreatePostForm'])->name('create_post_topics');
+Route::get('/get_topics',  [TopicController::class, 'showFiltersTopic'])->name('get_filters_with_topics');
+
+
 
 Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
@@ -126,4 +130,5 @@ Route::controller(GoogleController::class)->group(function () {
     Route::get('auth/google/call-back', 'callbackGoogle')->name('google-call-back');
 });
 
+Route::get('/about_us', function () {return view('pages.about_us');})->name('about_us');
 ?>
