@@ -20,7 +20,7 @@ function toggleFollow(userId) {
         document.getElementById('followingsCount').innerText = data.followingsCount;
 
         var followButton = document.getElementById('followButton');
-        followButton.innerText = data.isFollowing ? 'Unfollow' : 'Follow';       
+        followButton.textContent = data.isFollowing ? 'Unfollow' : 'Follow';       
     })
     .catch(function(error) {
         console.error('Fetch Error:', error);
