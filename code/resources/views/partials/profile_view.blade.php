@@ -18,9 +18,8 @@
             $isFollowing = Auth::user()->followingUsers->contains($user);
         @endphp
         <button id="followButton" onclick="toggleFollow({{ $user->id }})">
-            {{ $isFollowing ? 'Unfollow' : 'Follow' }}
+        Follow
         </button>
-        <script src="{{ asset('js/follow.js') }}"></script>
     @endif
     <script src="{{ asset('js/follow.js') }}"></script>
 </div>

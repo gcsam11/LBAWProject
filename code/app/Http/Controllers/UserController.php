@@ -193,49 +193,16 @@ class UserController extends Controller
         }
     }
 
-/*     public function follow(Request $request)
-    {
-        try {
-            $userToFollow = $request->input('followed_id');
-            \Log::info('Request arguments:', $request->all());
-            $authUser = Auth::user();
-
-            // Check if the user is already following the target user
-            $isFollowing = $authUser->followingUsers->contains($userToFollow);
-
-            if ($isFollowing) {
-                // If already following, unfollow
-                $authUser->followingUsers->detach($userToFollow);
-            } else {
-                // If not following, follow
-                $authUser->followingUsers->attach($userToFollow);
-            }
-
-            // Update counts after follow/unfollow
-            $followersCount = $userToFollow->followers;
-            $followingCount = $userToFollow->following;
-            $authUserFollowersCount = $authUser->followers;
-            $authUserFollowingCount = $authUser->following;
-
-            return response()->json([
-                'followersCount' => $followersCount,
-                'followingCount' => $followingCount,
-                'authUserFollowersCount' => $authUserFollowersCount,
-                'authUserFollowingCount' => $authUserFollowingCount,
-                'isFollowing' => !$isFollowing, // Toggle the status manually
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Follow Error: ' . $e->getMessage());
-            return response()->json(['error' => 'Internal Server Error'], 500);
-        }
-    } */
+    /**
+     * Follow or unfollow a user.
+     */
     public function follow(Request $request)
     {
         try {
             $followedUserId = $request->input('followed_id');
             $authUser = auth()->user();
 
-            $isFollowing = $authUser->followingUsers()->where('following_id', $followedUserId)->exists();
+            $isFollowing = $authUser->followingUsers->contains($followedUserId);
 
             if ($isFollowing) {
                 // If already following, unfollow
@@ -253,12 +220,11 @@ class UserController extends Controller
             return response()->json([
                 'followersCount' => $followersCount,
                 'followingCount' => $followingCount,
-                'isFollowing' => !$isFollowing, // Toggle the status manually
+                'isFollowing' => !$isFollowing,
             ]);
         } catch (\Exception $e) {
             \Log::error('Follow Error: ' . $e->getMessage());
             return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
-
 }

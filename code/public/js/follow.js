@@ -17,6 +17,8 @@ function toggleFollow(userId) {
     })
     .then(function(data) {
         document.getElementById('followersCount').innerText = data.followersCount;
+        var followButton = document.getElementById('followButton');
+        followButton.innerText = data.isFollowing ? 'Unfollow' : 'Follow';       
     })
     .catch(function(error) {
         console.error('Fetch Error:', error);
