@@ -10,11 +10,16 @@
     <td>{{ $user->birthday }}</td>
     <td>{{ $user->reputation }}</td>
     <td><a href="{{ $user->url }}">{{ $user->url }}</a></td>
-    @if($user->blocked===true)
-        <td><button class="admin_not_block" data-id="{{$user->id}}">Unblock</button></td>
+    @php
+        $blockId = $user->id;
+    @endphp
+    <td><button id="{{$blockId}}" class="{{ $user->blocked ? 'clicked' : 'not-clicked' }}" onclick="block({{ $user->id }})">
+    @if($user->blocked)
+        Unblock
     @else
-        <td><button class="admin_block" data-id="{{$user->id}}">Block</button></td>
+        Block
     @endif
+    </button></td>
     <td>
         <form action="{{ route('profile_delete', ['id' => $user->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
                 {{ csrf_field() }}

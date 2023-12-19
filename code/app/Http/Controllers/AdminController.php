@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -15,7 +16,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $users = User::where('username', 'not like', '%anonymous%')->get();
+        $users = User::where('username', 'not like', '%anonymous%')->orderBy('id')->get();
         return view('pages.admin_dashboard', ['users' => $users]);
     }
 

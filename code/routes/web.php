@@ -46,7 +46,8 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/profile/{id}', [UserController::class, 'show'])->name('profile_page');
     Route::delete('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
     Route::get('/search', [UserController::class, 'search'])->name('user.search');
-    Route::get('/profile/{id}/block', [UserController::class, 'block'])->name('user.block');
+    Route::post('/profile/block', [UserController::class, 'block'])->name('user.block');
+    Route::post('/profile/unblock', [UserController::class, 'unblock'])->name('user.unblock');
 });
 
 // ImageUser
@@ -97,10 +98,10 @@ Route::delete('/comments/{id}/delete', [CommentController::class, 'delete'])->na
 
 
 // Admin
-Route::controller(AdminController::class)->group(function () {
-    Route::get('/admin_dashboard', 'index')->name('admin_dashboard');
-    Route::post('/admin_dashboard', 'create')->name('admin.register');
-})->middleware('admin');
+Route::middleware('admin')->group(function () {
+    Route::get('/admin_dashboard', [AdminController::class, 'index'])->name('admin_dashboard');
+    Route::post('/admin_dashboard', [AdminController::class, 'create'])->name('admin.register');
+});
 
 // Authentication
 Route::controller(LoginController::class)->group(function () {

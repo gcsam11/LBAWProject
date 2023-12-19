@@ -178,28 +178,36 @@ class UserController extends Controller
 
     public function block(Request $request){
         $validatedData = $request->validate([
-            'user_id' => ['required']
+            'id' => ['required']
         ]);
 
-        $user = User::findOrFail($validatedData['user_id']);
+        $user = User::findOrFail($validatedData['id']);
 
-        $user->blocked = true;
-        $user->save();
+        $user->blocked = 1;
+        $saveResult = $user->save();
 
-        return redirect()->route('admin_dashboard');
+        if ($saveResult) {
+            return response()->json(['status' => 'success', 'message' => 'Successfully blocked user'], 200);
+        }
+
+        return response()->json(['status' => 'error', 'message' => 'Failed to block user'], 500);
     }
 
     public function unblock(Request $request){
         $validatedData = $request->validate([
-            'user_id' => ['required']
+            'id' => ['required']
         ]);
 
-        $user = User::findOrFail($validatedData['user_id']);
+        $user = User::findOrFail($validatedData['id']);
 
-        $user->blocked = false;
-        $user->save();
+        $user->blocked = 0;
+        $saveResult = $user->save();
 
-        return redirect()->route('admin_dashboard');
+        if ($saveResult) {
+            return response()->json(['status' => 'success', 'message' => 'Successfully unblocked user'], 200);
+        }
+
+        return response()->json(['status' => 'error', 'message' => 'Failed to unblock user'], 500);
     }
     
     /**
@@ -262,7 +270,7 @@ class UserController extends Controller
             $authUserFollowingCount = $authUser->followingUsers()->count();
             
             
-            \Log::info("message");
+            Log::info("message");
             return response()->json([
                 'followersCount' => $followersCount,
                 'followingCount' => $followingCount,
@@ -271,7 +279,7 @@ class UserController extends Controller
                 'isFollowing' => !$isFollowing,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Follow Error: ' . $e->getMessage());
+            Log::error('Follow Error: ' . $e->getMessage());
             return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }

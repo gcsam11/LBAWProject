@@ -38,6 +38,7 @@ class User extends Authenticatable
         'gender',
         'url',
         'image_id',
+        'blocked',
         'password',
         'google_id'
     ];
