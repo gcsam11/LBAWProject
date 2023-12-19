@@ -26,7 +26,7 @@
         <tbody>
             @foreach ($users as $user)
                 @if (!str_contains($user->username, 'anonymous'))
-                    @include('partials.user_row', ['user' => $user])
+                    @include('partials.user_row_admin', ['user' => $user])
                 @endif
             @endforeach
         </tbody>

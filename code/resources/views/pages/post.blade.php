@@ -28,12 +28,6 @@
                 <label for="caption">Caption:</label>
                 <textarea id="caption" name="caption">{{ $post->caption }}</textarea>
             </div>
-            <label id="box_container" for="image_input2">
-                <div class="text2">
-                    <i class="fa-solid fa-upload"></i>
-                </div>
-                <input type="file" name="images[]" accept="image/*" id="image_input2" multiple>
-            </label><br>
             <button type="submit">Update Post</button>
         </form>
     </div>

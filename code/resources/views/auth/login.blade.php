@@ -38,6 +38,8 @@
     <a id="google_button" href="{{ route('google-auth') }}">
         <i class="fa-brands fa-google"></i>
     </a>
+    <a href="{{ route('recover-password') }}">Forgot Your Password?</a> 
+    
     @if (session('success'))
         <p class="success">
             {{ session('success') }}
