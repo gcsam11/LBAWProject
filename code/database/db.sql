@@ -341,41 +341,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger for updating followers following count
-CREATE OR REPLACE FUNCTION update_following_count()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'INSERT' THEN
-        UPDATE "user"
-        SET following = following + 1
-        WHERE id = NEW.follower_id;
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_following_trigger
-AFTER INSERT ON user_follow
-FOR EACH ROW
-EXECUTE FUNCTION update_following_count();
-
--- Trigger for updating following users followers count
-CREATE OR REPLACE FUNCTION update_followers_count()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'INSERT' THEN
-        UPDATE "user"
-        SET followers = followers + 1
-        WHERE id = NEW.following_id;
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_followers_trigger
-AFTER INSERT ON user_follow
-FOR EACH ROW
-EXECUTE FUNCTION update_followers_count();
 
 -- Trigger for incrementing users following count
 CREATE OR REPLACE FUNCTION increment_following_count()
@@ -448,6 +414,8 @@ CREATE TRIGGER decrement_followers_trigger
 AFTER DELETE ON user_follow
 FOR EACH ROW
 EXECUTE FUNCTION decrement_followers_count();
+
+
 
 -- Trigger for enforcing COMMENT date constraint
 CREATE OR REPLACE FUNCTION enforce_comment_date_constraint()
