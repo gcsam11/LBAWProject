@@ -88,9 +88,13 @@ class PostController extends Controller
     
         // Get posts ordered by the difference between upvotes and downvotes.
         $posts = Post::orderByRaw('(upvotes - downvotes) DESC')->get();
-    
-        // Retrieve the topics that the current user follows
-        $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+        if ($user) {
+            // Retrieve the topics that the current user follows
+            $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+        }
+        else{
+            $userFollowedTopics = [];
+        }
     
         // Use the pages.post template to display all cards.
         return view('pages.main', compact('posts', 'userFollowedTopics'));
@@ -115,7 +119,14 @@ class PostController extends Controller
     {
         $userId = Auth::id();
         $posts = Post::where('user_id', $userId)->orderBy('upvotes', 'DESC')->get();
-        $userFollowedTopics = auth()->user()->followedTopics()->pluck('id')->toArray();
+        $user = auth()->user();
+        if($user){
+            $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+    
+        }
+        else{
+            $userFollowedTopics = [];
+        }
     
         return view('pages.user_news', [
             'posts' => $posts,
@@ -414,8 +425,15 @@ class PostController extends Controller
             $query->where('user_id', $userId);
         }
 
+        $user = auth()->user();
         $posts = $query->get();
-        $userFollowedTopics = auth()->user()->followedTopics()->pluck('id')->toArray();
+        if($user){
+            $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+        }
+        else{
+            $userFollowedTopics = [];
+        }
+        
 
         $filteredPostsHtml = view('partials.posts', compact('posts', 'userFollowedTopics'))->render();
         return response()->json(['success' => true, 'html' => $filteredPostsHtml]);
