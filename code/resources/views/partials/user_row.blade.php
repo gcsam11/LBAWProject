@@ -9,12 +9,10 @@
     <td>{{ $user->gender }}</td>
     <td>{{ $user->birthday }}</td>
     <td>{{ $user->reputation }}</td>
-    <td>{{ $user->blocked ? 'true' : 'false' }}</td>
     <td><a href="{{ $user->url }}">{{ $user->url }}</a></td>
     @php
         $blockId = $user->id;
     @endphp
-    <td>{{ $blockId }}</td>
     <td><button id="{{$blockId}}" class="{{ $user->blocked ? 'clicked' : 'not-clicked' }}" onclick="block({{ $user->id }})">
     @if($user->blocked)
         Unblock

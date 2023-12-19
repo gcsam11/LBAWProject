@@ -1,3 +1,7 @@
+@section('scripts')
+    <script src="{{ asset('js/follow.js') }}" defer></script>
+@endsection
+
 <div>
     <h2>Name: {{ $user['name'] }}</h2>
     
@@ -21,5 +25,4 @@
             {{ $isFollowing ? 'Unfollow' : 'Follow' }}
         </button>
     @endif
-    <script src="{{ asset('js/follow.js') }}"></script>
 </div>

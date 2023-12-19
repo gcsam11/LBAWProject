@@ -13,10 +13,18 @@ function block(id) {
             body: JSON.stringify({ id: id })
         })
         .then(response => {
-            if (response.status === 200) {
-                console.log('Successfully blocked the user');
+            console.log(response);
+            if (response.headers.get('Content-Type').includes('application/json')) {
+                return response.json();
             } else {
-                console.log('Failed to block the user');
+                throw new Error('Server response is not JSON');
+            }
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                console.log(data.message);
+            } else {
+                console.log(data.message);
             }
         })
         .catch(error => {
@@ -35,14 +43,22 @@ function block(id) {
             body: JSON.stringify({ id: id })
         })
         .then(response => {
-            if (response.status === 200) {
-                console.log('Successfully unblocked the user');
+            console.log(response);
+            if (response.headers.get('Content-Type').includes('application/json')) {
+                return response.json();
             } else {
-                console.log('Failed to unblock the user');
+                throw new Error('Server response is not JSON');
+            }
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                console.log(data.message);
+            } else {
+                console.log(data.message);
             }
         })
         .catch(error => {
-            console.log('Failed to unblock the user:', error);
+            console.log('Failed to block the user:', error);
         });
     }
 }

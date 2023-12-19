@@ -98,10 +98,10 @@ Route::delete('/comments/{id}/delete', [CommentController::class, 'delete'])->na
 
 
 // Admin
-Route::controller(AdminController::class)->group(function () {
-    Route::get('/admin_dashboard', 'index')->name('admin_dashboard');
-    Route::post('/admin_dashboard', 'create')->name('admin.register');
-})->middleware('admin');
+Route::middleware('admin')->group(function () {
+    Route::get('/admin_dashboard', [AdminController::class, 'index'])->name('admin_dashboard');
+    Route::post('/admin_dashboard', [AdminController::class, 'create'])->name('admin.register');
+});
 
 // Authentication
 Route::controller(LoginController::class)->group(function () {
