@@ -22,8 +22,8 @@
 </div>
 
 
-    {{-- Filters Dropdown --}}
-    <div class="filters-dropdown">
+{{-- Filters Dropdown --}}
+<div class="filters-dropdown">
     <button id="filter_button">Show Filters</button>
     <div id="filters" style="display: none;">
         <form id="filterForm">
@@ -54,17 +54,23 @@
             <label for="maximum_downvote">Maximum Downvote:</label>
             <input type="number" id="maximum_downvote" name="maximum_downvote" min="0">
     
-            <!-- User filter -->
-            <label for="user_name">User Name:</label>
-            <input type="text" id="user_name" name="user_name">
-    
+            <!-- Topic filter -->
+            <select id="topic_filter" name="topic_filter">
+                <option value="0">All Topics</option>
+
+            </select>
+
             <button type="submit">Apply Filters</button>
             <button type="button" onclick="clearFilters()">Clear Filters</button>
         </form>
     </div>
 </div>
 <script>  
-    window.userID = {{ auth()->id() }};
+     @auth
+        window.userID = {{ auth()->id() }};
+    @else
+        window.userID = null; // or any default value you prefer
+    @endauth
     var filterPostsApplyRoute  = @json(route('filter.posts.apply'));
 </script>
 <script src="{{ asset('js/filters.js') }}"></script>

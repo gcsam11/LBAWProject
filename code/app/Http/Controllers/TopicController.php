@@ -12,5 +12,9 @@ class TopicController extends Controller
         return view('pages.create_post', ['topics' => $topics]);
 
     }
+    public function showFiltersTopic(){
+        $topics = Topic::all(); // Retrieve all topics
+        return response()->json(['topics' => $topics]);
+    }
 }
 ?>

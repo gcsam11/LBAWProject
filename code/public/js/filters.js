@@ -1,6 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
-
-
+    
+    // Fetch the HTML containing the populated topics
+    fetch('/get_topics')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Access the topics array in data and populate your dropdown
+        const topicsDropdown = document.getElementById('topic_filter');
+        if (topicsDropdown) {
+            data.topics.forEach(topic => {
+                const option = document.createElement('option');
+                option.value = topic.id;
+                option.textContent = topic.title;
+                topicsDropdown.appendChild(option);
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Fetch Error:', error);
+    });
+    
     // Function to handle sorting and time sorting changes
     var sortElem = document.getElementById('sort_by');
     var timeSortElem = document.getElementById('time_sort');
@@ -66,7 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (filtersForm) {
         filtersForm.addEventListener('submit', function(event) {
             event.preventDefault();
-            console.log('comunismo/n');
             var formDataFilters = new FormData();
             var csrfToken = document.querySelector('meta[name="csrf-token"]');
             var token = csrfToken ? csrfToken.getAttribute('content') : '';

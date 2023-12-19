@@ -314,7 +314,6 @@ class PostController extends Controller
     }
     public function applyFilter(Request $request)
     { 
-        \Log::info('Request arguments:', $request->all());
 
 
         $query = Post::query();
@@ -367,7 +366,12 @@ class PostController extends Controller
             }
         }
 
-
+        // Topic Filtering
+        if ($request->filled('topic_filter') && $request->input('topic_filter') !== '0') {
+            $topicId = $request->input('topic_filter');
+            $query->where('topic_id', $topicId);
+        }
+        
         // Minimum Date
         if ($request->filled('minimum_date')) {
             $minDate = $request->input('minimum_date');
@@ -411,11 +415,6 @@ class PostController extends Controller
         }
 
         $filteredPosts = $query->get();
-
-        foreach ($filteredPosts as $post) {
-            \Log::info('Post ID:', ['id' => $post->id]);
-            \Log::info('Post Upvotes:', ['upvotes' => $post->upvotes]);
-        }
         
         $filteredPostsHtml = view('partials.posts', ['posts' => $filteredPosts])->render();
         return response()->json(['success' => true, 'html' => $filteredPostsHtml]);
