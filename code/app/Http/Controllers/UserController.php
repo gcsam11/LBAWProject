@@ -248,7 +248,7 @@ class UserController extends Controller
             $isFollowing = $authUser->followingUsers->contains($userToFollow);
 
             if ($isFollowing) {
-                // If already following, unfollow
+            // If already following, unfollow
                 $authUser->followingUsers()->detach($userToFollow);
             } else {
                 // If not following, follow

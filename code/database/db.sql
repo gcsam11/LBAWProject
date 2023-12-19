@@ -152,6 +152,15 @@ CREATE TABLE USER_FOLLOW (
     CONSTRAINT fk_following FOREIGN KEY(following_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+
+CREATE TABLE TOPIC_FOLLOW (
+    follower_id INTEGER NOT NULL,
+    followed_tag_id INTEGER NOT NULL,
+    PRIMARY KEY(follower_id, followed_tag_id),
+    CONSTRAINT fk_follower FOREIGN KEY(follower_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_following FOREIGN KEY(followed_tag_id) REFERENCES TOPIC(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 -- Create Indexes
 
 CREATE INDEX post_user ON POST USING btree (user_id);
