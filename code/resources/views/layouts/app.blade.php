@@ -71,6 +71,9 @@
         </main>
         <footer>
             <hr/>
+            <nav>
+                <a href="{{ route('about_us') }}">About Us</a>
+            </nav>
             © SWC News
         </footer>
     </body>
