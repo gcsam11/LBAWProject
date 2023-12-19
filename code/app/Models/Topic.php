@@ -35,6 +35,11 @@ class Topic extends Model
         return $this->hasMany(Post::class);
     }
 
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'topic_follow', 'followed_tag_id', 'follower_id');
+    }
+    
 }
 
 ?>

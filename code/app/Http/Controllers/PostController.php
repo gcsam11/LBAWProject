@@ -83,13 +83,17 @@ class PostController extends Controller
      */
     public function listTop()
     {
+        // Fetch the authenticated user
+        $user = auth()->user();
+    
         // Get posts ordered by the difference between upvotes and downvotes.
         $posts = Post::orderByRaw('(upvotes - downvotes) DESC')->get();
-
+    
+        // Retrieve the topics that the current user follows
+        $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+    
         // Use the pages.post template to display all cards.
-        return view('pages.main', [
-            'posts' => $posts,
-        ]);
+        return view('pages.main', compact('posts', 'userFollowedTopics'));
     }
 
 /*  
@@ -109,17 +113,13 @@ class PostController extends Controller
      */
     public function userNews()
     {
-        // Get the currently logged-in user's ID
         $userId = Auth::id();
-        
-
-        // Get posts made by the user ordered by postdate in descending order (most recent first).
-        $posts = Post::where('user_id', $userId)
-            ->orderBy('upvotes', 'DESC')
-            ->get();
-        // Pass the retrieved posts to the view
+        $posts = Post::where('user_id', $userId)->orderBy('upvotes', 'DESC')->get();
+        $userFollowedTopics = auth()->user()->followedTopics()->pluck('id')->toArray();
+    
         return view('pages.user_news', [
-            'posts' => $posts
+            'posts' => $posts,
+            'userFollowedTopics' => $userFollowedTopics,
         ]);
     }
 
@@ -414,9 +414,10 @@ class PostController extends Controller
             $query->where('user_id', $userId);
         }
 
-        $filteredPosts = $query->get();
-        
-        $filteredPostsHtml = view('partials.posts', ['posts' => $filteredPosts])->render();
+        $posts = $query->get();
+        $userFollowedTopics = auth()->user()->followedTopics()->pluck('id')->toArray();
+
+        $filteredPostsHtml = view('partials.posts', compact('posts', 'userFollowedTopics'))->render();
         return response()->json(['success' => true, 'html' => $filteredPostsHtml]);
     }
 }
