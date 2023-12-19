@@ -167,7 +167,7 @@ CREATE TABLE CONTACT_US (
     last_name TEXT NOT NULL,
     email TEXT NOT NULL,
     message TEXT NOT NULL,
-    date timestamptz,
+    date timestamptz
 );
 
 -- Create Indexes

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Http\Controllers\UserController;
 use App\Models\User;
+use App\Models\ContactUs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -17,16 +18,12 @@ class AdminController extends Controller
     public function index()
     {
         $users = User::where('username', 'not like', '%anonymous%')->orderBy('id')->get();
-        return view('pages.admin_dashboard', ['users' => $users]);
-    }
-
-    /**
-     * Display listing of contact us requests.
-     */
-    public function display()
-    {
         $contactUsRequests = ContactUs::orderByDesc('date')->get();
-        return view('pages.admin_dashboard', ['contactUsRequests' => $contactUsRequests]);
+
+        return view('pages.admin_dashboard', [
+            'users' => $users,
+            'contactUsRequests' => $contactUsRequests, // Add this line
+        ]);
     }
 
     /**

@@ -2,9 +2,9 @@
  
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
-use App\Models\Post;
+use App\Models\ContactUs;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +31,7 @@ class ContactUsController extends Controller
     /**
      * Creates a new contact us message.
      */
-    public function create(Request $request, int $id)
+    public function create(Request $request)
     {
         // Create a new contact us instance.
         $contactUs = new ContactUs();
