@@ -360,6 +360,78 @@ AFTER INSERT ON user_follow
 FOR EACH ROW
 EXECUTE FUNCTION update_followers_count();
 
+-- Trigger for incrementing users following count
+CREATE OR REPLACE FUNCTION increment_following_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE "user"
+        SET following = following + 1
+        WHERE id = NEW.follower_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER increment_following_trigger
+AFTER INSERT ON user_follow
+FOR EACH ROW
+EXECUTE FUNCTION increment_following_count();
+
+-- Trigger for incrementing users followers count
+CREATE OR REPLACE FUNCTION increment_followers_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE "user"
+        SET followers = followers + 1
+        WHERE id = NEW.following_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER increment_followers_trigger
+AFTER INSERT ON user_follow
+FOR EACH ROW
+EXECUTE FUNCTION increment_followers_count();
+
+-- Trigger for decrementing users following count
+CREATE OR REPLACE FUNCTION decrement_following_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        UPDATE "user"
+        SET following = following - 1
+        WHERE id = OLD.follower_id;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER decrement_following_trigger
+AFTER DELETE ON user_follow
+FOR EACH ROW
+EXECUTE FUNCTION decrement_following_count();
+
+-- Trigger for decrementing users followers count
+CREATE OR REPLACE FUNCTION decrement_followers_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        UPDATE "user"
+        SET followers = followers - 1
+        WHERE id = OLD.following_id;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER decrement_followers_trigger
+AFTER DELETE ON user_follow
+FOR EACH ROW
+EXECUTE FUNCTION decrement_followers_count();
+
 -- Trigger for enforcing COMMENT date constraint
 CREATE OR REPLACE FUNCTION enforce_comment_date_constraint()
 RETURNS TRIGGER AS $$

@@ -53,7 +53,7 @@
 
   <button type="submit">Publish</button>
 </form>
-<script src="createPostPage.js"></script>
+<script src="{{ asset('js/createPostPage.js') }}"></script>
 
 @endsection
 

@@ -243,4 +243,45 @@ class UserController extends Controller
             return redirect()->route('logout');
         }
     }
+
+    /**
+     * Follow or unfollow a user.
+     */
+    public function follow(Request $request)
+    {
+        try {
+            $followedUserId = $request->input('followed_id');
+            $authUser = auth()->user();
+            $userToFollow = User::findOrFail($followedUserId);
+
+            $isFollowing = $authUser->followingUsers->contains($userToFollow);
+
+            if ($isFollowing) {
+                // If already following, unfollow
+                $authUser->followingUsers()->detach($userToFollow);
+            } else {
+                // If not following, follow
+                $authUser->followingUsers()->attach($userToFollow);
+            }
+
+            // Fetch updated counts after follow/unfollow
+            $followersCount = $userToFollow->followersUsers()->count();
+            $followingCount = $userToFollow->followingUsers()->count();
+            $authUserFollowersCount = $authUser->followersUsers()->count();
+            $authUserFollowingCount = $authUser->followingUsers()->count();
+            
+            
+            \Log::info("message");
+            return response()->json([
+                'followersCount' => $followersCount,
+                'followingCount' => $followingCount,
+                'authUserFollowersCount' => $authUserFollowersCount,
+                'authUserFollowingCount' => $authUserFollowingCount,
+                'isFollowing' => !$isFollowing,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Follow Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
+    }
 }

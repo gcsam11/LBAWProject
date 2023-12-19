@@ -8,11 +8,4 @@ document.addEventListener('DOMContentLoaded', function () {
         submitButton.disabled = topicSelect.value === 'none'; // Enable/disable the submit button based on the selected value
     });
 
-    form.addEventListener('submit', function (event) {
-        var topicSelect = document.getElementById('topic_id');
-        if (topicSelect.value === 'none') {
-            event.preventDefault(); // Prevent form submission if no topic is selected
-            alert('Please select a topic.');
-        }
-    });
 });

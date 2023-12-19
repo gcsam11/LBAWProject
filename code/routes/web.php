@@ -117,6 +117,10 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::post('/follow/{id}', [UserController::class, 'follow'])->name('follow');
+});
+
 Route::controller(GoogleController::class)->group(function () {
     Route::get('auth/google', 'redirect')->name('google-auth');
     Route::get('auth/google/call-back', 'callbackGoogle')->name('google-call-back');
