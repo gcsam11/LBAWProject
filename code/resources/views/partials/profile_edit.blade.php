@@ -27,7 +27,7 @@
                 @method('PUT')
                 <div class="op_box">
                     <p>Username</p>
-                    <input id="username" type="text" name="username" value="{{ old('username') ?? $user->username }}"></input>
+                    <input id="username" type="text" name="username" value="{{ old('username') ?? $user->username }}" placeholder="e.g. johndoe_123"></input>
                     @if ($errors->has('username'))
                         <span class="error">
                             {{ $errors->first('username') }}
@@ -36,7 +36,7 @@
                 </div>
                 <div class="op_box">
                     <p>Name</p>
-                    <input id="name" type="text" name="name" value="{{ old('name') ?? $user->name }}"></input>
+                    <input id="name" type="text" name="name" value="{{ old('name') ?? $user->name }}" placeholder="e.g. John Doe"></input>
                     @if ($errors->has('name'))
                         <span class="error">
                             {{ $errors->first('name') }}
@@ -54,7 +54,7 @@
                 </div>
                 <div class="op_box">
                     <p>Country</p>
-                    <input id="country" type="text" name="country" value="{{ old('country') ?? $user->country }}"></input>
+                    <input id="country" type="text" name="country" value="{{ old('country') ?? $user->country }}" placeholder="e.g. Portugal"></input>
                     @if ($errors->has('country'))
                         <span class="error">
                             {{ $errors->first('country') }}
@@ -63,7 +63,7 @@
                 </div>
                 <div class="op_box">
                     <p>Gender</p>
-                    <input id="gender" type="text" name="gender" value="{{ old('gender') ?? $user->gender }}"></input>
+                    <input id="gender" type="text" name="gender" value="{{ old('gender') ?? $user->gender }}" placeholder="e.g. Male"></input>
                     @if ($errors->has('gender'))
                         <span class="error">
                             {{ $errors->first('gender') }}
@@ -72,7 +72,7 @@
                 </div>
                 <div class="op_box">
                     <p>URL</p>
-                    <input id="url" type="text" name="url" value="{{ old('url') ?? $user->url }}"></input>
+                    <input id="url" type="text" name="url" value="{{ old('url') ?? $user->url }}" placeholder="https://www.example.com"></input>
                     @if ($errors->has('url'))
                         <span class="error">
                             {{ $errors->first('url') }}
@@ -81,7 +81,7 @@
                 </div>
                 <div class="op_box">
                     <p>Email</p>
-                    <input id="email" type="email" name="email" value="{{ old('email') ?? $user->email }}"></input>
+                    <input id="email" type="email" name="email" value="{{ old('email') ?? $user->email }}" placeholder="email@example.com"></input>
                     @if ($errors->has('email'))
                         <span class="error">
                             {{ $errors->first('email') }}
@@ -111,11 +111,11 @@
                 {{ csrf_field() }}
                 <div class="op_box">
                     <p>Last password</p>
-                    <input id="last_password" type="password" name="last_password" value="{{ old('last_password') }}" required>
+                    <input id="last_password" type="password" name="last_password" value="{{ old('last_password') }}" required placeholder="********">
                 </div>
                 <div class="op_box">
                     <p>New password</p>
-                    <input id="new_password" type="password" name="new_password" value="{{ old('new_password') }}" required>
+                    <input id="new_password" type="password" name="new_password" value="{{ old('new_password') }}" required placeholder="********">
                 </div>
                 <div class="btnSubmit">
                     <button type="submit">SAVE</button>
