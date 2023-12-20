@@ -15,6 +15,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\ContactUsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +59,7 @@ Route::post('/profileimage', [ImageController::class, 'getAJAX']);
 // Create Post
 Route::get('/create_post', function () {
     return view('pages.create_post');
-})->name('create_post')->middleware('auth');
+})->name('create_post')->middleware("'auth'");
 
 // Main Page Routes
 Route::group(['prefix' => 'main'], function () {
@@ -69,7 +70,9 @@ Route::group(['prefix' => 'main'], function () {
 
 
 //user news
-Route::get('/user_news', [PostController::class, 'userNews'])->name('user_news'); 
+Route::get('/user_news', [PostController::class, 'userNews'])->name('user_news')->middleware('auth'); 
+
+Route::get('/followed_topics', [PostController::class, 'followedTopics'])->name('followed_topics')->middleware('auth'); 
 
 
 // Individual Post Actions
@@ -121,9 +124,22 @@ Route::get('auth/google/call-back', [GoogleController::class, 'callbackGoogle'])
 Route::get('/create_post', [TopicController::class, 'showCreatePostForm'])->name('create_post_topics');
 Route::get('/get_topics',  [TopicController::class, 'showFiltersTopic'])->name('get_filters_with_topics');
 
+//Topic Follow
+Route::post('/topics/{topicId}/toggle-follow', [TopicController::class, 'toggleFollow'])->name('toggle_follow');
+
+
+Route::controller(RegisterController::class)->group(function () {
+    Route::get('/register', 'showRegistrationForm')->name('register');
+    Route::post('/register', 'register');
+});
+
 Route::middleware('auth')->group(function () {
     Route::post('/follow/{id}', [UserController::class, 'follow'])->name('follow');
 });
 
 Route::get('/about_us', function () {return view('pages.about_us');})->name('about_us');
+Route::get('/contact_us', function () {return view('pages.contact_us');})->name('contact_us');
+
+//Contact Us
+Route::post('/admin_dashboard/contact_us', [ContactUsController::class, 'create'])->name('contact_us.create');
 ?>

@@ -1,4 +1,5 @@
 function toggleFollow(userId) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     var dataRequest = new FormData();
     dataRequest.append('followed_id', userId);
 
@@ -17,10 +18,10 @@ function toggleFollow(userId) {
     })
     .then(function(data) {
         document.getElementById('followersCount').innerText = data.followersCount;
-        document.getElementById('followingsCount').innerText = data.followingsCount;
+        document.getElementById('followingCount').innerText = data.followingCount;
 
         var followButton = document.getElementById('followButton');
-        followButton.innerText = data.isFollowing ? 'Unfollow' : 'Follow';       
+        followButton.textContent = data.isFollowing ? 'Unfollow' : 'Follow';       
     })
     .catch(function(error) {
         console.error('Fetch Error:', error);

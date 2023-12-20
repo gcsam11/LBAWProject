@@ -161,6 +161,23 @@ CREATE TABLE USER_FOLLOW (
     CONSTRAINT fk_following FOREIGN KEY(following_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE TOPIC_FOLLOW (
+    follower_id INTEGER NOT NULL,
+    followed_tag_id INTEGER NOT NULL,
+    PRIMARY KEY(follower_id, followed_tag_id),
+    CONSTRAINT fk_follower FOREIGN KEY(follower_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_following FOREIGN KEY(followed_tag_id) REFERENCES TOPIC(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE CONTACT_US (
+    id SERIAL PRIMARY KEY,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    message TEXT NOT NULL,
+    date timestamptz
+);
+
 -- Create Indexes
 
 CREATE INDEX post_user ON POST USING btree (user_id);
@@ -273,10 +290,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_post_trigger
-AFTER INSERT ON upvote_post
+CREATE TRIGGER decrement_post_trigger
+BEFORE DELETE ON upvote_post
 FOR EACH ROW
-EXECUTE FUNCTION update_post_votes_count();
+EXECUTE FUNCTION decrement_post_votes_count();
 
 -- Trigger for updating post upvotes and downvotes count
 CREATE OR REPLACE FUNCTION downvote_post_votes_count()
@@ -291,10 +308,23 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER downvote_post_trigger
-AFTER INSERT ON downvote_post
+-- Trigger for updating post upvotes and downvotes count
+CREATE OR REPLACE FUNCTION downvote_post_votes_decrement()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        UPDATE post
+        SET downvotes = downvotes - 1
+        WHERE id = OLD.post_id;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER downvote_post_trigger_decrement
+BEFORE DELETE ON downvote_post
 FOR EACH ROW
-EXECUTE FUNCTION downvote_post_votes_count();
+EXECUTE FUNCTION downvote_post_votes_decrement();
 
 -- Trigger for updating comment upvotes count
 CREATE OR REPLACE FUNCTION update_comment_votes_count()
@@ -342,41 +372,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger for updating followers following count
-CREATE OR REPLACE FUNCTION update_following_count()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'INSERT' THEN
-        UPDATE "user"
-        SET following = following + 1
-        WHERE id = NEW.follower_id;
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_following_trigger
-AFTER INSERT ON user_follow
-FOR EACH ROW
-EXECUTE FUNCTION update_following_count();
-
--- Trigger for updating following users followers count
-CREATE OR REPLACE FUNCTION update_followers_count()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'INSERT' THEN
-        UPDATE "user"
-        SET followers = followers + 1
-        WHERE id = NEW.following_id;
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_followers_trigger
-AFTER INSERT ON user_follow
-FOR EACH ROW
-EXECUTE FUNCTION update_followers_count();
 
 -- Trigger for incrementing users following count
 CREATE OR REPLACE FUNCTION increment_following_count()
@@ -449,6 +445,8 @@ CREATE TRIGGER decrement_followers_trigger
 AFTER DELETE ON user_follow
 FOR EACH ROW
 EXECUTE FUNCTION decrement_followers_count();
+
+
 
 -- Trigger for enforcing COMMENT date constraint
 CREATE OR REPLACE FUNCTION enforce_comment_date_constraint()

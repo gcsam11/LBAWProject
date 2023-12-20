@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
+
 
 
 use App\Events\Upvote;
@@ -83,13 +85,21 @@ class PostController extends Controller
      */
     public function listTop()
     {
+        // Fetch the authenticated user
+        $user = auth()->user();
+    
         // Get posts ordered by the difference between upvotes and downvotes.
         $posts = Post::orderByRaw('(upvotes - downvotes) DESC')->get();
-
+        if ($user) {
+            // Retrieve the topics that the current user follows
+            $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+        }
+        else{
+            $userFollowedTopics = [];
+        }
+    
         // Use the pages.post template to display all cards.
-        return view('pages.main', [
-            'posts' => $posts,
-        ]);
+        return view('pages.main', compact('posts', 'userFollowedTopics'));
     }
 
 /*  
@@ -109,17 +119,20 @@ class PostController extends Controller
      */
     public function userNews()
     {
-        // Get the currently logged-in user's ID
         $userId = Auth::id();
-        
-
-        // Get posts made by the user ordered by postdate in descending order (most recent first).
-        $posts = Post::where('user_id', $userId)
-            ->orderBy('upvotes', 'DESC')
-            ->get();
-        // Pass the retrieved posts to the view
+        $posts = Post::where('user_id', $userId)->orderBy('upvotes', 'DESC')->get();
+        $user = auth()->user();
+        if($user){
+            $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+    
+        }
+        else{
+            $userFollowedTopics = [];
+        }
+    
         return view('pages.user_news', [
-            'posts' => $posts
+            'posts' => $posts,
+            'userFollowedTopics' => $userFollowedTopics,
         ]);
     }
 
@@ -312,6 +325,21 @@ class PostController extends Controller
         $downvotes = $post->downvotes;
         return response()->json($downvotes, 200);
     }
+
+    public function followedTopics(Request $request){
+        $user = Auth::user();
+        $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+        $posts = Post::whereIn('topic_id', $userFollowedTopics)
+            ->orderBy('postdate', 'DESC')
+            ->get();
+
+        
+        return view('pages.followed_topics', [
+            'posts' => $posts,
+            'userFollowedTopics' => $userFollowedTopics,
+        ]);
+    }
+
     public function applyFilter(Request $request)
     { 
 
@@ -414,9 +442,22 @@ class PostController extends Controller
             $query->where('user_id', $userId);
         }
 
-        $filteredPosts = $query->get();
+        $user = auth()->user();
+        if ($request->has('followedTopics')) {
+            $user = auth()->user();
+            $userFollowedTopics = $user ? $user->followedTopics()->pluck('id')->toArray() : [];
+            $query->whereIn('topic_id', $userFollowedTopics);
+        }
+        $posts = $query->get();
+        if($user){
+            $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+        }
+        else{
+            $userFollowedTopics = [];
+        }
         
-        $filteredPostsHtml = view('partials.posts', ['posts' => $filteredPosts])->render();
+
+        $filteredPostsHtml = view('partials.posts', compact('posts', 'userFollowedTopics'))->render();
         return response()->json(['success' => true, 'html' => $filteredPostsHtml]);
     }
 }

@@ -5,7 +5,6 @@
     <script type="text/javascript" src={{ url('js/post.js') }} defer></script>
     <script type="text/javascript" src={{ url('js/readmore_post.js') }} defer></script>
 @endsection
-
 <div class="postcard" data-id="{{ $post->id }}">
 <article class="post">
     <h2>{{ $post->title }}</h2>
@@ -19,6 +18,9 @@
         <strong>on {{ date('Y-m-d', strtotime($post->postdate)) }} at {{ date('H:i:s', strtotime($post->postdate))}}</strong>
         <br>
         <p>{{ $post->topic->title ?? 'N/A' }}</p><br><br>
+        <button class="followButton" onclick="toggleFollow({{ $post->topic->id }})" data-topic-id="{{ $post->topic->id }}">
+            {{ in_array($post->topic->id, $userFollowedTopics) ? 'Unfollow' : 'Follow' }} {{ $post->topic->title }}
+        </button>
         <p><strong>{{ $post->caption }}</strong></p><br><br>
         @php
             $userUpvoted = $post->checkIfUserUpvoted();
