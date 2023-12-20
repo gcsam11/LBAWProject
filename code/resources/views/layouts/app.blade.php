@@ -55,7 +55,7 @@
                 @auth
                 <a href="{{ route('posts.top') }}">News Feed</a>&nbsp;&nbsp;&nbsp;
                 <a href="{{ route('user_news') }}">User News</a>&nbsp;&nbsp;&nbsp;
-                <a href="{{route('followed_topics')}}">Followed Topics
+                <a href="{{route('followed_topics')}}">Followed Topics</a>&nbsp;&nbsp;&nbsp;
                 <a href="{{ route('profile_page', ['id' => Auth::id()]) }}">Profile</a>&nbsp;&nbsp;&nbsp;
 
                 @if(Auth::user()->isAdmin())
