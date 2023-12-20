@@ -235,6 +235,9 @@ class PostController extends Controller
 
         $this->authorize('delete', $post);
 
+        if(($post->upvotes != 0 || $post->downvotes != 0 || !empty($post->comments)) && !Auth::user()->isAdmin()){
+            return redirect()->route('posts.show', ['id' => $post->id])->withErrors(['message' => 'Cannot delete post because it has been voted or commented on.']);
+        }
         
         try {
             $post->delete();
@@ -247,6 +250,7 @@ class PostController extends Controller
             return redirect()->route('home')->with('error', 'Failed to delete the post');
         }
     }
+
     function upvote(Request $request) {
         $postId = $request->id;
         $userId = Auth::id();

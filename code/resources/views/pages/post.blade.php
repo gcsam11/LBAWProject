@@ -3,6 +3,13 @@
 @section('title', $post->name)
 
 @section('content')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+        @endforeach
+    </div>
+@endif
     <section id="posts">
         @include('partials.post', ['post' => $post])
 
@@ -22,11 +29,11 @@
             @method('PATCH')
             <div>
                 <label for="title">Title:</label>
-                <input type="text" id="title" name="title" value="{{ $post->title }}">
+                <input type="text" id="title" name="title" placeholder="{{ $post->title }}">
             </div>
             <div>
                 <label for="caption">Caption:</label>
-                <textarea id="caption" name="caption">{{ $post->caption }}</textarea>
+                <textarea id="caption" name="caption" placeholder="{{ $post->caption }}"></textarea>
             </div>
             <button type="submit">Update Post</button>
         </form>
@@ -49,9 +56,9 @@
             <form enctype="multipart/form-data" action="{{ route('comments.create', ['id' => $post->id]) }}" method="POST">
                 @csrf
                 <label for="title">Title:</label>
-                <input type="text" id="title" name="title" required>
+                <input type="text" id="title" placeholder="Title" name="title" required>
                 <label for="caption">Caption:</label>
-                <textarea id="caption" name="caption" required></textarea>
+                <textarea id="caption" name="caption" placeholder="Caption" required></textarea>
                 <label id="box_container" for="image_input">
                     <div class="text2">
                         <i class="fa-solid fa-upload"></i>
