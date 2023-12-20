@@ -2,14 +2,24 @@
  
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\UpvoteComment;
+use App\Models\DownvoteComment;
 use Illuminate\Http\Request;
-
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 
 use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
+
+use App\Events\UpvoteComment as UpvoteCommentEvent;
+use App\Events\DownvoteComment as DownvoteCommentEvent;
+use App\Events\UndoUpvoteComment;
+use App\Events\UndoDownvoteComment;
 
 class CommentController extends Controller
 {
@@ -165,6 +175,108 @@ class CommentController extends Controller
             \Log::error('Failed to delete comment with ID: ' . $comment->id . '. Error: ' . $e->getMessage());
             return redirect()->route('posts.show', ['id' => $comment->post_id])->with('error', 'Failed to delete the comment');
         }
+    }
+
+    /**
+     * Upvote a comment.
+     */
+    public function upvote(Request $request)
+    {
+        $commentId = $request->id;
+        $userId = Auth::id();
+
+        $upvoteComment = new UpvoteComment();
+        $upvoteComment->comment_id = $commentId;
+        $upvoteComment->user_id = $userId;
+
+        if ($upvoteComment->save()) {
+            event(new UpvoteCommentEvent($commentId));
+        } else {
+            \Log::info('Failed to upvote comment with ID: ' . $commentId);
+        }
+
+        $comment = Comment::findOrFail($commentId);
+        $upvotes = $comment->upvotes;
+        $commentOwner = User::findOrFail($comment->user_id);
+        $upvoter = User::findOrFail($userId);
+
+        return response()->json($upvotes, 200);
+    }
+
+    /**
+     * Undo upvote for a comment.
+     */
+    public function undoUpvote(Request $request)
+    {
+        $commentId = $request->id;
+        $userId = Auth::id();
+
+        $upvoteComment = UpvoteComment::where('comment_id', $commentId)
+            ->where('user_id', $userId)
+            ->first();
+
+        if ($upvoteComment) {
+            $upvoteComment->delete();
+            event(new UndoUpvoteComment($commentId));
+        } else {
+            \Log::info('Upvote not found for comment with ID: ' . $commentId);
+        }
+
+        $comment = Comment::findOrFail($commentId);
+        $upvotes = $comment->upvotes;
+
+        return response()->json($upvotes, 200);
+    }
+
+    /**
+     * Downvote a comment.
+     */
+    public function downvote(Request $request)
+    {
+        $commentId = $request->id;
+        $userId = Auth::id();
+
+        $downvoteComment = new DownvoteComment();
+        $downvoteComment->comment_id = $commentId;
+        $downvoteComment->user_id = $userId;
+
+        if ($downvoteComment->save()) {
+            event(new DownvoteCommentEvent($commentId));
+        } else {
+            \Log::info('Failed to downvote comment with ID: ' . $commentId);
+        }
+
+        $comment = Comment::findOrFail($commentId);
+        $downvotes = $comment->downvotes;
+        $commentOwner = User::findOrFail($comment->user_id);
+        $downvoter = User::findOrFail($userId);
+
+        return response()->json($downvotes, 200);
+    }
+
+    /**
+     * Undo downvote for a comment.
+     */
+    public function undoDownvote(Request $request)
+    {
+        $commentId = $request->id;
+        $userId = Auth::id();
+
+        $downvoteComment = DownvoteComment::where('comment_id', $commentId)
+            ->where('user_id', $userId)
+            ->first();
+
+        if ($downvoteComment) {
+            $downvoteComment->delete();
+            event(new UndoDownvoteComment($commentId));
+        } else {
+            \Log::info('Downvote not found for comment with ID: ' . $commentId);
+        }
+
+        $comment = Comment::findOrFail($commentId);
+        $downvotes = $comment->downvotes;
+
+        return response()->json($downvotes, 200);
     }
 }
 ?>
