@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 
 class Upvote implements ShouldBroadcast
 {
@@ -30,6 +31,7 @@ class Upvote implements ShouldBroadcast
 
     // You should specify the name of the generated notification.
     public function broadcastAs() {
-        return 'notification-upvote';
+        $name = Auth::user()->id . '-notification';
+        return $name;
     }
 }

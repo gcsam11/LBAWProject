@@ -33,7 +33,8 @@ const pusher = new Pusher(pusherAppKey, {
 });
 
 const channel = pusher.subscribe('lbaw2374');
-channel.bind('notification-upvote', function (data) {
+const channelname = userId + '-notification';
+channel.bind(channelname, function (data) {
 
   const notification = document.getElementById('event');
   const closeButton = document.getElementById('closeButton');
@@ -50,56 +51,6 @@ channel.bind('notification-upvote', function (data) {
   }, 5000);
 });
 
-channel.bind('notification-undoupvote', function (data) {
-
-  const notification = document.getElementById('event');
-  const closeButton = document.getElementById('closeButton');
-  const notificationText = document.getElementById('eventText');
-  notificationText.textContent = data.message;
-  notification.classList.add('show');
-
-  closeButton.addEventListener('click', function () {
-    notification.classList.remove('show');
-  });
-
-  setTimeout(function () {
-    notification.classList.remove('show');
-  }, 5000);
-});
-
-channel.bind('notification-downvote', function (data) {
-
-  const notification = document.getElementById('event');
-  const closeButton = document.getElementById('closeButton');
-  const notificationText = document.getElementById('eventText');
-  notificationText.textContent = data.message;
-  notification.classList.add('show');
-
-  closeButton.addEventListener('click', function () {
-    notification.classList.remove('show');
-  });
-
-  setTimeout(function () {
-    notification.classList.remove('show');
-  }, 5000);
-});
-
-channel.bind('notification-undodownvote', function (data) {
-
-  const notification = document.getElementById('event');
-  const closeButton = document.getElementById('closeButton');
-  const notificationText = document.getElementById('eventText');
-  notificationText.textContent = data.message;
-  notification.classList.add('show');
-
-  closeButton.addEventListener('click', function () {
-    notification.classList.remove('show');
-  });
-
-  setTimeout(function () {
-    notification.classList.remove('show');
-  }, 5000);
-});
 
 function notifications() {
   const notificationsBtn = document.getElementById('notifications-btn');

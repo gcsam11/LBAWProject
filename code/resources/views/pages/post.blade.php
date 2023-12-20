@@ -79,4 +79,5 @@
             console.log(successMessage);
         </script>
     @endif
+    @include('partials.event')
 @endsection
