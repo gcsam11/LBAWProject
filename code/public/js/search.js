@@ -18,6 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const redirectURL = `/post_search?search_term=${encodeURIComponent(searchTermValue)}`;
             window.location.href = redirectURL;
         }
+        else if (selectedOption === 'users' && searchTermValue !== '') {
+            const redirectURL = `/user_search?search_term=${encodeURIComponent(searchTermValue)}`;
+            window.location.href = redirectURL;
+        }
+        else if (selectedOption === 'comments' && searchTermValue !== '') {
+            const redirectURL = `/comment_search?search_term=${encodeURIComponent(searchTermValue)}`;
+            window.location.href = redirectURL;
+        }
         // Add conditions for other search options (users, comments) if needed
     });
 });

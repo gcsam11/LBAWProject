@@ -148,8 +148,10 @@ Route::get('/topic_proposal', function () {
 Route::post('/create_topic_proposal', [TopicProposalController::class,'create'])->name('createTopicProposal')->middleware('auth');
 
 //Searches
-Route::get('/search', [UserController::class, 'search'])->name('user.search');
+Route::get('/user_search', [UserController::class, 'search'])->name('users.search');
 Route::get('/post_search', [PostController::class, 'search'])->name('posts.search');
+Route::get('/comment_search', [CommentController::class, 'search'])->name('comments.search');
+
 
 Route::get('/about_us', function () {return view('pages.about_us');})->name('about_us');
 Route::get('/contact_us', function () {return view('pages.contact_us');})->name('contact_us');
