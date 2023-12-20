@@ -243,6 +243,16 @@ class UserController extends Controller
         }
     }
 
+    public function showUserProfile($userId) {
+    $user = User::findOrFail($userId);
+    $isFollowing = auth()->check() && auth()->user()->followingUsers->contains($user);
+
+    return view('profile_view', [
+        'user' => $user,
+        'isFollowing' => $isFollowing,
+    ]);
+}
+
     /**
      * Follow or unfollow a user.
      */
@@ -269,8 +279,6 @@ class UserController extends Controller
             $authUserFollowersCount = $authUser->followersUsers()->count();
             $authUserFollowingCount = $authUser->followingUsers()->count();
             
-            
-            Log::info("message");
             return response()->json([
                 'followersCount' => $followersCount,
                 'followingCount' => $followingCount,
