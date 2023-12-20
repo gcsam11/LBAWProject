@@ -60,7 +60,7 @@ class UserController extends Controller
 
         // Check if the current user can see (show) the user.
         $this->authorize('show', Auth::user());  
-
+        
         // Return the profile view to display the user.
         return view('pages.profile', ['user' => $user]);
     }

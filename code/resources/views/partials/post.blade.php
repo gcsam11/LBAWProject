@@ -18,9 +18,11 @@
         <strong>on {{ date('Y-m-d', strtotime($post->postdate)) }} at {{ date('H:i:s', strtotime($post->postdate))}}</strong>
         <br>
         <p>{{ $post->topic->title ?? 'N/A' }}</p>
-        <button class="followButton" onclick="toggleFollow({{ $post->topic->id }})" data-topic-id="{{ $post->topic->id }}">
-            {{ in_array($post->topic->id, $userFollowedTopics) ? 'Unfollow' : 'Follow' }} {{ $post->topic->title }}
-        </button>
+        @if(isset($userFollowedTopics))
+            <button class="followButton" onclick="toggleFollow({{ $post->topic->id }})" data-topic-id="{{ $post->topic->id }}">
+                {{ in_array($post->topic->id, $userFollowedTopics) ? 'Unfollow' : 'Follow' }} {{ $post->topic->title }}
+            </button>
+        @endif
         <br><br>
         <p><strong>{{ $post->caption }}</strong></p><br><br>
         @php
