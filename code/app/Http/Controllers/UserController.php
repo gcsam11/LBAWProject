@@ -311,6 +311,8 @@ class UserController extends Controller
                 // Delete the password recovery entry
                 $passwordRecovery->delete();
 
+                Auth::logout();
+
                 return redirect()->route('login')->with('success', 'Password changed successfully.');
         }
 
