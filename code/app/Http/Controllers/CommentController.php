@@ -168,6 +168,10 @@ class CommentController extends Controller
         // Check if the current user is authorized to delete this comment.
         $this->authorize('delete', $comment);
 
+        if(($comment->upvotes != 0 || $comment->downvotes != 0) && !Auth::user()->isAdmin()){
+            return redirect()->route('posts.show', ['id' => $comment->post_id])->withErrors(['message' => 'Cannot delete comment because it has been voted or commented on.']);
+        }
+
         try {
             $comment->delete();
             return redirect()->route('posts.show', ['id' => $comment->post_id])->with('success', 'Comment deleted successfully');

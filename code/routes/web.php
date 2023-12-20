@@ -81,7 +81,7 @@ Route::get('/followed_topics', [PostController::class, 'followedTopics'])->name(
 Route::prefix('posts')->group(function () {
     Route::get('/{id}', [PostController::class, 'show'])->name('posts.show');
     Route::post('/create_post', [PostController::class, 'create'])->name('posts.create');
-    Route::post('/{id}/delete', [PostController::class, 'delete'])->name('posts.delete');
+    Route::delete('/{id}/delete', [PostController::class, 'delete'])->name('posts.delete');
     Route::patch('/{id}/update', [PostController::class, 'update'])->name('posts.update');
 });
 
