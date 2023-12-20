@@ -12,6 +12,8 @@
     <div class="create_post">
         <button id="create_post">+</button>
     </div>
+    <a href="/topic_proposal" class="btn btn-primary">Create Topic Proposal</a>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     {{-- Sort Options Dropdown --}}
     <div class="sort-options">

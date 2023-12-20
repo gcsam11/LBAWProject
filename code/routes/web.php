@@ -16,6 +16,8 @@ use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\ContactUsController;
+use App\Http\Controllers\TopicProposalController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +105,9 @@ Route::delete('/comments/{id}/delete', [CommentController::class, 'delete'])->na
 Route::middleware('admin')->group(function () {
     Route::get('/admin_dashboard', [AdminController::class, 'index'])->name('admin_dashboard');
     Route::post('/admin_dashboard', [AdminController::class, 'create'])->name('admin.register');
+    Route::get('/admin_topic_proposals',[TopicProposalController::class,'listProposals'])->name('admin_topic_proposals');
+    Route::post('/create-topic/{proposal}', [TopicProposalController::class, 'createTopic'])->name('create_topic');
+    Route::delete('/delete-proposal/{proposal}', [TopicProposalController::class, 'deleteProposal'])->name('delete_proposal');
 });
 
 // Authentication
@@ -136,6 +141,12 @@ Route::controller(RegisterController::class)->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/follow/{id}', [UserController::class, 'follow'])->name('follow');
 });
+
+//Topic Proposal
+Route::get('/topic_proposal', function () {
+    return view('pages.topic_proposal');
+})->middleware('auth');
+Route::post('/create_topic_proposal', [TopicProposalController::class,'create'])->name('createTopicProposal')->middleware('auth');
 
 Route::get('/about_us', function () {return view('pages.about_us');})->name('about_us');
 Route::get('/contact_us', function () {return view('pages.contact_us');})->name('contact_us');

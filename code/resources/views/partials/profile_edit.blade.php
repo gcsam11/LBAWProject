@@ -1,3 +1,6 @@
+@section('scripts')
+    <script src="{{ asset('js/follow.js') }}" defer></script>
+@endsection
 <script src="https://kit.fontawesome.com/f1d77e88ed.js" crossorigin="anonymous"></script>
 <form enctype="multipart/form-data" action="{{ route('image.new', ['id' => $user->id]) }}" method="POST">
     {{csrf_field()}}
@@ -91,7 +94,19 @@
                     </div>
                 </div>
 </form>
-            <p class="box_header_title">Change password</p>
+<p>Reputation: {{ $user['reputation'] }}</p>
+<p>Followers: <span id="followersCount">{{ $user['followers']}}</span></p>
+<p>Following: <span id="followingCount">{{ $user['following']}}</span></p>
+
+@if(Auth::check() && Auth::user()->id !== $user->id)
+    @php
+        $isFollowing = Auth::user()->followingUsers->contains($user);
+    @endphp
+    <button id="followButton" onclick="toggleFollow({{ $user->id }})">
+        {{ $isFollowing ? 'Unfollow' : 'Follow' }}
+    </button>
+@endif
+            <h4 class="box_header_title">Change password</h4>
             <form action="{{ route('change.password') }}" method="POST">
                 {{ csrf_field() }}
                 <div class="op_box">
