@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Exception;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Foundation\Exceptions\ExceptionHandler;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+
 
 class GoogleController extends Controller
 {

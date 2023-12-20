@@ -4,6 +4,7 @@
     <form method="POST" action="{{ route('password.update') }}">
         @csrf
 
+        <?php $token = $_GET['token']; ?>
         <input type="hidden" name="token" value="{{ $token }}">
 
         <div>

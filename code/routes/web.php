@@ -113,8 +113,8 @@ Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->na
 Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/recover-password', [MailController::class, 'showRecoverPassForm'])->name('recover-password');
 Route::post('/send', [MailController::class, 'send']);
-Route::get('/recover-password/{token}', function (string $token) {
-    return view('auth.recover-password', ['token' => $token]);
+Route::get('/reset-password', function () {
+    return view('auth.recover-password');
 })->name('password.reset');
 Route::post('/recover-password', [UserController::class, 'recoverPassword'])->name('password.update');
 Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google-auth');
