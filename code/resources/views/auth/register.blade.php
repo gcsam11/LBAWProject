@@ -49,5 +49,8 @@
       Register
     </button>
     <a class="button button-outline" href="{{ route('login') }}">Login</a>
+    <a id="google_button" href="{{ route('google-auth') }}">
+      <p>Login with <i class="fa-brands fa-google"></i></p>
+    </a>
 </form>
 @endsection
