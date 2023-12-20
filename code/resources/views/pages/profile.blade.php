@@ -27,7 +27,7 @@
             </div>
         @endif
         <form action="{{ route('user.search') }}" method="GET">
-            <input id="search_term" name="search_term" type="text" value="{{ old('search_term') }}" placeholder="Search for Users">
+            <input id="search_term" name="search_term" type="text" value="{{ old('search_term') }}" placeholder="Search for Users...">
             @if ($errors->has('search_term'))
                 <span class="error">
                     {{ $errors->first('search_term') }}
