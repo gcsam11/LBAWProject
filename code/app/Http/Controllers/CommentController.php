@@ -21,6 +21,8 @@ use App\Events\DownvoteComment as DownvoteCommentEvent;
 use App\Events\UndoUpvoteComment;
 use App\Events\UndoDownvoteComment;
 
+use App\Notifications\CommentPost;
+
 class CommentController extends Controller
 {
     
@@ -115,7 +117,10 @@ class CommentController extends Controller
                 return redirect()->route('posts.show', ['id' => $id])->with('error', 'Could not create comment.');
             }
         }
-
+        $postOwner = User::findOrFail($post->user_id);
+        $userId = Auth::id();
+        $commenter = User::findOrFail($userId);
+        $postOwner->notify(new CommentPost($commenter, $post));
         return redirect()->route('posts.show', ['id' => $id])->with('success', 'Comment created successfully');
     }
 
