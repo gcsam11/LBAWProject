@@ -60,7 +60,7 @@ Route::post('/profileimage', [ImageController::class, 'getAJAX']);
 // Create Post
 Route::get('/create_post', function () {
     return view('pages.create_post');
-})->name('create_post')->middleware('auth');
+})->name('create_post')->middleware("'auth'");
 
 // Main Page Routes
 Route::group(['prefix' => 'main'], function () {
@@ -71,7 +71,9 @@ Route::group(['prefix' => 'main'], function () {
 
 
 //user news
-Route::get('/user_news', [PostController::class, 'userNews'])->name('user_news'); 
+Route::get('/user_news', [PostController::class, 'userNews'])->name('user_news')->middleware('auth'); 
+
+Route::get('/followed_topics', [PostController::class, 'followedTopics'])->name('followed_topics')->middleware('auth'); 
 
 
 // Individual Post Actions
@@ -116,6 +118,7 @@ Route::get('/create_post', [TopicController::class, 'showCreatePostForm'])->name
 Route::get('/get_topics',  [TopicController::class, 'showFiltersTopic'])->name('get_filters_with_topics');
 //Topic Follow
 Route::post('/topics/{topicId}/toggle-follow', [TopicController::class, 'toggleFollow'])->name('toggle_follow');
+
 
 Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');

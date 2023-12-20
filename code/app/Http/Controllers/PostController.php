@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
+
 
 
 use App\Events\Upvote;
@@ -323,6 +325,21 @@ class PostController extends Controller
         $downvotes = $post->downvotes;
         return response()->json($downvotes, 200);
     }
+
+    public function followedTopics(Request $request){
+        $user = Auth::user();
+        $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+        $posts = Post::whereIn('topic_id', $userFollowedTopics)
+            ->orderBy('postdate', 'DESC')
+            ->get();
+
+        
+        return view('pages.followed_topics', [
+            'posts' => $posts,
+            'userFollowedTopics' => $userFollowedTopics,
+        ]);
+    }
+
     public function applyFilter(Request $request)
     { 
 
@@ -426,6 +443,11 @@ class PostController extends Controller
         }
 
         $user = auth()->user();
+        if ($request->has('followedTopics')) {
+            $user = auth()->user();
+            $userFollowedTopics = $user ? $user->followedTopics()->pluck('id')->toArray() : [];
+            $query->whereIn('topic_id', $userFollowedTopics);
+        }
         $posts = $query->get();
         if($user){
             $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();

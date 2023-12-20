@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
     //get current page
     var currentUrl = window.location.href;
     var isUserNewsPage = currentUrl.includes('/user_news');
+    var isFollowedTopicsPage = currentUrl.includes('/followed_topics');
+
 
     if (sortElem && timeSortElem) {
         sortElem.addEventListener('change', function() {
@@ -111,6 +113,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isUserNewsPage) {
             requestData.append('user_id', window.userID);
 
+        }
+        if (isFollowedTopicsPage) {
+            requestData.append('followedTopics', 1);
         }
         fetch(filterPostsApplyRoute, {
             method: 'POST',
