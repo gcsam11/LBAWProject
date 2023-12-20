@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\PasswordRecovery;
 use App\Http\Controllers\ImageController;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+
 
 class UserController extends Controller
 {
@@ -290,5 +292,33 @@ class UserController extends Controller
             Log::error('Follow Error: ' . $e->getMessage());
             return response()->json(['error' => 'Internal Server Error'], 500);
         }
+    }
+
+    public function recoverPassword(Request $request){
+
+        $validatedData = $request->validate([
+            'password' => 'required',
+            'token' => 'required',
+        ]);
+
+        if($passwordRecovery = PasswordRecovery::where('token', $request->input('token'))->where('expiration_date', '>', now())->first()){
+                // Hash the password
+                $hashedPassword = Hash::make($validatedData['password']);
+
+                // Alter the password in the database where the user_id is the same
+                User::where('id', $passwordRecovery->user_id)->update(['password' => $hashedPassword]);
+
+                // Delete the password recovery entry
+                $passwordRecovery->delete();
+
+                Auth::logout();
+
+                return redirect()->route('login')->with('success', 'Password changed successfully.');
+        }
+
+        else{
+            return redirect()->route('login')->with('error', 'Password recovery request expired.');
+        }
+
     }
 }

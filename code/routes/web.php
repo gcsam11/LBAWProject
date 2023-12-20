@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-use App\Http\Controllers\CardController;
-use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\AdminController;
@@ -16,7 +14,10 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\ContactUsController;
+use App\Http\Controllers\TopicProposalController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +42,7 @@ Route::get('/user_news', function () {
 
 
 // User
-Route::controller(UserController::class)->group(function () {
+Route::middleware('auth')->group(function () {
     Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
     Route::post('/change-password', [UserController::class, 'change_password'])->name('change.password');
     Route::get('/profile/{id}', [UserController::class, 'show'])->name('profile_page');
@@ -52,9 +53,9 @@ Route::controller(UserController::class)->group(function () {
 });
 
 // ImageUser
-Route::controller(ImageController::class)->group(function () {
+Route::middleware('auth')->group(function () {
     Route::post('/profile/{id}/image', [ImageController::class, 'create'])->name('image.new');
-})->middleware('auth');
+});
 Route::post('/profileimage', [ImageController::class, 'getAJAX']);
 
 // Create Post
@@ -104,18 +105,30 @@ Route::delete('/comments/{id}/delete', [CommentController::class, 'delete'])->na
 Route::middleware('admin')->group(function () {
     Route::get('/admin_dashboard', [AdminController::class, 'index'])->name('admin_dashboard');
     Route::post('/admin_dashboard', [AdminController::class, 'create'])->name('admin.register');
+    Route::get('/admin_topic_proposals',[TopicProposalController::class,'listProposals'])->name('admin_topic_proposals');
+    Route::post('/create-topic/{proposal}', [TopicProposalController::class, 'createTopic'])->name('create_topic');
+    Route::delete('/delete-proposal/{proposal}', [TopicProposalController::class, 'deleteProposal'])->name('delete_proposal');
 });
 
 // Authentication
-Route::controller(LoginController::class)->group(function () {
-    Route::get('/login', 'showLoginForm')->name('login');
-    Route::post('/login', 'authenticate');
-    Route::get('/logout', 'logout')->name('logout');
-});
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'authenticate']);
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+Route::get('/recover-password', [MailController::class, 'showRecoverPassForm'])->name('recover-password');
+Route::post('/send', [MailController::class, 'send']);
+Route::get('/reset-password', function () {
+    return view('auth.recover-password');
+})->name('password.reset');
+Route::post('/recover-password', [UserController::class, 'recoverPassword'])->name('password.update');
+Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google-auth');
+Route::get('auth/google/call-back', [GoogleController::class, 'callbackGoogle'])->name('google-call-back');
 
 //Topics
 Route::get('/create_post', [TopicController::class, 'showCreatePostForm'])->name('create_post_topics');
 Route::get('/get_topics',  [TopicController::class, 'showFiltersTopic'])->name('get_filters_with_topics');
+
 //Topic Follow
 Route::post('/topics/{topicId}/toggle-follow', [TopicController::class, 'toggleFollow'])->name('toggle_follow');
 
@@ -125,14 +138,15 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::post('/follow/{id}', [UserController::class, 'follow'])->name('follow');
 });
 
-Route::controller(GoogleController::class)->group(function () {
-    Route::get('auth/google', 'redirect')->name('google-auth');
-    Route::get('auth/google/call-back', 'callbackGoogle')->name('google-call-back');
-});
+//Topic Proposal
+Route::get('/topic_proposal', function () {
+    return view('pages.topic_proposal');
+})->middleware('auth');
+Route::post('/create_topic_proposal', [TopicProposalController::class,'create'])->name('createTopicProposal')->middleware('auth');
 
 Route::get('/about_us', function () {return view('pages.about_us');})->name('about_us');
 Route::get('/contact_us', function () {return view('pages.contact_us');})->name('contact_us');

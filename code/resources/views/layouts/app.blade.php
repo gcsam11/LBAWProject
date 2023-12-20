@@ -63,6 +63,7 @@
 
                 @if(Auth::user()->isAdmin())
                 <a href="{{ route('admin_dashboard') }}">Admin Dashboard</a>&nbsp;&nbsp;&nbsp;
+                <a href="{{route('admin_topic_proposals')}}">Topic Proposals Management</a>&nbsp;&nbsp;&nbsp;
                 @endif
                 
                 @endauth

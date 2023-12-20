@@ -3,6 +3,7 @@
 @endsection
 @section('scripts')
     <script type="text/javascript" src={{ url('js/post.js') }} defer></script>
+    <script type="text/javascript" src={{ url('js/readmore_post.js') }} defer></script>
 @endsection
 <div class="postcard" data-id="{{ $post->id }}">
 <article class="post">
@@ -29,7 +30,7 @@
         @endphp
         @auth
         <br>
-        <button id="{{$upvoteId}}"class="{{ $userUpvoted ? 'clicked' : 'not-clicked' }}" onclick="upvote({{ $post->id }})">
+        <button id="{{$upvoteId}}" class="{{ $userUpvoted ? 'clicked' : 'not-clicked' }}" onclick="event.preventDefault(); try { upvote({{ $post->id }}) } catch (e) { console.error(e); }">
             @if($userUpvoted)
                 <i class="fa-solid fa-circle-up"></i>
             @else
@@ -44,7 +45,7 @@
             <strong>{{ $post->upvotes - $post->downvotes }}</strong>
         </div>
 
-        <button id="{{$downvoteId}}"class="{{ $userDownvoted ? 'clicked' : 'not-clicked' }}" onclick="downvote({{ $post->id }})">
+        <button id="{{$downvoteId}}" class="{{ $userUpvoted ? 'clicked' : 'not-clicked' }}" onclick="event.preventDefault(); try { downvote({{ $post->id }}) } catch (e) { console.error(e); }">
             @if($userDownvoted)
                 <i class="fa-solid fa-circle-down"></i>
             @else

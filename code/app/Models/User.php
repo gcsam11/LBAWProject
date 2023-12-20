@@ -123,5 +123,13 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Topic::class, 'user_topic', 'user_id', 'topic_id');
     }
+
+    /**
+    * Get the password recovery entries for the user.
+    */
+    public function passwordRecoveryEntries(): HasMany
+    {
+        return $this->hasMany(PasswordRecovery::class);
+    }
 }
 ?>

@@ -41,6 +41,14 @@ CREATE TABLE "user" (
     CONSTRAINT fk_userimage FOREIGN KEY(image_id) REFERENCES IMAGE(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE PASSWORD_RECOVERY (
+    id SERIAL PRIMARY KEY,
+    token TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    expiration_date timestamptz NOT NULL,
+    CONSTRAINT fk_recoveryuser FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 
 CREATE TABLE ADMIN (
     id SERIAL PRIMARY KEY,
@@ -130,11 +138,9 @@ CREATE TABLE USER_TOPIC(
 CREATE TABLE TOPIC_PROPOSAL (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    admin_id INTEGER,
     title TEXT NOT NULL,
     caption TEXT NOT NULL,
-    CONSTRAINT fk_topicproposaluser FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_topicproposaladmin FOREIGN KEY (admin_id) REFERENCES ADMIN(id) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT fk_topicproposaluser FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IMAGE_POST(
@@ -277,6 +283,24 @@ AFTER INSERT ON upvote_post
 FOR EACH ROW
 EXECUTE FUNCTION update_post_votes_count();
 
+-- Trigger for updating post upvotes count
+CREATE OR REPLACE FUNCTION decrement_post_votes_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        UPDATE post
+        SET upvotes = upvotes - 1
+        WHERE id = OLD.post_id;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER decrement_post_trigger
+BEFORE DELETE ON upvote_post
+FOR EACH ROW
+EXECUTE FUNCTION decrement_post_votes_count();
+
 -- Trigger for updating post upvotes and downvotes count
 CREATE OR REPLACE FUNCTION downvote_post_votes_count()
 RETURNS TRIGGER AS $$
@@ -290,10 +314,23 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER downvote_post_trigger
-AFTER INSERT ON downvote_post
+-- Trigger for updating post upvotes and downvotes count
+CREATE OR REPLACE FUNCTION downvote_post_votes_decrement()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        UPDATE post
+        SET downvotes = downvotes - 1
+        WHERE id = OLD.post_id;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER downvote_post_trigger_decrement
+BEFORE DELETE ON downvote_post
 FOR EACH ROW
-EXECUTE FUNCTION downvote_post_votes_count();
+EXECUTE FUNCTION downvote_post_votes_decrement();
 
 -- Trigger for updating comment upvotes count
 CREATE OR REPLACE FUNCTION update_comment_votes_count()
@@ -659,11 +696,11 @@ VALUES ('Great article!', 'Very informative, thanks for sharing.', '2023-10-20',
        ('Fantastic guide!', 'Planning my next beach vacation already.', '2023-11-01', 25, 0, 4, 3);
 
 -- Create topic_proposal table and populate data
-INSERT INTO TOPIC_PROPOSAL (user_id, admin_id, title, caption)
-VALUES (2, 1, 'Foodie Adventures', 'Exploring different cuisines and food cultures'),
-       (1, 2, 'Wildlife Photography', 'Capturing the beauty of nature through photography'),
-       (4, 3, 'Healthy Cooking', 'Delicious and nutritious recipes for a healthy lifestyle'),
-       (1, 4, 'Home Decor Ideas', 'Creative and budget-friendly home decoration tips');
+INSERT INTO TOPIC_PROPOSAL (user_id, title, caption)
+VALUES (2, 'Foodie Adventures', 'Exploring different cuisines and food cultures'),
+       (1,  'Wildlife Photography', 'Capturing the beauty of nature through photography'),
+       (4, 'Healthy Cooking', 'Delicious and nutritious recipes for a healthy lifestyle'),
+       (1, 'Home Decor Ideas', 'Creative and budget-friendly home decoration tips');
 
 
 
