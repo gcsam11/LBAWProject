@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/change-password', [UserController::class, 'change_password'])->name('change.password');
     Route::get('/profile/{id}', [UserController::class, 'show'])->name('profile_page');
     Route::delete('/profile/{id}/delete', [UserController::class, 'delete'])->name('profile_delete');
-    Route::get('/search', [UserController::class, 'search'])->name('user.search');
+
     Route::post('/profile/block', [UserController::class, 'block'])->name('user.block');
     Route::post('/profile/unblock', [UserController::class, 'unblock'])->name('user.unblock');
 });
@@ -67,7 +67,6 @@ Route::get('/create_post', function () {
 Route::group(['prefix' => 'main'], function () {
     Route::post('/main', [PostController::class, 'applyFilter'])->name('filter.posts.apply');
     Route::get('/', [PostController::class, 'listTop'])->name('posts.top');
-    Route::get('/search', [PostController::class, 'search'])->name('posts.search');
 });
 
 
@@ -147,6 +146,12 @@ Route::get('/topic_proposal', function () {
     return view('pages.topic_proposal');
 })->middleware('auth');
 Route::post('/create_topic_proposal', [TopicProposalController::class,'create'])->name('createTopicProposal')->middleware('auth');
+
+//Searches
+Route::get('/user_search', [UserController::class, 'search'])->name('users.search');
+Route::get('/post_search', [PostController::class, 'search'])->name('posts.search');
+Route::get('/comment_search', [CommentController::class, 'search'])->name('comments.search');
+
 
 Route::get('/about_us', function () {return view('pages.about_us');})->name('about_us');
 Route::get('/contact_us', function () {return view('pages.contact_us');})->name('contact_us');

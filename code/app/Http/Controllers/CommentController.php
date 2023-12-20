@@ -181,6 +181,24 @@ class CommentController extends Controller
         }
     }
 
+    public function search(Request $request)
+    {
+        $validatedData = $request->validate([
+            'search_term' => ['required']
+        ]);
+    
+        $searchTerm = $validatedData['search_term'];
+    
+        $searchTerm = preg_replace('/\s+/', ' ', $searchTerm);
+    
+        $comments = Comment::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
+            ->get();
+    
+        return view('pages.search_results', [
+            'comments' => $comments
+        ]);
+    }
+    
     /**
      * Upvote a comment.
      */

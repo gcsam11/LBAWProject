@@ -66,18 +66,26 @@ class PostController extends Controller
         if (strpos($searchTerm, ' ') !== false) {
             // Full-text search for terms with spaces
             $modifiedSearchTerm = str_replace(' ', ':* & ', $searchTerm) . ':*';
-            $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$modifiedSearchTerm])
+            $posts = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$modifiedSearchTerm])
                 ->get();
         } else {
             // Exact match search for both title and caption
-            $results = Post::where('title', 'ILIKE', "%$searchTerm%")
+            $posts = Post::where('title', 'ILIKE', "%$searchTerm%")
             ->orWhere('caption', 'ILIKE', "%$searchTerm%")
             ->get();
         }
+        $user = auth()->user();
+
+        if ($user) {
+            // Retrieve the topics that the current user follows
+            $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+        }
+        else{
+            $userFollowedTopics = [];
+        }
     
-        return view('pages/posts_search_results', [
-            'results' => $results
-        ]);
+        return view('pages.search_results', compact('posts', 'userFollowedTopics'));
+
     }
     
     /**
