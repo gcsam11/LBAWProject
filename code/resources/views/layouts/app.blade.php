@@ -75,7 +75,8 @@
             <hr/>
             <nav>
                 <a href="{{ route('about_us') }}">About Us</a>&nbsp;&nbsp;&nbsp;
-                <a href="{{ route('contact_us') }}">Contact Us</a>
+                <a href="{{ route('contact_us') }}">Contact Us</a>&nbsp;&nbsp;&nbsp;
+                <a href="{{ route('main_features') }}">Main Features</a>
             </nav>
             © SWC News
         </footer>

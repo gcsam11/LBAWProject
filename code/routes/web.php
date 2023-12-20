@@ -61,7 +61,7 @@ Route::post('/profileimage', [ImageController::class, 'getAJAX']);
 // Create Post
 Route::get('/create_post', function () {
     return view('pages.create_post');
-})->name('create_post')->middleware("'auth'");
+})->name('create_post')->middleware('auth');
 
 // Main Page Routes
 Route::group(['prefix' => 'main'], function () {
@@ -150,6 +150,7 @@ Route::post('/create_topic_proposal', [TopicProposalController::class,'create'])
 
 Route::get('/about_us', function () {return view('pages.about_us');})->name('about_us');
 Route::get('/contact_us', function () {return view('pages.contact_us');})->name('contact_us');
+Route::get('/main_features', function () {return view('pages.main_features');})->name('main_features');
 
 //Contact Us
 Route::post('/admin_dashboard/contact_us', [ContactUsController::class, 'create'])->name('contact_us.create');
