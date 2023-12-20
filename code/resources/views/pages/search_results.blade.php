@@ -5,9 +5,7 @@
 @section('header', 'Search Results')
 
 @section('content')
-
-    @foreach($results as $post)
-        @include('partials.posts', ['post' => $post])
-    @endforeach
-
+    @if($posts !== null)
+        @include('partials.posts', ['posts' => $posts])
+    @endif
 @endsection
