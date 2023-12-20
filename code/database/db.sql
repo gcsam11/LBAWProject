@@ -130,11 +130,9 @@ CREATE TABLE USER_TOPIC(
 CREATE TABLE TOPIC_PROPOSAL (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    admin_id INTEGER,
     title TEXT NOT NULL,
     caption TEXT NOT NULL,
-    CONSTRAINT fk_topicproposaluser FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_topicproposaladmin FOREIGN KEY (admin_id) REFERENCES ADMIN(id) ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT fk_topicproposaluser FOREIGN KEY(user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IMAGE_POST(
@@ -659,11 +657,11 @@ VALUES ('Great article!', 'Very informative, thanks for sharing.', '2023-10-20',
        ('Fantastic guide!', 'Planning my next beach vacation already.', '2023-11-01', 25, 0, 4, 3);
 
 -- Create topic_proposal table and populate data
-INSERT INTO TOPIC_PROPOSAL (user_id, admin_id, title, caption)
-VALUES (2, 1, 'Foodie Adventures', 'Exploring different cuisines and food cultures'),
-       (1, 2, 'Wildlife Photography', 'Capturing the beauty of nature through photography'),
-       (4, 3, 'Healthy Cooking', 'Delicious and nutritious recipes for a healthy lifestyle'),
-       (1, 4, 'Home Decor Ideas', 'Creative and budget-friendly home decoration tips');
+INSERT INTO TOPIC_PROPOSAL (user_id, title, caption)
+VALUES (2, 'Foodie Adventures', 'Exploring different cuisines and food cultures'),
+       (1,  'Wildlife Photography', 'Capturing the beauty of nature through photography'),
+       (4, 'Healthy Cooking', 'Delicious and nutritious recipes for a healthy lifestyle'),
+       (1, 'Home Decor Ideas', 'Creative and budget-friendly home decoration tips');
 
 
 
