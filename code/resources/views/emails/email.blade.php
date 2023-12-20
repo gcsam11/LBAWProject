@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-<h3>Hi {{ $mailData['name'] }},</h3>
-<h4>Welcome to LBAW Tutorial 01</h4>
-<h4>You should personalize your email according to your needs</h4>
-<h5>-------</h5>
-<h5>LBAW Staff</h5>
+<h3>Hi!</h3>
+<h4>To recover your password, enter the link below</h4>
+<a href="http://localhost:8000/reset-password?token={{ $mailData['token'] }}">Reset Password</a>

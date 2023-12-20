@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Contracts\Auth\CanResetPassword;
 
 // Added to define Eloquent relationships.
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -123,6 +122,14 @@ class User extends Authenticatable
     public function followedTopics()
     {
         return $this->belongsToMany(Topic::class, 'user_topic', 'user_id', 'topic_id');
+    }
+
+    /**
+    * Get the password recovery entries for the user.
+    */
+    public function passwordRecoveryEntries(): HasMany
+    {
+        return $this->hasMany(PasswordRecovery::class);
     }
 }
 ?>

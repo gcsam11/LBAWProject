@@ -116,7 +116,7 @@ Route::post('/send', [MailController::class, 'send']);
 Route::get('/recover-password/{token}', function (string $token) {
     return view('auth.recover-password', ['token' => $token]);
 })->name('password.reset');
-Route::post('/recover-password', [MailController::class, 'recoverPassword'])->name('password.update');
+Route::post('/recover-password', [UserController::class, 'recoverPassword'])->name('password.update');
 Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/call-back', [GoogleController::class, 'callbackGoogle'])->name('google-call-back');
 
