@@ -110,21 +110,6 @@ class PostController extends Controller
         return view('pages.main', compact('posts', 'userFollowedTopics'));
     }
 
-/*  
-    public function listRecent()
-    {
-        // Get posts ordered by postdate in descending order (most recent first).
-        $posts = Post::orderBy('postdate', 'DESC')->get();
-
-        // Use the pages.post template to display all cards.
-        return view('pages.main', [
-            'posts' => $posts
-        ]);
-    }
- */
-    /**
-     * Shows all posts made by the currently logged-in user.
-     */
     public function userNews()
     {
         $userId = Auth::id();
@@ -143,7 +128,6 @@ class PostController extends Controller
             'userFollowedTopics' => $userFollowedTopics,
         ]);
     }
-
 
     /**
      * Creates a new post.
