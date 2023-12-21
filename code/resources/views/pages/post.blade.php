@@ -3,6 +3,7 @@
 @section('title', $post->name)
 
 @section('content')
+
 @if ($errors->any())
     <div class="alert alert-danger">
         @foreach ($errors->all() as $error)
@@ -11,12 +12,7 @@
     </div>
 @endif
     <section id="posts">
-        @include('partials.post', ['post' => $post])
-
-        {{-- Print Images --}}
-        @if(!empty($images))
-            @include('partials.carousel', ['images' => $images])
-        @endif
+        @include('partials.post', ['post' => $post, 'images' => $images])
 
         @include('partials.comments', ['comments' => $comments])
     </section>

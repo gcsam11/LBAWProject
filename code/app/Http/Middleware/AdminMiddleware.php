@@ -17,6 +17,6 @@ class AdminMiddleware
             }
         }
 
-        abort(403, 'Unauthorized action.');
+        return redirect('/'); // Redirect to the main page
     }
 }

@@ -223,7 +223,7 @@ class PostController extends Controller
             // Save the updated post.
             $post->save();
 
-            return redirect()->route('home')->with('success', 'Post updated successfully');
+            return redirect()->route('posts.show', ['id' => $post->id])->with('success', 'Post updated successfully');
         } catch (\Exception $e) {
             // Log the error message.
             \Log::error('Failed to update post with ID: ' . $post->id . '. Error: ' . $e->getMessage());
