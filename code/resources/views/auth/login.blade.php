@@ -1,8 +1,7 @@
 @extends('layouts.forms')
 
-<head>
-    <title>Login</title>
-</head>
+@section('title', 'Login')
+
 @section('header')
     {{ "Login" }}
 @endsection

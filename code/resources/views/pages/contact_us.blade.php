@@ -2,8 +2,10 @@
 
 @section('title', 'Contact Us')
 
+@section('header', 'Contact Us')
+
 @section('content')
-    <h2>Contact Us</h2>
+    
     
     <form enctype="multipart/form-data" action="{{ route('contact_us.create') }}" method="POST">
         {{ csrf_field() }}

@@ -17,7 +17,7 @@
         <!-- Styles -->
         @yield('styles')
         @yield('scripts')
-        <script type="text/javascript">
+        <script >
             // Fix for Firefox autofocus CSS bug
             // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
         </script>
@@ -27,7 +27,7 @@
         </script>
         <script src="https://js.pusher.com/7.0/pusher.min.js" defer></script>
 
-        <script type="text/javascript" src={{ url('js/app.js') }} defer>
+        <script src="{{ url('js/app.js') }}" defer>
         </script>
 
     </head>
@@ -72,7 +72,7 @@
             </div>
         </main>
         <footer>
-            <hr/>
+            <hr>
             <nav>
                 <a href="{{ route('about_us') }}">About Us</a>&nbsp;&nbsp;&nbsp;
                 <a href="{{ route('contact_us') }}">Contact Us</a>&nbsp;&nbsp;&nbsp;

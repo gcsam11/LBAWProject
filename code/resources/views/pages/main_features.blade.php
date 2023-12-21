@@ -2,13 +2,14 @@
 
 @section('title', 'Contact Us')
 
+@section('header', 'Main Features')
+
 @section('content')
-<h2>Main Features</h2>
 <p>Here are the main features of our website:</p>
 <ul>
     <li><i class="fa-regular fa-newspaper"></i> - <a href="{{ route('home') }}">News Feed</a></li>
     <li><i class="fa-solid fa-newspaper"></i> - <a href="{{ route('user_news') }}">News you Posted</a></li>
-    <li><i class="fa-regular fa-user"></i> - <a href="{{ route('profile_page', ['id' => Auth::id()]) }}">View & Edit your Profile</a></li>
+    <li><i class="fa-regular fa-user"></i> - <a>View & Edit your Profile</a></li>
     <li><i class="fa-solid fa-user-slash"></i> - <a>Delete your Account</a></li>
     <li><i class="fa-regular fa-square-plus"></i> - <a href="{{ url('/create_post') }}">Create a Post</a></li>
     <li><i class="fa-regular fa-pen-to-square"></i> - <a>Edit & Delete your Posts</a></li>
