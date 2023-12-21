@@ -297,6 +297,10 @@ BEGIN
         UPDATE post
         SET upvotes = upvotes + 1
         WHERE id = NEW.post_id;
+
+        UPDATE "user"
+        SET reputation = reputation + 5
+        WHERE id = (SELECT user_id FROM post WHERE id = NEW.post_id);
     END IF;
     RETURN NEW;
 END;
@@ -315,6 +319,10 @@ BEGIN
         UPDATE post
         SET upvotes = upvotes - 1
         WHERE id = OLD.post_id;
+
+        UPDATE "user"
+        SET reputation = reputation - 5
+        WHERE id = (SELECT user_id FROM post WHERE id = OLD.post_id);
     END IF;
     RETURN OLD;
 END;
@@ -333,6 +341,10 @@ BEGIN
         UPDATE post
         SET downvotes = downvotes + 1
         WHERE id = NEW.post_id;
+
+        UPDATE "user"
+        SET reputation = reputation - 5
+        WHERE id = (SELECT user_id FROM post WHERE id = NEW.post_id);
     END IF;
     RETURN NEW;
 END;
@@ -351,6 +363,10 @@ BEGIN
         UPDATE post
         SET downvotes = downvotes - 1
         WHERE id = OLD.post_id;
+
+        UPDATE "user"
+        SET reputation = reputation + 5
+        WHERE id = (SELECT user_id FROM post WHERE id = OLD.post_id);
     END IF;
     RETURN OLD;
 END;
@@ -369,6 +385,10 @@ BEGIN
         UPDATE comment
         SET upvotes = upvotes + 1
         WHERE id = NEW.comment_id;
+
+        UPDATE "user"
+        SET reputation = reputation + 1
+        WHERE id = (SELECT user_id FROM comment WHERE id = NEW.comment_id);
     END IF;
     RETURN NEW;
 END;
@@ -387,6 +407,10 @@ BEGIN
         UPDATE comment
         SET downvotes = downvotes + 1
         WHERE id = NEW.comment_id;
+
+        UPDATE "user"
+        SET reputation = reputation - 1
+        WHERE id = (SELECT user_id FROM comment WHERE id = NEW.comment_id);
     END IF;
     RETURN NEW;
 END;
@@ -405,6 +429,10 @@ BEGIN
         UPDATE comment
         SET upvotes = upvotes - 1
         WHERE id = OLD.comment_id;
+
+        UPDATE "user"
+        SET reputation = reputation - 1
+        WHERE id = (SELECT user_id FROM comment WHERE id = OLD.comment_id);
     END IF;
     RETURN OLD;
 END;
@@ -423,6 +451,10 @@ BEGIN
         UPDATE comment
         SET downvotes = downvotes - 1
         WHERE id = OLD.comment_id;
+
+        UPDATE "user"
+        SET reputation = reputation + 1
+        WHERE id = (SELECT user_id FROM comment WHERE id = OLD.comment_id);
     END IF;
     RETURN OLD;
 END;
