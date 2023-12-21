@@ -24,12 +24,12 @@
             @csrf
             @method('PATCH')
             <div>
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" value="{{ $post->title }}" placeholder="e.g. Lorem Ipsum">
+                <label for="title">Title*</label>
+                <input type="text" id="title" name="title" value="{{ $post->title }}" placeholder="e.g. Lorem Ipsum" required>
             </div>
             <div>
-                <label for="caption">Caption:</label>
-                <textarea id="caption" name="caption" value="{{ $post->caption }}" placeholder="e.g. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at pellentesque lectus, id consectetur nunc."></textarea>
+                <label for="caption">Caption*</label>
+                <textarea id="caption" name="caption" value="{{ $post->caption }}" placeholder="e.g. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at pellentesque lectus, id consectetur nunc." required></textarea>
             </div>
             <button type="submit">Update Post</button>
         </form>
@@ -51,9 +51,9 @@
             <h4>Add a Comment</h4>
             <form enctype="multipart/form-data" action="{{ route('comments.create', ['id' => $post->id]) }}" method="POST">
                 @csrf
-                <label for="title">Title:</label>
+                <label for="title">Title*</label>
                 <input type="text" id="title" placeholder="e.g. Lorem Ipsum" name="title" required>
-                <label for="caption">Caption:</label>
+                <label for="caption">Caption*</label>
                 <textarea id="caption" name="caption" placeholder="e.g. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at pellentesque lectus, id consectetur nunc." required></textarea>
                 <label id="box_container" for="image_input">
                     <div class="text2">

@@ -11,11 +11,11 @@
         <br>
     </div>
 
+    @include('partials.filters')
+
     <div class="create_post">
         <button id="create_post">+</button>
     </div>
-
-    @include('partials.filters')
 
     <div class="news">
         @include('partials.posts', ['posts' => $posts])

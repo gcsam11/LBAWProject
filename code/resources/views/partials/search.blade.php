@@ -5,7 +5,7 @@
         <option value="comments">Comments</option>
     </select>
 
-    <input id="search_term" name="search_term" type="text" value="{{ old('search_term') }}" placeholder="Search for News">
+    <input id="search_term" name="search_term" type="text" value="{{ old('search_term') }}" placeholder="Search for News/Comments/Users...">
     @if ($errors->has('search_term'))
         <span class="error">
             {{ $errors->first('search_term') }}
