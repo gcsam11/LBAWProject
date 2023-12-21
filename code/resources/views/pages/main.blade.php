@@ -15,7 +15,7 @@
         <button id="create_post">+</button>
     </div>
 
-    <script src="{{ asset(js/create_post.js) }}"></script>
+    <script src="{{ asset('js/create_post.js') }}"></script>
 
     {{-- Posts--}}
     <div class="news">
