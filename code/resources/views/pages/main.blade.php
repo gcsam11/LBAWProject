@@ -33,6 +33,4 @@
     <div class="news">
         @include('partials.posts', ['posts' => $posts])
     </div>
-    <script src="{{ asset('js/create_post.js') }}"></script>
-    
 @endsection

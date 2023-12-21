@@ -18,10 +18,11 @@ use Illuminate\Support\Facades\Route;
 
 use App\Events\UpvoteComment as UpvoteCommentEvent;
 use App\Events\DownvoteComment as DownvoteCommentEvent;
-use App\Events\UndoUpvoteComment;
-use App\Events\UndoDownvoteComment;
+use App\Events\CommentEvent;
 
 use App\Notifications\CommentPost;
+use App\Notifications\UpvotedComment;
+use App\Notifications\DownvotedComment;
 
 class CommentController extends Controller
 {
@@ -193,19 +194,20 @@ class CommentController extends Controller
         $upvoteComment = new UpvoteComment();
         $upvoteComment->comment_id = $commentId;
         $upvoteComment->user_id = $userId;
+        $comment = Comment::findOrFail($commentId);
+        $rep = $comment->upvotes -  $comment->downvotes;
+        $commentOwner = User::findOrFail($comment->user_id);
+        $upvoter = User::findOrFail($userId);
+
 
         if ($upvoteComment->save()) {
-            event(new UpvoteCommentEvent($commentId));
+            event(new CommentEvent($message));
+            $commentOwner->notify(new UpvotedComment($upvoter, $comment));
         } else {
             \Log::info('Failed to upvote comment with ID: ' . $commentId);
         }
 
-        $comment = Comment::findOrFail($commentId);
-        $upvotes = $comment->upvotes;
-        $commentOwner = User::findOrFail($comment->user_id);
-        $upvoter = User::findOrFail($userId);
-
-        return response()->json($upvotes, 200);
+        return response()->json($rep, 200);
     }
 
     /**
@@ -228,9 +230,9 @@ class CommentController extends Controller
         }
 
         $comment = Comment::findOrFail($commentId);
-        $upvotes = $comment->upvotes;
+        $rep = $comment->upvotes -  $comment->downvotes;
 
-        return response()->json($upvotes, 200);
+        return response()->json($rep, 200);
     }
 
     /**
@@ -244,19 +246,20 @@ class CommentController extends Controller
         $downvoteComment = new DownvoteComment();
         $downvoteComment->comment_id = $commentId;
         $downvoteComment->user_id = $userId;
+        $comment = Comment::findOrFail($commentId);
+        $rep = $comment->upvotes -  $comment->downvotes;
+        $commentOwner = User::findOrFail($comment->user_id);
+        $downvoter = User::findOrFail($userId);
 
         if ($downvoteComment->save()) {
-            event(new DownvoteCommentEvent($commentId));
+            $message = 'Downvoted Comment' . $comment->title;
+            event(new CommentEvent($message));
+            $commentOwner->notify(new UpvotedComment($downvoter, $comment));
         } else {
             \Log::info('Failed to downvote comment with ID: ' . $commentId);
         }
 
-        $comment = Comment::findOrFail($commentId);
-        $downvotes = $comment->downvotes;
-        $commentOwner = User::findOrFail($comment->user_id);
-        $downvoter = User::findOrFail($userId);
-
-        return response()->json($downvotes, 200);
+        return response()->json($rep, 200);
     }
 
     /**
@@ -279,9 +282,9 @@ class CommentController extends Controller
         }
 
         $comment = Comment::findOrFail($commentId);
-        $downvotes = $comment->downvotes;
+        $rep = $comment->upvotes -  $comment->downvotes;
 
-        return response()->json($downvotes, 200);
+        return response()->json($rep, 200);
     }
 }
 ?>

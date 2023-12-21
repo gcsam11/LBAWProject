@@ -248,6 +248,7 @@ class PostController extends Controller
         }
     }
     function upvote(Request $request) {
+        \Log::info('Upvote PHP');
         $postId = $request->id;
         $userId = Auth::id();
         
@@ -269,6 +270,7 @@ class PostController extends Controller
     }
 
     function undoupvote(Request $request) {
+        \Log::info('Undoupvote PHP');
         $postId = $request->id;
         $userId = Auth::id();
         $upvotePost = UpvotePost::where('post_id', $postId)
@@ -287,6 +289,7 @@ class PostController extends Controller
     }
 
     function downvote(Request $request) {
+        \Log::info('Downvote PHP');
         $postId = $request->id;
         $userId = Auth::id();
         
@@ -316,6 +319,7 @@ class PostController extends Controller
 
         if ($downvotePost) {
             $downvotePost->delete();
+            \Log::info('Undodownvote PHP Sucess');
             event(new UndoDownvote($postId));
 
         } else {

@@ -73,5 +73,6 @@
             console.log(successMessage);
         </script>
     @endif
+    <script src="{{ asset('js/post.js') }}"></script>
     @include('partials.event')
 @endsection

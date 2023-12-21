@@ -109,5 +109,3 @@ function handleNotifications(response) {
     notificationsContainer.appendChild(notificationItem);
   });
 }
-
-

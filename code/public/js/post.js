@@ -29,6 +29,7 @@ function sendAjaxRequest(method, url, data, handler) {
 
 
 function upvote(id) {
+    console.log("Upvote JS");
     const buttonUpvote = document.getElementById(`${id}upvoteButton`);
     const buttonDownvote = document.getElementById(`${id}downvoteButton`);
     const repElement = document.querySelector(`[data-id="${id}"] .upvotes-downvotes`);
@@ -56,6 +57,7 @@ function upvote(id) {
 }
 
 function downvote(id) {
+    console.log("Downvote JS");
     const buttonUpvote = document.getElementById(`${id}upvoteButton`);
     const buttonDownvote = document.getElementById(`${id}downvoteButton`);
     const repElement = document.querySelector(`[data-id="${id}"] .upvotes-downvotes`);
