@@ -20,11 +20,6 @@
         <script>
             const userId = "{{ auth()->id() }}"; // Get the authenticated user's ID
         </script>
-        <script type="text/javascript">
-        <script >
-            // Fix for Firefox autofocus CSS bug
-            // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
-        </script>
         <script>
             const pusherAppKey = "{{ env('PUSHER_APP_KEY') }}";
             const pusherCluster = "{{ env('PUSHER_APP_CLUSTER') }}";
