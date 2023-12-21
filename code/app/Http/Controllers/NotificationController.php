@@ -8,12 +8,13 @@ use Illuminate\Http\Response;
 
 class NotificationController extends Controller
 {
-    public function unreadNotifications()
+    public function unreadNotifications(Request $request)
     {
         $user = Auth::user();
         $unreadNotifications = $user->unreadNotifications;
-        \Log::info('Notifications: ' . $unreadNotifications);
+        if($request->read === "true"){
+            $user->unreadNotifications->markAsRead();
+        }
         return response()->json($unreadNotifications, 200);
     }
-    //Need to markAsRead() somewhere $user->unreadNotifications->markAsRead();
 }
