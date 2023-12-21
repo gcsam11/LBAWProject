@@ -200,7 +200,7 @@ class CommentController extends Controller
 
 
         if ($upvoteComment->save()) {
-            $message = 'Upvoted Comment' . $comment->title;
+            $message = ' Upvoted Comment ' . $comment->title;
             event(new CommentEvent($message));
             $commentOwner->notify(new UpvotedComment($upvoter, $comment));
         } else {
@@ -219,13 +219,15 @@ class CommentController extends Controller
     {
         $commentId = $request->id;
         $userId = Auth::id();
+        $comment = Comment::findOrFail($commentId);
 
         $upvoteComment = UpvoteComment::where('comment_id', $commentId)
             ->where('user_id', $userId)
             ->first();
 
-        if ($upvoteComment) {
-            $upvoteComment->delete();
+        if ($upvoteComment->delete()) {
+            $message = ' Undo Upvote on Comment ' . $comment->title;
+            event(new CommentEvent($message));
         } else {
             \Log::info('Upvote not found for comment with ID: ' . $commentId);
         }
@@ -252,9 +254,9 @@ class CommentController extends Controller
         $downvoter = User::findOrFail($userId);
 
         if ($downvoteComment->save()) {
-            $message = 'Downvoted Comment' . $comment->title;
+            $message = ' Downvoted Comment ' . $comment->title;
             event(new CommentEvent($message));
-            $commentOwner->notify(new UpvotedComment($downvoter, $comment));
+            $commentOwner->notify(new DownvotedComment($downvoter, $comment));
         } else {
             \Log::info('Failed to downvote comment with ID: ' . $commentId);
         }
@@ -271,13 +273,15 @@ class CommentController extends Controller
     {
         $commentId = $request->id;
         $userId = Auth::id();
+        $comment = Comment::findOrFail($commentId);
 
         $downvoteComment = DownvoteComment::where('comment_id', $commentId)
             ->where('user_id', $userId)
             ->first();
 
-        if ($downvoteComment) {
-            $downvoteComment->delete();
+        if ($downvoteComment->delete()) {
+            $message = ' Undo Downvote on Comment ' . $comment->title;
+            event(new CommentEvent($message));
         } else {
             \Log::info('Downvote not found for comment with ID: ' . $commentId);
         }

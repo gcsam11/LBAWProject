@@ -21,7 +21,7 @@ class Downvote implements ShouldBroadcast
     // Here you create the message to be sent when the event is triggered.
     public function __construct($post_id) {
         $this->post_id = $post_id;
-        $this->message = 'Downvoted post ' . $post_id;
+        $this->message = ' Downvoted post ' . $post_id;
     }
 
     // You should specify the name of the channel created in Pusher.

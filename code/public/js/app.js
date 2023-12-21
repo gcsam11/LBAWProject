@@ -37,20 +37,14 @@ const channelname = userId + '-notification';
 channel.bind(channelname, function (data) {
 
   const notification = document.getElementById('event');
-  const closeButton = document.getElementById('closeButton');
   const notificationText = document.getElementById('eventText');
   notificationText.textContent = data.message;
   notification.classList.add('show');
 
-  closeButton.addEventListener('click', function () {
-    notification.classList.remove('show');
-  });
-
   setTimeout(function () {
     notification.classList.remove('show');
-  }, 5000);
+  }, 500);
 });
-
 
 function notifications() {
   const notificationsBtn = document.getElementById('notifications-btn');
