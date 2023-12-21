@@ -5,6 +5,10 @@
                 <h3>{{ $comment->title }}</h3><strong>by</strong> <a href="{{ route('profile_page', ['id' => $comment->user->id]) }}">{{ $comment->user->name }}</a>
                 <strong>on {{ date('Y-m-d', strtotime($comment->postdate)) }} at {{ date('H:i:s', strtotime($comment->postdate))}}</strong><br><br>
                 <p>{{ $comment->caption }}</p>
+                @if($comment->image)
+                    <img src="{{ asset('post/'.$comment->image->filename) }}" alt="Comment Image">
+                @endif
+                <br>
                 <button class="not-clicked">
                     <i class="fa-regular fa-circle-up"></i>
                 </button><br>
@@ -17,9 +21,6 @@
                 <button class="not-clicked">
                     <i class="fa-regular fa-circle-down"></i>
                 </button>
-                @if($comment->image)
-                    <img src="{{ asset('post/'.$comment->image->filename) }}" alt="Comment Image">
-                @endif
                 @can('update', $comment)
                     <form action="{{ route('comments.edit', ['id' => $comment->id]) }}" method="GET">
                         @csrf

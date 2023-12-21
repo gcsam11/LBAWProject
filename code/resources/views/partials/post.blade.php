@@ -1,10 +1,8 @@
 @section('styles')
     <link href="{{ url('css/postcard.css') }}" rel="stylesheet">
 @endsection
-@section('scripts')
-    <script type="text/javascript" src={{ url('js/post.js') }} defer></script>
-    <script type="text/javascript" src={{ url('js/readmore_post.js') }} defer></script>
-@endsection
+<script type="text/javascript" src={{ url('js/post.js') }} defer></script>
+
 <div class="postcard" data-id="{{ $post->id }}">
 <article class="post">
     <h2>{{ $post->title }}</h2>

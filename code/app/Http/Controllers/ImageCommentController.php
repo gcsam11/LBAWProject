@@ -20,7 +20,7 @@ class ImageCommentController extends Controller
 
             // Check if the filename is not empty
             if (empty($filename)) {
-                return response()->json(['message' => 'Filename is empty'], 400);
+                return response()->json(400);
             }
 
             $hashedFilename = hash('sha256', $filename . time());
@@ -30,7 +30,7 @@ class ImageCommentController extends Controller
             
             // Verify if imageId is empty
             if (empty($imageId)) {
-                return response()->json(['message' => 'Could not create'.$filename], 400);
+                return response()->json(400);
             }
 
             // Store the image in the database
@@ -44,9 +44,11 @@ class ImageCommentController extends Controller
             $image = Image::where('filename', $hashedFilename)->first();
 
             if (!$image) {
-                return response()->json(['message' => 'Could not create'.$filename], 400);
+                return response()->json(400);
             }
 
-            return response()->json(['message' => 'Image created succesfully'], 200);
+            // Pass the code and message to the other side
+            return response()->json(200);
     }
+
 }

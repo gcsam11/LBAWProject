@@ -107,12 +107,14 @@ class CommentController extends Controller
         if (!empty($request->image)) {
             
             $response = ImageCommentController::create($request, $comment->id);
-            if ($response != '200') {
+            
+            if ($response->getStatusCode() != 200) {
+
                 // Delete the comment
                 $comment->delete();
 
                 // Return error Message                
-                return redirect()->route('posts.show', ['id' => $id])->with('error', 'Could not create comment.');
+                return redirect()->route('posts.show', ['id' => $id])->withErrors(['message' => 'Could not create comment.']);
             }
         }
 
