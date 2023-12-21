@@ -11,6 +11,7 @@
         @endforeach
     </div>
 @endif
+@include('partials.event')
     <section id="posts">
         @include('partials.post', ['post' => $post, 'images' => $images])
 
@@ -76,4 +77,5 @@
             console.log(successMessage);
         </script>
     @endif
+    <script src="{{ asset('js/post.js') }}"></script>
 @endsection

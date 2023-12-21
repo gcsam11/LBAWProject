@@ -244,6 +244,7 @@ class PostController extends Controller
     }
 
     function upvote(Request $request) {
+        \Log::info('Upvote PHP');
         $postId = $request->id;
         $userId = Auth::id();
         
@@ -257,14 +258,15 @@ class PostController extends Controller
             \Log::info('Failed to upvote post with ID: ' . $postId);
         }
         $post = Post::findOrFail($postId);
-        $upvotes = $post->upvotes;
+        $rep = $post->upvotes - $post->downvotes;
         $postOwner = User::findOrFail($post->user_id);
         $upvoter = User::findOrFail($userId);
         $postOwner->notify(new UpvotedPost($upvoter, $post));
-        return response()->json($upvotes, 200);
+        return response()->json($rep, 200);
     }
 
     function undoupvote(Request $request) {
+        \Log::info('Undoupvote PHP');
         $postId = $request->id;
         $userId = Auth::id();
         $upvotePost = UpvotePost::where('post_id', $postId)
@@ -278,8 +280,8 @@ class PostController extends Controller
             \Log::info('Upvote not found for post with ID: ' . $postId);
         }
         $post = Post::findOrFail($postId);
-        $upvotes = $post->upvotes;
-        return response()->json($upvotes, 200);
+        $rep = $post->upvotes - $post->downvotes;
+        return response()->json($rep, 200);
     }
 
     function downvote(Request $request) {
@@ -296,11 +298,11 @@ class PostController extends Controller
             \Log::info('Failed to downvote post with ID: ' . $postId);
         }
         $post = Post::findOrFail($postId);
-        $downvotes = $post->downvotes;
+        $rep = $post->upvotes - $post->downvotes;
         $postOwner = User::findOrFail($post->user_id);
         $downvoter = User::findOrFail($userId);
         $postOwner->notify(new DownvotedPost($downvoter, $post));
-        return response()->json($downvotes, 200);
+        return response()->json($rep, 200);
     }
 
     function undodownvote(Request $request) {
@@ -318,8 +320,8 @@ class PostController extends Controller
             \Log::info('Downvote not found for post with ID: ' . $postId);
         }
         $post = Post::findOrFail($postId);
-        $downvotes = $post->downvotes;
-        return response()->json($downvotes, 200);
+        $rep = $post->upvotes - $post->downvotes;
+        return response()->json($rep, 200);
     }
 
     public function followedTopics(Request $request){

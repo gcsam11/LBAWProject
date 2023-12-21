@@ -1,75 +1,49 @@
+function encodeForAjax(data) {
+  if (data == null) return null;
+  return Object.keys(data).map(function (k) {
+    return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+  }).join('&');
+}
+
+function sendAjaxRequest(method, url, data, handler) {
+  let request = new XMLHttpRequest();
+
+  request.open(method, url, true);
+  request.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
+  request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+  if (handler) {
+    request.addEventListener('load', function () {
+      if (request.status === 200) {
+        var response = JSON.parse(request.responseText);
+        handler(response);
+      } else {
+        console.error('Request failed with status:', request.status);
+      }
+
+    });
+
+  }
+  request.send(encodeForAjax(data));
+}
+
 const pusher = new Pusher(pusherAppKey, {
   cluster: pusherCluster,
   encrypted: true
 });
 
 const channel = pusher.subscribe('lbaw2374');
-channel.bind('notification-upvote', function (data) {
+const channelname = userId + '-notification';
+channel.bind(channelname, function (data) {
 
   const notification = document.getElementById('event');
-  const closeButton = document.getElementById('closeButton');
   const notificationText = document.getElementById('eventText');
   notificationText.textContent = data.message;
   notification.classList.add('show');
 
-  closeButton.addEventListener('click', function () {
-    notification.classList.remove('show');
-  });
-
   setTimeout(function () {
     notification.classList.remove('show');
-  }, 5000);
-});
-
-channel.bind('notification-undoupvote', function (data) {
-
-  const notification = document.getElementById('event');
-  const closeButton = document.getElementById('closeButton');
-  const notificationText = document.getElementById('eventText');
-  notificationText.textContent = data.message;
-  notification.classList.add('show');
-
-  closeButton.addEventListener('click', function () {
-    notification.classList.remove('show');
-  });
-
-  setTimeout(function () {
-    notification.classList.remove('show');
-  }, 5000);
-});
-
-channel.bind('notification-downvote', function (data) {
-
-  const notification = document.getElementById('event');
-  const closeButton = document.getElementById('closeButton');
-  const notificationText = document.getElementById('eventText');
-  notificationText.textContent = data.message;
-  notification.classList.add('show');
-
-  closeButton.addEventListener('click', function () {
-    notification.classList.remove('show');
-  });
-
-  setTimeout(function () {
-    notification.classList.remove('show');
-  }, 5000);
-});
-
-channel.bind('notification-undodownvote', function (data) {
-
-  const notification = document.getElementById('event');
-  const closeButton = document.getElementById('closeButton');
-  const notificationText = document.getElementById('eventText');
-  notificationText.textContent = data.message;
-  notification.classList.add('show');
-
-  closeButton.addEventListener('click', function () {
-    notification.classList.remove('show');
-  });
-
-  setTimeout(function () {
-    notification.classList.remove('show');
-  }, 5000);
+  }, 500);
 });
 
 function notifications() {
@@ -129,5 +103,3 @@ function handleNotifications(response) {
     notificationsContainer.appendChild(notificationItem);
   });
 }
-
-

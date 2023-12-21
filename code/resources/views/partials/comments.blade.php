@@ -9,18 +9,36 @@
                     <img src="{{ asset('post/'.$comment->image->filename) }}" alt="Comment Image">
                 @endif
                 <br>
-                <button class="not-clicked">
+            @php
+                $userUpvotedComment = $comment->checkIfUserUpvoted();
+                $userDownvotedComment = $comment->checkIfUserDownvoted();
+                $id = $comment->id;
+                $upvoteId = $id . "upvoteCommentButton";
+                $downvoteId = $id . "downvoteCommentButton";
+                $repId = $id . "upvotes-downvotes-comment";
+            @endphp
+            @auth
+            <br>
+            <button id="{{$upvoteId}}" class="{{ $userUpvotedComment ? 'clicked' : 'not-clicked' }}" onclick="upvoteComment({{ $comment->id }})">
+                @if($userUpvotedComment)
+                    <i class="fa-solid fa-circle-up"></i>
+                @else
                     <i class="fa-regular fa-circle-up"></i>
-                </button><br>
+                @endif
+            </button>
 
-                <input type="hidden" data-id="{{ $post->id }}" id="upvotes" value="{{ $post->upvotes }}">
-                <input type="hidden" data-id="{{ $post->id }}" id="downvotes" value="{{ $post->downvotes }}">
+            <div id="{{$repId}}">
+                <strong>{{ $comment->upvotes - $comment->downvotes }}</strong>
+            </div>
 
-                <strong>{{ $comment->upvotes - $comment->downvotes }}</strong><br>
-
-                <button class="not-clicked">
+            <button id="{{$downvoteId}}" class="{{ $userDownvotedComment ? 'clicked' : 'not-clicked' }}" onclick="downvoteComment({{ $comment->id }})">
+                @if($userDownvotedComment)
+                    <i class="fa-solid fa-circle-down"></i>
+                @else
                     <i class="fa-regular fa-circle-down"></i>
-                </button>
+                @endif
+            </button>
+            @endauth
                 @can('update', $comment)
                     <form action="{{ route('comments.edit', ['id' => $comment->id]) }}" method="GET">
                         @csrf

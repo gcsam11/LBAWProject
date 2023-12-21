@@ -32,7 +32,7 @@
         @endphp
         @auth
         <br>
-        <button id="{{$upvoteId}}" class="{{ $userUpvoted ? 'clicked' : 'not-clicked' }}" onclick="event.preventDefault(); try { upvote({{ $post->id }}) } catch (e) { console.error(e); }">
+        <button id="{{$upvoteId}}" class="{{ $userUpvoted ? 'clicked' : 'not-clicked' }}" onclick="upvote({{ $post->id }})">
             @if($userUpvoted)
                 <i class="fa-solid fa-circle-up"></i>
             @else
@@ -40,14 +40,11 @@
             @endif
         </button>
 
-        <input type="hidden" data-id="{{ $post->id }}" id="upvotes" value="{{ $post->upvotes }}">
-        <input type="hidden" data-id="{{ $post->id }}" id="downvotes" value="{{ $post->downvotes }}">
-
         <div class="upvotes-downvotes" data-id="{{$post->id}}">
             <strong>{{ $post->upvotes - $post->downvotes }}</strong>
         </div>
 
-        <button id="{{$downvoteId}}" class="{{ $userUpvoted ? 'clicked' : 'not-clicked' }}" onclick="event.preventDefault(); try { downvote({{ $post->id }}) } catch (e) { console.error(e); }">
+        <button id="{{$downvoteId}}" class="{{ $userDownvoted ? 'clicked' : 'not-clicked' }}" onclick="downvote({{ $post->id }})">
             @if($userDownvoted)
                 <i class="fa-solid fa-circle-down"></i>
             @else
