@@ -4,6 +4,7 @@
     background-color: #15100C; /* Set the background color */
     margin: 20px auto;
     border: 1px solid white; /* Add a border */
+    border-radius: 20px;
 }
 
 .postcard:hover{
@@ -49,4 +50,5 @@ i {
     background-color: #15100C; /* Set the background color */
     margin: 20px auto;
     border: 1px solid white; /* Add a border */
+    border-radius: 20px;
 }
