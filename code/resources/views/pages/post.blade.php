@@ -3,13 +3,16 @@
 @section('title', $post->name)
 
 @section('content')
-    <section id="posts">
-        @include('partials.post', ['post' => $post])
 
-        {{-- Print Images --}}
-        @if(!empty($images))
-            @include('partials.carousel', ['images' => $images])
-        @endif
+@if ($errors->any())
+    <div class="alert alert-danger">
+        @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+        @endforeach
+    </div>
+@endif
+    <section id="posts">
+        @include('partials.post', ['post' => $post, 'images' => $images])
 
         @include('partials.comments', ['comments' => $comments])
     </section>
@@ -21,12 +24,12 @@
             @csrf
             @method('PATCH')
             <div>
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" value="{{ $post->title }}">
+                <label for="title">Title*</label>
+                <input type="text" id="title" name="title" value="{{ $post->title }}" placeholder="e.g. Lorem Ipsum" required>
             </div>
             <div>
-                <label for="caption">Caption:</label>
-                <textarea id="caption" name="caption">{{ $post->caption }}</textarea>
+                <label for="caption">Caption*</label>
+                <textarea id="caption" name="caption" value="{{ $post->caption }}" placeholder="e.g. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at pellentesque lectus, id consectetur nunc." required></textarea>
             </div>
             <button type="submit">Update Post</button>
         </form>
@@ -48,10 +51,10 @@
             <h4>Add a Comment</h4>
             <form enctype="multipart/form-data" action="{{ route('comments.create', ['id' => $post->id]) }}" method="POST">
                 @csrf
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" required>
-                <label for="caption">Caption:</label>
-                <textarea id="caption" name="caption" required></textarea>
+                <label for="title">Title*</label>
+                <input type="text" id="title" placeholder="e.g. Lorem Ipsum" name="title" required>
+                <label for="caption">Caption*</label>
+                <textarea id="caption" name="caption" placeholder="e.g. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at pellentesque lectus, id consectetur nunc." required></textarea>
                 <label id="box_container" for="image_input">
                     <div class="text2">
                         <i class="fa-solid fa-upload"></i>

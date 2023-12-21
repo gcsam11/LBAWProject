@@ -20,21 +20,11 @@
 <form enctype="multipart/form-data" method="POST" action="{{ route('posts.create') }}">
   {{ csrf_field() }}
 
-  <!--
-  <label for="topic">Topic</label>
-  <input id="topic" type="text" name="topic" value=1 required autofocus>
-  @if ($errors->has('topic'))
-    <span class="error">
-      {{ $errors->first('topic') }}
-    </span>
-  @endif
-  -->
+  <label for="title">Title*</label>
+  <input id="title" type="text" name="title" value="{{ old('title') }}" required autofocus placeholder="e.g. Lorem Ipsum">
 
-  <label for="title">Title</label>
-  <input id="title" type="text" name="title" value="{{ old('title') }}" required autofocus>
-
-  <label for="caption">Caption</label>
-  <textarea id="caption" type="text" name="caption" required></textarea>
+  <label for="caption">Caption*</label>
+  <textarea id="caption" type="text" name="caption" required placeholder="e.g. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at pellentesque lectus, id consectetur nunc."></textarea>
 
   <label id="box_container" for="image_input2">
     <div class="text2">

@@ -30,11 +30,11 @@
             @csrf
             <!-- Minimum date filter -->
             <label for="minimum_date">Minimum Date:</label>
-            <input type="text" id="minimum_date" name="minimum_date">
+            <input type="text" id="minimum_date" name="minimum_date" placeholder="yyyy-mm-dd">
 
             <!-- Maximum date filter -->
             <label for="maximum_date">Maximum Date:</label>
-            <input type="text" id="maximum_date" name="maximum_date">
+            <input type="text" id="maximum_date" name="maximum_date" placeholder="yyyy-mm-dd">
 
             <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
             <script src="{{ asset('js/datePickerConfig.js') }}"></script>
@@ -44,15 +44,15 @@
 
             <!-- Upvote filter -->
             <label for="minimum_upvote">Minimum Upvote:</label>
-            <input type="number" id="minimum_upvote" name="minimum_upvote" min="0">
+            <input type="number" id="minimum_upvote" name="minimum_upvote" min="0" placeholder="Input number > 0...">
             <label for="maximum_upvote">Maximum Upvote:</label>
-            <input type="number" id="maximum_upvote" name="maximum_upvote" min="0">
+            <input type="number" id="maximum_upvote" name="maximum_upvote" min="0" placeholder="Input number > 0...">
     
             <!-- Downvote filter -->
             <label for="minimum_downvote">Minimum Downvote:</label>
-            <input type="number" id="minimum_downvote" name="minimum_downvote" min="0">
+            <input type="number" id="minimum_downvote" name="minimum_downvote" min="0" placeholder="Input number > 0...">
             <label for="maximum_downvote">Maximum Downvote:</label>
-            <input type="number" id="maximum_downvote" name="maximum_downvote" min="0">
+            <input type="number" id="maximum_downvote" name="maximum_downvote" min="0" placeholder="Input number > 0...">
     
             <!-- Topic filter -->
             <select id="topic_filter" name="topic_filter">

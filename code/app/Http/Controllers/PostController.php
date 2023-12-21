@@ -66,18 +66,26 @@ class PostController extends Controller
         if (strpos($searchTerm, ' ') !== false) {
             // Full-text search for terms with spaces
             $modifiedSearchTerm = str_replace(' ', ':* & ', $searchTerm) . ':*';
-            $results = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$modifiedSearchTerm])
+            $posts = Post::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$modifiedSearchTerm])
                 ->get();
         } else {
             // Exact match search for both title and caption
-            $results = Post::where('title', 'ILIKE', "%$searchTerm%")
+            $posts = Post::where('title', 'ILIKE', "%$searchTerm%")
             ->orWhere('caption', 'ILIKE', "%$searchTerm%")
             ->get();
         }
+        $user = auth()->user();
+
+        if ($user) {
+            // Retrieve the topics that the current user follows
+            $userFollowedTopics = $user->followedTopics()->pluck('id')->toArray();
+        }
+        else{
+            $userFollowedTopics = [];
+        }
     
-        return view('pages/posts_search_results', [
-            'results' => $results
-        ]);
+        return view('pages.search_results', compact('posts', 'userFollowedTopics'));
+
     }
     
     /**
@@ -102,21 +110,6 @@ class PostController extends Controller
         return view('pages.main', compact('posts', 'userFollowedTopics'));
     }
 
-/*  
-    public function listRecent()
-    {
-        // Get posts ordered by postdate in descending order (most recent first).
-        $posts = Post::orderBy('postdate', 'DESC')->get();
-
-        // Use the pages.post template to display all cards.
-        return view('pages.main', [
-            'posts' => $posts
-        ]);
-    }
- */
-    /**
-     * Shows all posts made by the currently logged-in user.
-     */
     public function userNews()
     {
         $userId = Auth::id();
@@ -135,7 +128,6 @@ class PostController extends Controller
             'userFollowedTopics' => $userFollowedTopics,
         ]);
     }
-
 
     /**
      * Creates a new post.
@@ -215,7 +207,7 @@ class PostController extends Controller
             // Save the updated post.
             $post->save();
 
-            return redirect()->route('home')->with('success', 'Post updated successfully');
+            return redirect()->route('posts.show', ['id' => $post->id])->with('success', 'Post updated successfully');
         } catch (\Exception $e) {
             // Log the error message.
             \Log::error('Failed to update post with ID: ' . $post->id . '. Error: ' . $e->getMessage());
@@ -235,6 +227,9 @@ class PostController extends Controller
 
         $this->authorize('delete', $post);
 
+        if(($post->upvotes != 0 || $post->downvotes != 0 || !empty($post->comments)) && !Auth::user()->isAdmin()){
+            return redirect()->route('posts.show', ['id' => $post->id])->withErrors(['message' => 'Cannot delete post because it has been voted or commented on.']);
+        }
         
         try {
             $post->delete();
@@ -247,6 +242,7 @@ class PostController extends Controller
             return redirect()->route('home')->with('error', 'Failed to delete the post');
         }
     }
+
     function upvote(Request $request) {
         \Log::info('Upvote PHP');
         $postId = $request->id;

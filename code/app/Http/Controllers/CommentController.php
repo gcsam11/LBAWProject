@@ -110,12 +110,14 @@ class CommentController extends Controller
         if (!empty($request->image)) {
             
             $response = ImageCommentController::create($request, $comment->id);
-            if ($response != '200') {
+            
+            if ($response->getStatusCode() != 200) {
+
                 // Delete the comment
                 $comment->delete();
 
                 // Return error Message                
-                return redirect()->route('posts.show', ['id' => $id])->with('error', 'Could not create comment.');
+                return redirect()->route('posts.show', ['id' => $id])->withErrors(['message' => 'Could not create comment.']);
             }
         }
         $postOwner = User::findOrFail($post->user_id);
@@ -174,6 +176,10 @@ class CommentController extends Controller
         // Check if the current user is authorized to delete this comment.
         $this->authorize('delete', $comment);
 
+        if(($comment->upvotes != 0 || $comment->downvotes != 0) && !Auth::user()->isAdmin()){
+            return redirect()->route('posts.show', ['id' => $comment->post_id])->withErrors(['message' => 'Cannot delete comment because it has been voted or commented on.']);
+        }
+
         try {
             $comment->delete();
             return redirect()->route('posts.show', ['id' => $comment->post_id])->with('success', 'Comment deleted successfully');
@@ -183,6 +189,24 @@ class CommentController extends Controller
         }
     }
 
+    public function search(Request $request)
+    {
+        $validatedData = $request->validate([
+            'search_term' => ['required']
+        ]);
+    
+        $searchTerm = $validatedData['search_term'];
+    
+        $searchTerm = preg_replace('/\s+/', ' ', $searchTerm);
+    
+        $comments = Comment::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
+            ->get();
+    
+        return view('pages.search_results', [
+            'comments' => $comments
+        ]);
+    }
+    
     /**
      * Upvote a comment.
      */

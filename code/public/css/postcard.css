@@ -4,6 +4,7 @@
     background-color: #15100C; /* Set the background color */
     margin: 20px auto;
     border: 1px solid white; /* Add a border */
+    border-radius: 20px;
 }
 
 .postcard:hover{
@@ -41,4 +42,13 @@ i {
     border: none;
     padding: 0;
     margin: 0;
+}
+
+.commentcard {
+    width: 80%; /* Adjust the width as needed */
+    padding: 20px; /* Add padding for content spacing */
+    background-color: #15100C; /* Set the background color */
+    margin: 20px auto;
+    border: 1px solid white; /* Add a border */
+    border-radius: 20px;
 }

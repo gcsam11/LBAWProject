@@ -134,8 +134,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     newsContainer.innerHTML = data.html;
                 }
             } else {
-                // Handle errors if necessary
+                console.log("Error with:",data.html);
             }
+            attachPostcardClickEvent();
         })
         .catch(function(error) {
             console.error('Fetch Error:', error);
@@ -154,3 +155,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 });
+
+//so that we can reattach the clicks after refresh
+function attachPostcardClickEvent() {
+    var postcards = document.getElementsByClassName('postcard');
+    for (var i = 0; i < postcards.length; i++) {
+        postcards[i].addEventListener('click', function() {
+            if (!event.target.matches('button')) {
+                var postId = this.getAttribute('data-id');
+                window.location.href = '/posts/' + postId;
+            }
+        });
+    }
+}

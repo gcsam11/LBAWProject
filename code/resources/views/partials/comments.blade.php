@@ -1,8 +1,26 @@
 <div class="comments">
-    <br><hr><br>
-    <h3>Comments</h3>
         @foreach ($comments as $comment)
+            <div class = "commentcard">
             <article class="comment">
+                <h3>{{ $comment->title }}</h3><strong>by</strong> <a href="{{ route('profile_page', ['id' => $comment->user->id]) }}">{{ $comment->user->name }}</a>
+                <strong>on {{ date('Y-m-d', strtotime($comment->postdate)) }} at {{ date('H:i:s', strtotime($comment->postdate))}}</strong><br><br>
+                <p>{{ $comment->caption }}</p>
+                @if($comment->image)
+                    <img src="{{ asset('post/'.$comment->image->filename) }}" alt="Comment Image">
+                @endif
+                <br>
+                <button class="not-clicked">
+                    <i class="fa-regular fa-circle-up"></i>
+                </button><br>
+
+                <input type="hidden" data-id="{{ $post->id }}" id="upvotes" value="{{ $post->upvotes }}">
+                <input type="hidden" data-id="{{ $post->id }}" id="downvotes" value="{{ $post->downvotes }}">
+
+                <strong>{{ $comment->upvotes - $comment->downvotes }}</strong><br>
+
+                <button class="not-clicked">
+                    <i class="fa-regular fa-circle-down"></i>
+                </button>
                 @can('update', $comment)
                     <form action="{{ route('comments.edit', ['id' => $comment->id]) }}" method="GET">
                         @csrf
@@ -16,17 +34,8 @@
                         <button type="submit">Delete</button>
                     </form>
                 @endcan
-                <br><br>
-                <strong>Title:</strong> {{ $comment->title }}<br><br>
-                <strong>Caption:</strong> {{ $comment->caption }}<br><br>
-                <strong>Date:</strong> {{ $comment->commentdate }}<br><br>
-                <strong>Upvotes:</strong> {{ $comment->upvotes }}<br><br>
-                <strong>Downvotes:</strong> {{ $comment->downvotes }}<br><br>
-                <strong>Posted by:</strong> <a href="{{ route('profile_page', ['id' => $comment->user->id]) }}">{{ $comment->user->name }}</a><br><br>
-                @if($comment->image)
-                    <img src="{{ asset('post/'.$comment->image->filename) }}" alt="Comment Image">
-                @endif
             </article>
+            </div>
         @endforeach
     <br><hr><br>
 </div>

@@ -2,32 +2,16 @@
 
 @section('title', 'News Feed')
 
-@section('scripts')
-<script type="text/javascript" src={{ url('js/readmore_post.js') }} defer></script>
-@endsection
-
 @section('header', 'News Feed')
 
 @section('content')
-    
+    @include('partials.search')
 
-    <div class="search&sort">
-        <form action="{{ route('posts.search') }}" method="GET">
-            <input id="search_term" name="search_term" type="text" value="{{ old('search_term') }}" placeholder="Search for News">
-            @if ($errors->has('search_term'))
-                <span class="error">
-                    {{ $errors->first('search_term') }}
-                </span>
-            @endif    
-            <button type="submit">Search</button>
-        </form>
-        <br>
-    </div>
+    @include('partials.filters')
+
     <div class="create_post">
         <button id="create_post">+</button>
     </div>
-
-    @include('partials.filters')
 
     {{-- Posts--}}
     <div class="news">

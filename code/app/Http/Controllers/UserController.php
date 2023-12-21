@@ -60,7 +60,7 @@ class UserController extends Controller
 
         // Check if the current user can see (show) the user.
         $this->authorize('show', Auth::user());  
-
+        
         // Return the profile view to display the user.
         return view('pages.profile', ['user' => $user]);
     }
@@ -159,7 +159,7 @@ class UserController extends Controller
         }
     }
 
-    public function search(Request $request)
+/*     public function search(Request $request)
     {
         $validatedData = $request->validate([
             'search_term' => ['required']
@@ -176,6 +176,25 @@ class UserController extends Controller
             ->get();
 
         return view('pages/users_search_results', ['results' => $results]);
+    }
+ */
+
+    public function search(Request $request)
+    {
+        $validatedData = $request->validate([
+            'search_term' => ['required']
+        ]);
+
+        $searchTerm = $validatedData['search_term'];
+
+        $searchTerm = preg_replace('/\s+/', ' ', $searchTerm);
+
+        $users = User::whereRaw("tsvectors @@ to_tsquery('english', ?)", [$searchTerm])
+            ->get();
+
+        return view('pages/search_results', [
+            'users' => $users
+        ]);
     }
 
     public function block(Request $request){

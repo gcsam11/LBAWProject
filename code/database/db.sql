@@ -265,6 +265,30 @@ EXECUTE FUNCTION user_search_update();
 -- Create the GIN index for User full-text search
 CREATE INDEX idx_users_tsvectors ON "user" USING GIN(tsvectors);
 
+--- FTS for comments
+
+ALTER TABLE comment ADD COLUMN tsvectors TSVECTOR;
+
+CREATE OR REPLACE FUNCTION comment_search_update()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        NEW.tsvectors = setweight(to_tsvector('english', NEW.title || ' ' || NEW.caption), 'A');
+    END IF;
+    IF TG_OP = 'UPDATE' THEN
+        IF (NEW.title <> OLD.title OR NEW.caption <> OLD.caption) THEN
+            NEW.tsvectors = setweight(to_tsvector('english', NEW.title || ' ' || NEW.caption), 'A');
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER comment_search_update_trigger
+BEFORE INSERT OR UPDATE ON comment
+FOR EACH ROW
+EXECUTE FUNCTION comment_search_update();
+
 -- Trigger for updating post upvotes count
 CREATE OR REPLACE FUNCTION update_post_votes_count()
 RETURNS TRIGGER AS $$

@@ -11,16 +11,16 @@
 <form method="POST" action="{{ route('login') }}">
     {{ csrf_field() }}
 
-    <label for="email">E-mail</label>
-    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus>
+    <label for="email">E-mail*</label>
+    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="email@example.com">
     @if ($errors->has('email'))
         <span class="error">
           {{ $errors->first('email') }}
         </span>
     @endif
 
-    <label for="password" >Password</label>
-    <input id="password" type="password" name="password" required>
+    <label for="password" >Password*</label>
+    <input id="password" type="password" name="password" required placeholder="********">
     @if ($errors->has('password'))
         <span class="error">
             {{ $errors->first('password') }}
