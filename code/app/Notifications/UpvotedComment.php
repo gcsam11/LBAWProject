@@ -6,7 +6,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\User;
-use App\Models\Post;
+use App\Models\Comment;
 
 class UpvotedComment extends Notification
 {

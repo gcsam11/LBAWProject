@@ -285,7 +285,6 @@ class PostController extends Controller
     }
 
     function downvote(Request $request) {
-        \Log::info('Downvote PHP');
         $postId = $request->id;
         $userId = Auth::id();
         
@@ -315,7 +314,6 @@ class PostController extends Controller
 
         if ($downvotePost) {
             $downvotePost->delete();
-            \Log::info('Undodownvote PHP Sucess');
             event(new UndoDownvote($postId));
 
         } else {

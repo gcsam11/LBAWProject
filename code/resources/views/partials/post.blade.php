@@ -44,7 +44,7 @@
             <strong>{{ $post->upvotes - $post->downvotes }}</strong>
         </div>
 
-        <button id="{{$downvoteId}}" class="{{ $userUpvoted ? 'clicked' : 'not-clicked' }}" onclick="downvote({{ $post->id }})">
+        <button id="{{$downvoteId}}" class="{{ $userDownvoted ? 'clicked' : 'not-clicked' }}" onclick="downvote({{ $post->id }})">
             @if($userDownvoted)
                 <i class="fa-solid fa-circle-down"></i>
             @else

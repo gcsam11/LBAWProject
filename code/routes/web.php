@@ -98,7 +98,10 @@ Route::post('/posts/{id}/comments', [CommentController::class, 'create'])->name(
 Route::get('/comments/{id}/edit', [CommentController::class, 'edit'])->name('comments.edit');
 Route::post('/comments/{id}/update', [CommentController::class, 'updateComment'])->name('comments.update');
 Route::delete('/comments/{id}/delete', [CommentController::class, 'delete'])->name('comments.delete');
-
+Route::post('/comment/upvote', [CommentController::class, 'upvote']);
+Route::post('/comment/undoupvote', [CommentController::class, 'undoupvote']);
+Route::post('/comment/downvote', [CommentController::class, 'downvote']);
+Route::post('/comment/undodownvote', [CommentController::class, 'undodownvote']);
 
 // Admin
 Route::middleware('admin')->group(function () {

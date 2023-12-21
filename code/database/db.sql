@@ -338,6 +338,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE TRIGGER downvote_post_trigger
+AFTER INSERT ON downvote_post
+FOR EACH ROW
+EXECUTE FUNCTION downvote_post_votes_count();
+
 -- Trigger for updating post upvotes and downvotes count
 CREATE OR REPLACE FUNCTION downvote_post_votes_decrement()
 RETURNS TRIGGER AS $$
@@ -391,42 +396,6 @@ CREATE TRIGGER downvote_comment_trigger
 AFTER INSERT ON downvote_comment
 FOR EACH ROW
 EXECUTE FUNCTION downvote_comment_votes_count();
-
--- Trigger for undoing post upvotes count
-CREATE OR REPLACE FUNCTION undo_post_upvote_count()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'DELETE' THEN
-        UPDATE post
-        SET upvotes = upvotes - 1
-        WHERE id = OLD.post_id;
-    END IF;
-    RETURN OLD;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER undo_post_upvote_trigger
-AFTER DELETE ON upvote_post
-FOR EACH ROW
-EXECUTE FUNCTION undo_post_upvote_count();
-
--- Trigger for undoing post downvotes count
-CREATE OR REPLACE FUNCTION undo_post_downvote_count()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'DELETE' THEN
-        UPDATE post
-        SET downvotes = downvotes - 1
-        WHERE id = OLD.post_id;
-    END IF;
-    RETURN OLD;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER undo_post_downvote_trigger
-AFTER DELETE ON downvote_post
-FOR EACH ROW
-EXECUTE FUNCTION undo_post_downvote_count();
 
 -- Trigger for undoing comment upvotes count
 CREATE OR REPLACE FUNCTION undo_comment_upvote_count()
