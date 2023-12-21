@@ -13,8 +13,12 @@
 @endif
 @include('partials.event')
     <section id="posts">
-        @include('partials.post', ['post' => $post, 'images' => $images])
+        @include('partials.post', ['post' => $post])
 
+        @if(!empty($images))
+            @include('partials.carousel', ['images' => $images])
+        @endif
+        
         @include('partials.comments', ['comments' => $comments])
     </section>
     {{-- Update Button --}}

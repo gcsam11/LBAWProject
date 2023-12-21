@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
 
 // ImageUser
 Route::middleware('auth')->group(function () {
-    Route::post('/profile/{id}/image', [ImageController::class, 'create'])->name('image.new');
+    Route::post('/profile/{id}/image', [ImageController::class, 'createUserImage'])->name('image.new');
 });
 Route::post('/profileimage', [ImageController::class, 'getAJAX']);
 
