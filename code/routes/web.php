@@ -91,7 +91,7 @@ Route::post('/post/downvote', [PostController::class, 'downvote']);
 Route::post('/post/undodownvote', [PostController::class, 'undodownvote']);
 
 //Notification
-Route::get('/unreadnotifications', [NotificationController::class, 'unreadNotifications']);
+Route::post('/unreadnotifications', [NotificationController::class, 'unreadNotifications']);
 
 // Comments
 Route::post('/posts/{id}/comments', [CommentController::class, 'create'])->name('comments.create');

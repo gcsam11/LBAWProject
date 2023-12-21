@@ -7,6 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\User;
 use App\Models\Post;
+use App\Events\NewNotification;
 
 class UpvotedPost extends Notification
 {
@@ -28,6 +29,7 @@ class UpvotedPost extends Notification
 
     public function toDatabase(object $notifiable): array
     {
+        event(new NewNotification($notifiable));
         return [
             'sender_id' => $this->upvoter->id,
             'name' => $this->upvoter->name,

@@ -33,8 +33,8 @@ const pusher = new Pusher(pusherAppKey, {
 });
 
 const channel = pusher.subscribe('lbaw2374');
-const channelname = userId + '-notification';
-channel.bind(channelname, function (data) {
+const channelname1 = userId + '-notification';
+channel.bind(channelname1, function (data) {
 
   const notification = document.getElementById('event');
   const notificationText = document.getElementById('eventText');
@@ -46,11 +46,28 @@ channel.bind(channelname, function (data) {
   }, 500);
 });
 
+const channelname2 = userId + '-newnotification';
+
+channel.bind(channelname2, function (data) {
+  console.log("hello");
+  notificationsRefresh();
+});
+
+function notificationsRefresh() {
+  const notificationsBtn = document.getElementById('notifications-btn');
+  const notificationsContainer = document.getElementById('notificationsContainer');
+  if (notificationsBtn.className === "clicked") {
+    sendAjaxRequest('post', '../unreadnotifications', { read: "true" }, function (response) {
+      handleNotifications(response); // Call function to handle the notifications
+    });
+  }
+}
+
 function notifications() {
   const notificationsBtn = document.getElementById('notifications-btn');
   const notificationsContainer = document.getElementById('notificationsContainer');
   if (notificationsBtn.className === "not-clicked") {
-    sendAjaxRequest('get', '../unreadnotifications', null, function (response) {
+    sendAjaxRequest('post', '../unreadnotifications', { read: "true" }, function (response) {
       handleNotifications(response); // Call function to handle the notifications
     });
     notificationsBtn.className = "clicked";
