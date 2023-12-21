@@ -6,11 +6,12 @@
 
 @section('content')
     @include('partials.search')
+
+    @include('partials.filters')
+
     <div class="create_post">
         <button id="create_post">+</button>
     </div>
-
-    @include('partials.filters')
 
     {{-- Posts--}}
     <div class="news">

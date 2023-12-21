@@ -30,10 +30,10 @@
   @endif
   -->
 
-  <label for="title">Title</label>
+  <label for="title">Title*</label>
   <input id="title" type="text" name="title" value="{{ old('title') }}" required autofocus placeholder="e.g. Lorem Ipsum">
 
-  <label for="caption">Caption</label>
+  <label for="caption">Caption*</label>
   <textarea id="caption" type="text" name="caption" required placeholder="e.g. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at pellentesque lectus, id consectetur nunc."></textarea>
 
   <label id="box_container" for="image_input2">
