@@ -116,9 +116,6 @@ class UserController extends Controller
         // Find the user by ID
         $user = User::findOrFail($userId);
 
-        // Check if the current user can update the profile.
-        $this->authorize('update', $user);
-
         // Update the user's image
         $user->image_id = $imageId;
 

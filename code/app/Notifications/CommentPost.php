@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notification;
 use App\Models\User;
 use App\Models\Post;
 use App\Events\NewNotification;
+use Illuminate\Broadcasting\BroadcastException;
 
 
 class CommentPost extends Notification
